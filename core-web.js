@@ -28038,7 +28038,8 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
       };
       BaseForge = (function() {
         function BaseForge() {
-          this._defaultValue = null;
+          var defaultValue = arguments[0] !== (void 0) ? arguments[0] : null;
+          this._defaultValue = defaultValue;
           this._v = {};
           this._vAry = [];
         }
@@ -28143,12 +28144,19 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
         }, {});
       }());
       ObjectForge = (function($__super) {
-        function ObjectForge() {
-          $traceurRuntime.superConstructor(ObjectForge).call(this);
+        function ObjectForge(fieldName) {
+          var fields = arguments[1] !== (void 0) ? arguments[1] : null;
+          var defaultValue = arguments[2] !== (void 0) ? arguments[2] : null;
+          $traceurRuntime.superConstructor(ObjectForge).call(this, defaultValue);
+          this.fieldName = fieldName;
+          this.fieldDefinitions = fields || {};
         }
         return ($traceurRuntime.createClass)(ObjectForge, {
           asNewable: function() {
-            var ctor = this.newInstance;
+            var ctor = function() {
+              var cfg = arguments[0] !== (void 0) ? arguments[0] : null;
+              return this.newInstance(cfg);
+            };
             ctor.prototype = this;
             return ctor;
           },
@@ -28231,10 +28239,7 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
             var fields = arguments[1] !== (void 0) ? arguments[1] : {};
             var defaultValue = arguments[2] !== (void 0) ? arguments[2] : null;
             var msg = arguments[3] !== (void 0) ? arguments[3] : "@validations.obj.invalidChildMember";
-            var forge = new ObjectForge();
-            forge._defaultValue = defaultValue;
-            forge.fieldDefinitions = fields;
-            forge.fieldName = fieldName;
+            var forge = new ObjectForge(fieldName, fields, defaultValue);
             return forge._applyValidation({
               name: 'obj',
               fn: ObjectForge.memberPropertiesValid,
@@ -29564,8 +29569,8 @@ System.register("src/rules-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "
       objFn,
       RuleDefinition,
       RuleGroupDefinition,
-      Rule,
-      RuleGroup;
+      RuleGroup,
+      Rule;
   return {
     setters: [function($__m) {
       XDebug = $__m.default;
@@ -29602,8 +29607,8 @@ System.register("src/rules-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "
         operator: EF.string(),
         ruleKey: EF.string()
       };
-      Rule = EF.obj('Rule', RuleDefinition).asNewable();
       RuleGroup = EF.obj('RuleGroup', RuleGroupDefinition).asNewable();
+      Rule = EF.obj('Rule', RuleDefinition).asNewable();
       $__export("Rule", Rule), $__export("RuleGroup", RuleGroup);
     }
   };
@@ -30794,6 +30799,11 @@ System.register("src/rules-engine/stores/RuleEngineStore.js", ["github:jspm/node
       _store = new Map();
       registrationFn = function(action) {
         switch (action.key) {
+          case actionTypes.UPDATE_RULE:
+            _store.set(action.rule.$key, action.rule);
+            log(action.key, action.rule.$key, action.rule.name, 'count:' + _store.size);
+            RuleStore.emitChange(action);
+            break;
           case actionTypes.ADD_RULE:
             _store.set(action.rule.$key, action.rule);
             log(action.key, action.rule.$key, action.rule.name, 'count:' + _store.size);
@@ -31594,10 +31604,12 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
         };
       };
       remoteSet = function(path, entity) {
+        var create = arguments[2] !== (void 0) ? arguments[2] : false;
         return new Promise((function(resolve, reject) {
           var url = ServerManager.baseUrl + path;
           log("Saving entity to: ", url);
           client({
+            method: create ? "POST" : "PUT",
             username: 'admin@dotcms.com',
             password: 'admin',
             path: url,
@@ -31666,7 +31678,7 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
           return new Promise((function(resolve, reject) {
             path = Check.exists(path, "Cannot save with an empty key");
             entity = Check.exists(entity, "Cannot save empty values. Did you mean to remove?");
-            remoteSet(path, entity).then((function(response) {
+            remoteSet(path, entity, isNewHack).then((function(response) {
               if (response.status.code === 200) {
                 if (isNewHack === true) {
                   path = path + '/' + response.entity.id;
@@ -33492,7 +33504,7 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
             var group = {
               $key: key,
               operator: _group.operator,
-              clauses: {}
+              priority: _group.priority
             };
             clausesPromises.push(clauseRepo.getByGroup(key).then((function(clauses) {
               group.clauses = clauses;
@@ -33507,25 +33519,15 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
             var _rule = {
               name: rule.name,
               enabled: rule.enabled,
-              priority: rule.priority,
+              priority: rule.priority || 1,
               fireOn: rule.fireOn,
               shortCircuit: rule.shortCircuit,
               groups: {},
               actions: {}
             };
-            var clauses = [];
-            Object.keys(rule.groups).forEach((function(groupId) {
-              var group = rule.groups[groupId];
-              _rule.groups[group.$key] = group;
-              group.clauses.forEach((function(clause) {
-                clause["owningGroup"] = group.$key;
-                clauses.push(clause);
-              }));
-            }));
             return {
               key: rule.$key,
-              val: _rule,
-              clauses: clauses
+              val: _rule
             };
           }},
         getPath: function(siteKey, ruleKey) {
@@ -33542,7 +33544,8 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
           rule.$key = Core.Key.next();
           return ruleRepo.set(rule, true);
         },
-        set: function(rule, isNew) {
+        set: function(rule) {
+          var isNew = arguments[1] !== (void 0) ? arguments[1] : false;
           rule = Check.exists(rule, "Cannot save null rule.");
           Check.notEmpty(rule.name, "Name is required to save a Rule");
           return new Promise((function(resolve, reject) {
@@ -33554,17 +33557,12 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
               path = ruleRepo.getPath(defaultSiteKey, _xForm.key);
             }
             Storage.setItem(path, _xForm.val, isNew === true && SERVER_CREATES_KEYS);
-            var clausePromises = _xForm.clauses.map(clauseRepo.set);
-            Promise.all(clausePromises).then((function(_clausesAry) {
-              if (isNew) {
-                RuleEngine.actions.addRule(rule);
-              } else {
-                RuleEngine.actions.updateRule(rule);
-              }
-              resolve(rule);
-            }), (function(e) {
-              throw e;
-            }));
+            if (isNew) {
+              RuleEngine.actions.addRule(rule);
+            } else {
+              RuleEngine.actions.updateRule(rule);
+            }
+            resolve(rule);
           }));
         },
         get: function(ruleKey) {
