@@ -7677,7 +7677,7 @@ System.register("src/rules-engine-ng2/app/rule.tpl.html!github:systemjs/plugin-t
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<div class=\"panel panel-default rule\" [control-group]=\"form\">\n  <div class=\"panel-heading\">\n    <div class=\"row\">\n      <div class=\"col-sm-8\">\n        <input type=\"text\" class=\"form-control  rule-title\" placeholder=\"Describe the rule\" control=\"name\">\n      </div>\n      <div class=\"col-sm-4\">\n        <div class=\"operations rule-operations\">\n          <label for=\"\">Fire on:</label>\n          <div class=\"btn-group\">\n            <button type=\"button\" class=\"btn btn-default\">Every page</button>\n            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n              <span class=\"caret\"></span>\n              <span class=\"sr-only\">Toggle Dropdown</span>\n            </button>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n              <li><a href=\"#\">Once per visit</a></li>\n              <li><a href=\"#\">Once per visitor</a></li>\n            </ul>\n          </div>\n          <div class=\"separator\"></div>\n          <button type=\"button\" class=\"btn btn-default btn-md\" aria-label=\"Toggle collapse clause group\" (click)=\"toggleCollapse()\">\n            <span class=\"glyphicon glyphicon-resize-vertical\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add new rule\" (click)=\"addRule()\">\n            <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\" (click)=\"removeRule()\">\n            <span class=\"glyphicon glyphicon-trash\"></span>\n          </button>\n        </div>\n      </div>\n    </div>\n  </div>\n  <div class=\"panel-body collapse\" [class.in]=\"!isCollapse\">\n    <div class=\"section-separator\">\n      <h2>When</h2>\n      <hr/>\n    </div>\n    <!--<clause-group *for=\"var cg of rule.groups; var i=index\"-->\n                    <!--[rule]=\"rule\"-->\n                    <!--[group]=\"cg\"-->\n                    <!--[index]=\"i + 1\">-->\n    <!--</clause-group>-->\n\n    <div class=\"section-separator\">\n      <h2>Then</h2>\n      <hr/>\n    </div>\n\n    <!--<div class=\"panel panel-default actions\">-->\n      <!--<ul class=\"list-group\">-->\n        <!--<rule-action *for=\"var act of rule.ruleActions; var i=index\"-->\n                     <!--[rule]=\"rule\"-->\n                     <!--[rule-action]=\"act\"-->\n                     <!--[index]=\"i + 1\">-->\n        <!--</rule-action>-->\n      <!--</ul>-->\n    <!--</div>-->\n    <button class=\"btn btn-default\" \">\n      <span class=\"glyphicon glyphicon-plus-sign\"></span>\n      <span>Add Action</span>\n    </button>\n\n  </div>\n</div>\n";
+  module.exports = "<div class=\"panel panel-default rule\" >\n  <div class=\"panel-heading\">\n    <div class=\"row\">\n      <div class=\"col-sm-8\">\n        <input type=\"text\" class=\"form-control  rule-title\"\n               placeholder=\"Describe the rule\"\n               [value]=\"rule.name\"\n               (change)=\"updateRule($event.target.value)\"\n            >\n      </div>\n      <div class=\"col-sm-4\">\n        <div class=\"operations rule-operations\">\n          <label>Fire on:</label>\n          <div class=\"btn-group\">\n            <button type=\"button\" class=\"btn btn-default\">Every page</button>\n            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n              <span class=\"caret\"></span>\n              <span class=\"sr-only\">Toggle Dropdown</span>\n            </button>\n            <ul class=\"dropdown-menu\" role=\"menu\">\n              <li><a href=\"#\">Once per visit</a></li>\n              <li><a href=\"#\">Once per visitor</a></li>\n            </ul>\n          </div>\n          <div class=\"separator\"></div>\n          <button type=\"button\" class=\"btn btn-default btn-md\" aria-label=\"Toggle collapse clause group\" (click)=\"collapsed = !collapsed\">\n            <span class=\"glyphicon glyphicon-resize-vertical\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Group\" (click)=\"addGroup()\">\n            <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\" (click)=\"removeRule()\">\n            <span class=\"glyphicon glyphicon-trash\"></span>\n          </button>\n        </div>\n      </div>\n    </div>\n  </div>\n  <div class=\"panel-body collapse\" [class.in]=\"!collapsed\">\n    <div class=\"section-separator\">\n      <h2>When</h2>\n      <hr/>\n    </div>\n    <clause-group *for=\"var cg of ruleGroups; var i=index\"\n                    [rule]=\"rule\"\n                    [group]=\"cg\"\n                    [index]=\"i + 1\">\n    </clause-group>\n\n    <div class=\"section-separator\">\n      <h2>Then</h2>\n      <hr/>\n    </div>\n\n    <!--<div class=\"panel panel-default actions\">-->\n      <!--<ul class=\"list-group\">-->\n        <!--<rule-action *for=\"var act of rule.ruleActions; var i=index\"-->\n                     <!--[rule]=\"rule\"-->\n                     <!--[rule-action]=\"act\"-->\n                     <!--[index]=\"i + 1\">-->\n        <!--</rule-action>-->\n      <!--</ul>-->\n    <!--</div>-->\n\n  </div>\n</div>\n";
   global.define = __define;
   return module.exports;
 });
@@ -24276,7 +24276,7 @@ System.register("src/coreweb/ServerManager.js", [], function($__export) {
   return {
     setters: [],
     execute: function() {
-      ServerManager = {baseUrl: "http://localhost:8080/api/v1"};
+      ServerManager = {baseUrl: "http://localhost:8080/"};
       $__export("ServerManager", ServerManager);
     }
   };
@@ -29563,7 +29563,9 @@ System.register("src/rules-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "
       defaultSiteId,
       objFn,
       RuleDefinition,
-      Rule;
+      RuleGroupDefinition,
+      Rule,
+      RuleGroup;
   return {
     setters: [function($__m) {
       XDebug = $__m.default;
@@ -29594,8 +29596,15 @@ System.register("src/rules-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "
         }),
         actions: EF.any()
       };
+      RuleGroupDefinition = {
+        $key: EF.string(),
+        priority: EF.int(0).min(0).max(100),
+        operator: EF.string(),
+        ruleKey: EF.string()
+      };
       Rule = EF.obj('Rule', RuleDefinition).asNewable();
-      $__export("Rule", Rule);
+      RuleGroup = EF.obj('RuleGroup', RuleGroupDefinition).asNewable();
+      $__export("Rule", Rule), $__export("RuleGroup", RuleGroup);
     }
   };
 });
@@ -31546,8 +31555,10 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
       ServerManager,
       client,
       transformValidResponse,
+      transformStatusErrorResponse,
       remoteSet,
       remoteGet,
+      remoteDelete,
       RestDataStore;
   return {
     setters: [function($__m) {
@@ -31574,10 +31585,18 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
           request: response.request || {}
         };
       };
+      transformStatusErrorResponse = function(response) {
+        return {
+          status: response.status || {},
+          headers: response.headers || {},
+          entity: response.entity || "",
+          request: response.request || {}
+        };
+      };
       remoteSet = function(path, entity) {
         return new Promise((function(resolve, reject) {
           var url = ServerManager.baseUrl + path;
-          console.log("Saving entity to: ", url);
+          log("Saving entity to: ", url);
           client({
             username: 'admin@dotcms.com',
             password: 'admin',
@@ -31585,7 +31604,11 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
             entity: JSON.stringify(entity),
             headers: {'Content-Type': 'application/json'}
           }).then((function(response) {
-            resolve(transformValidResponse(response));
+            if (response.status.code > 199 && response.status.code < 300) {
+              resolve(transformValidResponse(response));
+            } else {
+              reject(transformStatusErrorResponse(response));
+            }
           })).catch((function(e) {
             log("Save operation resulted in an error: ", e);
             reject(e);
@@ -31598,7 +31621,7 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
             path = path.substring(0, path.length - 1);
           }
           var url = ServerManager.baseUrl + path;
-          console.log("Getting entity from: ", url);
+          log("Getting entity from: ", url);
           client({
             username: 'admin@dotcms.com',
             password: 'admin',
@@ -31608,6 +31631,24 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
             resolve(transformValidResponse(response));
           })).catch((function(err) {
             reject(err);
+          }));
+        }));
+      };
+      remoteDelete = function(path) {
+        return new Promise((function(resolve, reject) {
+          var url = ServerManager.baseUrl + path;
+          log("Deleting entity at: ", url);
+          client({
+            method: "DELETE",
+            username: 'admin@dotcms.com',
+            password: 'admin',
+            path: url,
+            headers: {'Content-Type': 'application/json'}
+          }).then((function(response) {
+            resolve(transformValidResponse(response));
+          })).catch((function(e) {
+            log("Delete operation resulted in an error: ", e);
+            reject(e);
           }));
         }));
       };
@@ -31645,10 +31686,12 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
             remoteGet(path).then((function(response) {
               resolve(response.entity);
             })).catch((function(err) {
-              debugger;
               reject(err);
             }));
           }));
+        },
+        removeItem: function(path) {
+          return remoteDelete(path);
         },
         getItems: function() {
           for (var keys = [],
@@ -31661,15 +31704,6 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
         hasItem: function(key) {
           return localStorage.getItem(key) !== null;
         },
-        removeItem: function(key) {
-          var itemJson = localStorage.getItem(key);
-          var item = null;
-          if (itemJson !== null) {
-            item = JSON.parse(item);
-          }
-          localStorage.removeItem(key);
-          return item;
-        },
         childKeys: function(path) {
           return new Promise((function(resolve, reject) {
             remoteGet(path).then((function(response) {
@@ -31680,7 +31714,6 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
           }));
         },
         childPaths: function(path) {
-          debugger;
           var childPaths = [];
           for (var i = 0; i < localStorage.length; i++) {
             var childPath = localStorage.key(i);
@@ -31691,7 +31724,6 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
           return childPaths;
         },
         childItems: function(path) {
-          debugger;
           var pathLen = path.length;
           return RestDataStore.childPaths(path).map((function(childPath) {
             return {
@@ -33362,7 +33394,8 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
       clauseRepo,
       defaultSiteKey,
       SERVER_CREATES_KEYS,
-      ruleRepo;
+      ruleRepo,
+      ruleGroupRepo;
   return {
     setters: [function($__m) {
       XDebug = $__m.default;
@@ -33391,7 +33424,7 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
         }
       }));
       clauseRepo = {
-        basePath: '/api/v1/rules/clauses/',
+        basePath: 'api/v1/rules/clauses/',
         inward: {transform: function(_group, key) {}},
         outward: {transform: function(clause) {
             return {
@@ -33439,7 +33472,7 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
       SERVER_CREATES_KEYS = true;
       ruleRepo = {};
       $__export("ruleRepo", ruleRepo = {
-        basePath: '/sites/{{siteKey}}/rules/{{ruleKey}}',
+        basePath: 'api/v1/sites/{{siteKey}}/rules/{{ruleKey}}',
         inward: {
           transform: function(_rule, key) {
             var groups = Core.Collections.asArray(_rule.groups || {}, ruleRepo.inward.transformGroup);
@@ -33543,10 +33576,8 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
           }));
         },
         remove: function(ruleKey) {
-          return new Promise((function(resolve, reject) {
-            var path = ruleRepo.getPath(defaultSiteKey, ruleKey);
-            resolve(Storage.removeItem(path));
-          }));
+          var path = ruleRepo.getPath(defaultSiteKey, ruleKey);
+          return Storage.removeItem(path);
         },
         init: function() {
           return Storage.childKeys(ruleRepo.getPath(defaultSiteKey, '') + '/').then((function(paths) {
@@ -33557,7 +33588,47 @@ System.register("src/rules-engine/api/RuleEngineAPI.js", ["npm:debug@2.2.0", "sr
           }));
         }
       });
-      $__export("ruleRepo", ruleRepo);
+      ruleGroupRepo = {};
+      $__export("ruleGroupRepo", ruleGroupRepo = {
+        basePath: 'api/v1/sites/{{siteKey}}/rules/{{ruleKey}}/conditiongroups/{{groupKey}}',
+        outward: {transform: function(group) {
+            var _group = {
+              priority: group.priority,
+              operator: group.operator || "OR"
+            };
+            return {
+              key: group.$key,
+              val: _group
+            };
+          }},
+        getPath: function(siteKey, ruleKey, groupKey) {
+          var path = ruleGroupRepo.basePath.replace('{{siteKey}}', siteKey).replace('{{ruleKey}}', ruleKey).replace('{{groupKey}}', groupKey);
+          if (path.endsWith('/')) {
+            path = path.substring(0, path.length - 1);
+          }
+          return path;
+        },
+        push: function(group) {
+          if (group.$key) {
+            throw new Error("Cannot push Group: group already has a key. Use #set()");
+          }
+          group.$key = Core.Key.next();
+          return ruleGroupRepo.set(group, true);
+        },
+        set: function(group, isNew) {
+          return new Promise((function(resolve, reject) {
+            var _xForm = ruleGroupRepo.outward.transform(group);
+            var path;
+            if (isNew === true && SERVER_CREATES_KEYS) {
+              path = ruleGroupRepo.getPath(defaultSiteKey, group.ruleKey, '');
+            } else {
+              path = ruleGroupRepo.getPath(defaultSiteKey, group.ruleKey, _xForm.key);
+            }
+            Storage.setItem(path, _xForm.val, isNew === true && SERVER_CREATES_KEYS);
+          }));
+        }
+      });
+      $__export("ruleRepo", ruleRepo), $__export("ruleGroupRepo", ruleGroupRepo);
     }
   };
 });
@@ -33838,14 +33909,17 @@ System.register("src/rules-engine/RuleEngine.js", ["src/rules-engine/api/RuleEng
   "use strict";
   var __moduleName = "src/rules-engine/RuleEngine.js";
   var ruleRepo,
+      ruleGroupRepo,
       actions,
       actionTypes,
       RuleStore,
       Rule,
+      RuleGroup,
       RuleEngine;
   return {
     setters: [function($__m) {
       ruleRepo = $__m.ruleRepo;
+      ruleGroupRepo = $__m.ruleGroupRepo;
     }, function($__m) {
       actions = $__m.actions;
       actionTypes = $__m.actionTypes;
@@ -33853,14 +33927,17 @@ System.register("src/rules-engine/RuleEngine.js", ["src/rules-engine/api/RuleEng
       RuleStore = $__m.RuleStore;
     }, function($__m) {
       Rule = $__m.Rule;
+      RuleGroup = $__m.RuleGroup;
     }],
     execute: function() {
       RuleEngine = {
         ruleRepo: ruleRepo,
+        ruleGroupRepo: ruleGroupRepo,
         actions: actions,
         actionTypes: actionTypes,
         store: RuleStore,
-        Rule: Rule
+        Rule: Rule,
+        RuleGroup: RuleGroup
       };
       $__export("RuleEngine", RuleEngine);
     }
@@ -35376,12 +35453,12 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
             return assert.returnType((this._ruleAction), $traceurRuntime.type.any);
           },
           set ruleAction(ruleAction) {
-            var $__23 = this;
+            var $__22 = this;
             assert.argumentTypes(ruleAction, $traceurRuntime.type.any);
             var ruleActionControl = this.builder.group({"name": [ruleAction.name, Validators.required]});
             ruleActionControl.controls.name.valueChanges.toRx().debounce(500).subscribe((function(v) {
-              $__23._ruleAction = $__23._ruleAction.clone().withName(v).build();
-              $__23.saveChanges();
+              $__22._ruleAction = $__22._ruleAction.clone().withName(v).build();
+              $__22.saveChanges();
             }));
             this.form = ruleActionControl;
             this._ruleAction = ruleAction;
@@ -35587,10 +35664,8 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
           return [[$traceurRuntime.type.any]];
         }});
       RuleComponent = (function() {
-        function RuleComponent(b) {
-          assert.argumentTypes(b, FormBuilder);
-          this.builder = b;
-          this.isCollapse = true;
+        function RuleComponent() {
+          this.collapsed = false;
         }
         return ($traceurRuntime.createClass)(RuleComponent, {
           get _rule() {
@@ -35600,11 +35675,11 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
             assert.argumentTypes(value, $traceurRuntime.type.any);
             this.$__16 = value;
           },
-          get form() {
-            return assert.returnType((this.$__17), ControlGroup);
+          get ruleGroups() {
+            return assert.returnType((this.$__17), Array);
           },
-          set form(value) {
-            assert.argumentTypes(value, ControlGroup);
+          set ruleGroups(value) {
+            assert.argumentTypes(value, Array);
             this.$__17 = value;
           },
           get index() {
@@ -35614,35 +35689,46 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
             assert.argumentTypes(value, $traceurRuntime.type.number);
             this.$__18 = value;
           },
-          get builder() {
-            return assert.returnType((this.$__19), FormBuilder);
+          get collapsed() {
+            return assert.returnType((this.$__19), $traceurRuntime.type.boolean);
           },
-          set builder(value) {
-            assert.argumentTypes(value, FormBuilder);
+          set collapsed(value) {
+            assert.argumentTypes(value, $traceurRuntime.type.boolean);
             this.$__19 = value;
           },
-          get isCollapse() {
-            return assert.returnType((this.$__20), $traceurRuntime.type.any);
-          },
-          set isCollapse(value) {
-            assert.argumentTypes(value, $traceurRuntime.type.any);
-            this.$__20 = value;
+          set rule(rule) {
+            assert.argumentTypes(rule, $traceurRuntime.type.any);
+            this._rule = rule;
+            this.ruleGroups = Object.keys(rule.groups || {}).map((function(key) {
+              return rule.groups[key];
+            }));
           },
           get rule() {
             return assert.returnType((this._rule), $traceurRuntime.type.any);
           },
-          set rule(rule) {
-            this._rule = rule;
-            var ruleControl = this.builder.group({"name": [rule.name, Validators.required]});
-            ruleControl.controls.name.valueChanges.toRx().subscribe((function(v) {
-              return log("it changed: ", v);
+          updateRule: function(name) {
+            assert.argumentTypes(name, $traceurRuntime.type.string);
+            this._rule.name = name;
+            RuleEngine.ruleRepo.set(this._rule);
+          },
+          addGroup: function() {
+            var $__22 = this;
+            var group = new RuleEngine.RuleGroup();
+            group.priority = 10;
+            group.operator = 'OR';
+            group.ruleKey = this._rule.$key;
+            RuleEngine.ruleGroupRepo.push(group).then((function(group) {
+              $__22._rule.groups[group.$key] = true;
             }));
-            this.form = ruleControl;
           },
-          toggleCollapse: function() {
-            this.isCollapse = !this.isCollapse;
-          },
-          removeRule: function() {}
+          removeRule: function() {
+            RuleEngine.ruleRepo.remove(this.rule.$key).then((function(x) {
+              log("Yay! ", x);
+            })).catch((function(e) {
+              log("Not yay :~(: ", e);
+              throw e;
+            }));
+          }
         }, {});
       }());
       Object.defineProperty(RuleComponent, "annotations", {get: function() {
@@ -35655,14 +35741,14 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
             injectables: [FormBuilder]
           }), new View({
             template: ruleTemplate,
-            directives: [RuleActionComponent, ClauseGroupComponent, FormDirectives, If, For]
+            directives: [ClauseGroupComponent, If, For]
           })];
-        }});
-      Object.defineProperty(RuleComponent, "parameters", {get: function() {
-          return [[FormBuilder]];
         }});
       Object.defineProperty(Object.getOwnPropertyDescriptor(RuleComponent.prototype, "rule").set, "parameters", {get: function() {
           return [[$traceurRuntime.type.any]];
+        }});
+      Object.defineProperty(RuleComponent.prototype.updateRule, "parameters", {get: function() {
+          return [[$traceurRuntime.type.string]];
         }});
       RulesEngine = (function() {
         function RulesEngine() {
@@ -35674,34 +35760,36 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
         }
         return ($traceurRuntime.createClass)(RulesEngine, {
           get rules() {
-            return assert.returnType((this.$__21), Array);
+            return assert.returnType((this.$__20), Array);
           },
           set rules(value) {
             assert.argumentTypes(value, Array);
-            this.$__21 = value;
+            this.$__20 = value;
           },
           get baseUrl() {
-            return assert.returnType((this.$__22), $traceurRuntime.type.string);
+            return assert.returnType((this.$__21), $traceurRuntime.type.string);
           },
           set baseUrl(value) {
             assert.argumentTypes(value, $traceurRuntime.type.string);
-            this.$__22 = value;
+            this.$__21 = value;
           },
           updateBaseUrl: function(value) {
-            var $__23 = this;
+            var $__22 = this;
             var oldUrl = ServerManager.baseUrl;
             ServerManager.baseUrl = value;
             this.baseUrl = value;
             this.testBaseUrl(value).catch(((function(e) {
-              debugger;
-              $__23.baseUrl = oldUrl;
+              alert("Error using provided Base Url. Check the development console.");
+              log("Error using provided Base Url: ", e);
+              $__22.baseUrl = oldUrl;
               ServerManager.baseUrl = oldUrl;
+              throw e;
             })));
           },
           onChange: function(event) {
-            var $__23 = this;
+            var $__22 = this;
             RuleEngine.store.get().then((function(rulesAry) {
-              return $__23.rules = rulesAry;
+              return $__22.rules = rulesAry;
             }));
           },
           addRule: function() {
@@ -35725,7 +35813,7 @@ System.register("src/rules-engine-ng2/app/rules-engine.ts", ["rtts_assert/rtts_a
       Object.defineProperty(RulesEngine, "annotations", {get: function() {
           return [new Component({selector: 'rules-engine'}), new View({
             template: rulesEngineTemplate,
-            directives: [FormDirectives, For, RuleComponent, If]
+            directives: [For, RuleComponent, If]
           })];
         }});
     }
