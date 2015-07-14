@@ -12182,7 +12182,7 @@ System.register("src/rule-engine-view/app/rule.tpl.html!github:systemjs/plugin-t
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<div class=\"panel panel-default rule\">\n  <div class=\"panel-heading\">\n    <div class=\"container\">\n      <div class=\"row\" (click)=\"collapsed = !collapsed\">\n        <div class=\"col-xs-6\">\n          <input type=\"text\" class=\"form-control  rule-title\"\n                 placeholder=\"Describe the rule\"\n                 [value]=\"rule.name\"\n                 (change)=\"setRuleName($event.target.value)\"\n                 (focus)=\"collapsed = false\">\n        </div>\n\n        <div class=\"col-xs-3 col-xs-offset-1\">\n          <div class=\"operations rule-operations\">\n            <label>Fire on:</label>\n\n            <div class=\"btn-group\">\n              <button type=\"button\" class=\"btn btn-default\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                {{rule.fireOn}}\n              </button>\n              <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\"\n                      (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                <span class=\"caret\"></span>\n                <span class=\"sr-only\">Toggle Drop Down</span>\n              </button>\n              <ul class=\"dropdown-menu collapse\" role=\"menu\" [class.in]=\"fireOnDropDownExpanded\">\n                <li (click)=\"setFireOn('EVERY_PAGE')\"><a href=\"#\" (click)=\"setFireOn('EVERY_PAGE')\">Every page</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISIT')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISIT')\">Once per\n                  visit</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISITOR')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISITOR')\">Once per\n                  visitor</a></li>\n                <li (click)=\"setFireOn('EVERY_REQUEST')\"><a href=\"#\" (click)=\"setFireOn('EVERY_REQUEST')\">Every\n                  request</a></li>\n              </ul>\n            </div>\n          </div>\n          </div>\n          <div class=\"col-xs-2\">\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Group\" (click)=\"addGroup()\">\n              <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Action\" (click)=\"addRuleAction()\">\n              <span class=\"glyphicon glyphicon-flash\" aria-hidden=\"true\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\"\n                    (click)=\"removeRule()\">\n              <span class=\"glyphicon glyphicon-trash\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"panel-body collapse\" [class.in]=\"!collapsed\">\n      <div class=\"section-separator\">\n        <h2>When</h2>\n        <hr/>\n      </div>\n      <condition-group *for=\"var groupSnap of ruleGroups; var i=index\"\n      [rule]=\"rule\"\n      [group-snap]=\"groupSnap\"\n      [index]=\"i + 1\">\n      </condition-group>\n\n      <div class=\"section-separator\">\n        <h2>Then</h2>\n        <hr/>\n      </div>\n\n      <!--<div class=\"panel panel-default actions\">-->\n      <!--<ul class=\"list-group\">-->\n      <!--<rule-action *for=\"var act of rule.ruleActions; var i=index\"-->\n      <!--[rule]=\"rule\"-->\n      <!--[rule-action]=\"act\"-->\n      <!--[index]=\"i + 1\">-->\n      <!--</rule-action>-->\n      <!--</ul>-->\n      <!--</div>-->\n\n    </div>\n  </div>\n";
+  module.exports = "<div class=\"panel panel-default rule\">\n  <div class=\"panel-heading\">\n    <div class=\"container\">\n      <div class=\"row\" (click)=\"collapsed = !collapsed\">\n        <div class=\"col-xs-6\">\n          <input type=\"text\" class=\"form-control  rule-title\"\n                 placeholder=\"Describe the rule\"\n                 [value]=\"rule.name\"\n                 (change)=\"setRuleName($event.target.value)\"\n                 (focus)=\"collapsed = false\">\n        </div>\n\n        <div class=\"col-xs-3 col-xs-offset-1\">\n          <div class=\"operations rule-operations\">\n            <label>Fire on:</label>\n\n            <div class=\"btn-group\">\n              <button type=\"button\" class=\"btn btn-default\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                {{rule.fireOn}}\n              </button>\n              <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\"\n                      (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                <span class=\"caret\"></span>\n                <span class=\"sr-only\">Toggle Drop Down</span>\n              </button>\n              <ul class=\"dropdown-menu collapse\" role=\"menu\" [class.in]=\"fireOnDropDownExpanded\">\n                <li (click)=\"setFireOn('EVERY_PAGE')\"><a href=\"#\" (click)=\"setFireOn('EVERY_PAGE')\">Every page</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISIT')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISIT')\">Once per\n                  visit</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISITOR')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISITOR')\">Once per\n                  visitor</a></li>\n                <li (click)=\"setFireOn('EVERY_REQUEST')\"><a href=\"#\" (click)=\"setFireOn('EVERY_REQUEST')\">Every\n                  request</a></li>\n              </ul>\n            </div>\n          </div>\n          </div>\n          <div class=\"col-xs-2\">\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Group\" (click)=\"addGroup()\">\n              <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Action\" (click)=\"addRuleAction()\">\n              <span class=\"glyphicon glyphicon-flash\" aria-hidden=\"true\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\"\n                    (click)=\"removeRule()\">\n              <span class=\"glyphicon glyphicon-trash\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"panel-body collapse\" [class.in]=\"!collapsed\">\n      <div class=\"section-separator\">\n        <h2>When</h2>\n        <hr/>\n      </div>\n      <condition-group *for=\"var groupSnap of ruleGroups; var i=index\"\n      [rule]=\"rule\"\n      [group-snap]=\"groupSnap\"\n      [index]=\"i + 1\">\n      </condition-group>\n\n      <div class=\"section-separator\">\n        <h2>Then</h2>\n        <hr/>\n      </div>\n      <div class=\"panel panel-default actions\">\n        <rule-action *for=\"var meta of ruleActions; var i=index\"\n                        [action-meta]=\"meta\">\n        </rule-action>\n      </div>\n\n\n    </div>\n  </div>\n";
   global.define = __define;
   return module.exports;
 });
@@ -12191,7 +12191,7 @@ System.register("src/rule-engine-view/app/rule-action.tpl.html!github:systemjs/p
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<li class=\"list-group-item action-item\">\n  <div class=\"row\">\n    <div class=\"col-sm-10\">\n      <input type=\"text\" class=\"form-control\" placeholder=\"Action Description\" control=\"name\" />\n    </div>\n    <div class=\"col-sm-2\">\n      <div class=\"operations actions-operations\">\n        <button type=\"button\" class=\"btn btn-default btn-md\" aria-label=\"Add Action\" (click)=\"addRuleAction(rule)\">\n          <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span>\n        </button>\n        <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Remove Action\" (click)=\"removeAction(action)\">\n          <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n        </button>\n      </div>\n    </div>\n  </div>\n</li>\n\n";
+  module.exports = "<li class=\"list-group-item action-item\">\n  <div class=\"row\">\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control\" placeholder=\"Action Description\" [value]=\"action.name\" />\n    </div>\n    <div class=\"col-sm-1\">\n    </div>\n    <div class=\"col-sm-3\">\n      <select class=\"form-control clause-selector\" [value]=\"actionlet.id\" (change)=\"setActionlet($event.target.value)\">\n        <option value=\"{{actionlet.id}}\" *for=\"var actionlet of actionlets\">{{actionlet.name}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <!--<input type=\"text\" class=\"form-control\" placeholder=\"Action Description\" [value]=\"action.name\" />-->\n    </div>\n    <div class=\"col-sm-1\">\n      <div class=\"operations actions-operations\">\n        <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Remove Action\" (click)=\"removeRuleAction()\">\n          <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n        </button>\n      </div>\n    </div>\n  </div>\n</li>\n\n";
   global.define = __define;
   return module.exports;
 });
@@ -12209,7 +12209,7 @@ System.register("src/rule-engine-view/app/condition.tpl.html!github:systemjs/plu
   var global = System.global,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<div class=\"panel panel-default clause\">\n  <div class=\"panel-body\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button type=\"button\"class=\"btn btn-default\" (click)=\"toggleOperator()\">\n          {{condition.operator}}\n        </button>\n      </div>\n      <div class=\"col-sm-11\">\n        <div class=\"row\">\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.conditionlet\" (change)=\"setConditionlet($event.target.value)\">\n              <option value=\"{{conditionlet.id}}\"  *for=\"var conditionlet of conditionlets; var i=index\">{{conditionlet.id}} - {{conditionlet.name}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.comparison\" (change)=\"setComparison($event.target.value)\">\n              <option value=\"comparison.id\" *for=\"var comparison of conditionlet.comparisons\">{{comparison.label}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <div class=\"col-sm-3\">\n            <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionValue\" (change)=\"setComparisonValue($event.target.value)\"/>\n          </div>\n          <div class=\"col-sm-1\">\n            <div class=\"operations clause-operations\">\n              <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Clause\" (click)=\"removeCondition()\">\n                <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>";
+  module.exports = "<div class=\"panel panel-default clause\">\n  <div class=\"panel-body\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button type=\"button\"class=\"btn btn-default\" (click)=\"toggleOperator()\">\n          {{condition.operator}}\n        </button>\n      </div>\n      <div class=\"col-sm-11\">\n        <div class=\"row\">\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.conditionlet\" (change)=\"setConditionlet($event.target.value)\">\n              <option value=\"{{conditionlet.id}}\"  *for=\"var conditionlet of conditionlets; var i=index\">{{conditionlet.id}} - {{conditionlet.name}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.comparison\" (change)=\"setComparison($event.target.value)\">\n              <option value=\"{{comparison.id}}\" *for=\"var comparison of conditionlet.comparisons\">{{comparison.label}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <div class=\"col-sm-3\">\n            <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionValue\" (change)=\"setComparisonValue($event.target.value)\"/>\n          </div>\n          <div class=\"col-sm-1\">\n            <div class=\"operations clause-operations\">\n              <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Clause\" (click)=\"removeCondition()\">\n                <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>";
   global.define = __define;
   return module.exports;
 });
@@ -14045,7 +14045,7 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
             var wrapper = {value: defaultValue !== null ? this.transform(defaultValue) : this.newInstance()};
             Object.defineProperty(entityInstance, fieldName, {
               configurable: false,
-              enumerable: true,
+              enumerable: this.isEnumerable !== false,
               set: this._createSetter(wrapper),
               get: function() {
                 return wrapper.value;
@@ -14085,6 +14085,11 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
               msg: msg,
               abortOnFail: true
             });
+          },
+          enumerable: function() {
+            var isEnumerable = arguments[0] !== (void 0) ? arguments[0] : true;
+            this.isEnumerable = isEnumerable;
+            return this;
           }
         }, {});
       }());
@@ -14109,10 +14114,26 @@ System.register("src/entity-forge/EntityForge.js", ["src/entity-forge/Verify.js"
             var cfg = arguments[0] !== (void 0) ? arguments[0] : null;
             cfg = cfg || this.defaultValue || {};
             var theInstance = new EntityBase(this);
+            this._createValidateFn(theInstance);
             if (this._v.obj.allowEmptyAtInit !== true) {
               this._initMemberProperties(theInstance, cfg);
             }
             return theInstance;
+          },
+          _createValidateFn: function(entityInstance) {
+            var typeDefinition = this;
+            Object.defineProperty(entityInstance, 'validate', {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: function() {
+                var results = typeDefinition.validate(this, typeDefinition.fieldName);
+                if (results.valid === false) {
+                  throw new ValidationError(results, typeDefinition.fieldName);
+                }
+                return this;
+              }
+            });
           },
           _initMemberProperties: function(theInstance, cfg) {
             var fieldDefs = this.fieldDefinitions;
@@ -24579,13 +24600,11 @@ System.register("src/rule-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "s
         return {};
       });
       RuleDefinition = {
-        $key: EF.string(),
+        $key: EF.string().enumerable(false),
         name: EF.string().minLength(5).maxLength(100),
         enabled: EF.bool(true),
-        site: EF.string().minLength(36).maxLength(36),
         priority: EF.int(0).min(0).max(100),
         fireOn: EF.enum().values(['EVERY_PAGE', 'ONCE_PER_VISIT', 'ONCE_PER_VISITOR', 'EVERY_REQUEST']).initTo(0),
-        folder: EF.string().minLength(5).maxLength(250),
         shortCircuit: EF.bool(true),
         conditionGroups: EF.obj('conditionGroups', {
           operator: EF.enum().values(['AND', 'OR']),
@@ -24601,7 +24620,6 @@ System.register("src/rule-engine/api/RuleEngineTypes.js", ["npm:debug@2.2.0", "s
       };
       ConditionDefinition = {
         $key: EF.string(),
-        rule: EF.string(),
         conditionGroup: EF.string(),
         name: EF.string().minLength(5).maxLength(100),
         conditionlet: EF.string(),
@@ -24835,25 +24853,14 @@ System.register("src/entity-forge/EntityBaseTypes.js", ["src/entity-forge/Verify
     }],
     execute: function() {
       EntityBase = (function() {
-        function EntityBase(typeDefinition) {
-          this.typeDefinition = typeDefinition;
-        }
-        return ($traceurRuntime.createClass)(EntityBase, {
-          validate: function() {
-            var results = this.typeDefinition.validate(this, this.typeDefinition.fieldName);
-            if (results.valid === false) {
-              throw new ValidationError(results, this.typeDefinition.fieldName);
-            }
-            return this;
-          },
-          toJson: function() {
+        function EntityBase() {}
+        return ($traceurRuntime.createClass)(EntityBase, {toJson: function() {
             var validate = arguments[0] !== (void 0) ? arguments[0] : true;
             if (validate !== false) {
               this.validate();
             }
             return JSON.stringify(this);
-          }
-        }, {});
+          }}, {});
       }());
       $__export("EntityBase", EntityBase);
     }
@@ -35104,6 +35111,9 @@ System.register("src/coreweb/util/RestDataStore.js", ["npm:debug@2.2.0", "github
           ref: function() {
             return this.entityMeta;
           },
+          exists: function() {
+            return this.entity != null;
+          },
           child: function(key) {
             var childPath = this.entityMeta.path + '/' + key;
             var childVal = null;
@@ -35736,10 +35746,14 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
       conditionletsMap,
       conditionletsPromise,
       actionletsAry,
-      initConditionlets;
+      actionletsMap,
+      actionletsPromise,
+      initConditionlets,
+      initActionlets;
   function main() {
     log("Bootstrapping rules engine");
     initConditionlets();
+    initActionlets();
     return bootstrap(RuleEngine);
   }
   $__export("main", main);
@@ -35791,12 +35805,12 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
       count = 0;
       ConditionComponent = (function() {
         function ConditionComponent() {
-          var $__22 = this;
+          var $__26 = this;
           this.idCount = count;
           log('Creating ConditionComponent: ', count++);
           this.conditionlets = [];
           conditionletsPromise.then((function(result) {
-            $__22.conditionlets = conditionletsAry;
+            $__26.conditionlets = conditionletsAry;
           }));
           this.condition = {};
           this.conditionValue = '';
@@ -35895,11 +35909,14 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             };
             this.updateCondition();
           },
-          removeCondition: function() {},
           toggleOperator: function() {},
           updateCondition: function() {
             log('Updating Condition: ', this.condition);
             this.conditionMeta.set(this.condition);
+          },
+          removeCondition: function() {
+            log('Removing Condition: ', this.condition);
+            this.conditionMeta.remove();
           }
         }, {});
       }());
@@ -35975,12 +35992,12 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             return conditionMetas;
           },
           addCondition: function() {
-            var $__22 = this;
+            var $__26 = this;
             log('Adding condition to ConditionsGroup');
             var condition = {
               priority: 10,
               name: "Condition. " + new Date().toISOString(),
-              rule: this.rule.key,
+              owningGroup: this._groupSnap.key(),
               conditionlet: 'UsersCountryConditionlet',
               comparison: 'Is',
               operator: 'AND',
@@ -35992,9 +36009,9 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             };
             var condRoot = assert.type(new EntityMeta('/api/v1/sites/48190c8c-42c4-46af-8d1a-0cd5db894797/ruleengine/conditions'), EntityMeta);
             condRoot.push(condition).then((function(result) {
-              $__22.group.conditions = $__22.group.conditions || {};
-              $__22.group.conditions[result.key()] = true;
-              $__22.updateGroup();
+              $__26.group.conditions = $__26.group.conditions || {};
+              $__26.group.conditions[result.key()] = true;
+              $__26.updateGroup();
             })).catch((function(e) {
               log(e);
             }));
@@ -36006,6 +36023,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
           updateGroup: function() {
             log('Updating ConditionsGroup');
             this.groupSnap.ref().set(this.group);
+            this.conditions = this.getConditions();
           }
         }, {});
       }());
@@ -36022,57 +36040,98 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
           })];
         }});
       RuleActionComponent = (function() {
-        function RuleActionComponent() {}
+        function RuleActionComponent() {
+          var $__26 = this;
+          this.idCount = count;
+          log('Creating actionComponent: ', count++);
+          this.actionlets = [];
+          actionletsPromise.then((function(result) {
+            $__26.actionlets = actionletsAry;
+          }));
+          this.action = {};
+          this.actionValue = '';
+          this.actionlet = {};
+        }
         return ($traceurRuntime.createClass)(RuleActionComponent, {
-          get _actionSnap() {
-            return assert.returnType((this.$__11), $traceurRuntime.type.any);
+          get idCount() {
+            return assert.returnType((this.$__11), $traceurRuntime.type.number);
           },
-          set _actionSnap(value) {
-            assert.argumentTypes(value, $traceurRuntime.type.any);
+          set idCount(value) {
+            assert.argumentTypes(value, $traceurRuntime.type.number);
             this.$__11 = value;
           },
-          get ruleAction() {
+          get _actionMeta() {
             return assert.returnType((this.$__12), $traceurRuntime.type.any);
           },
-          set ruleAction(value) {
+          set _actionMeta(value) {
             assert.argumentTypes(value, $traceurRuntime.type.any);
             this.$__12 = value;
           },
-          get index() {
-            return assert.returnType((this.$__13), $traceurRuntime.type.number);
+          get action() {
+            return assert.returnType((this.$__13), $traceurRuntime.type.any);
           },
-          set index(value) {
-            assert.argumentTypes(value, $traceurRuntime.type.number);
+          set action(value) {
+            assert.argumentTypes(value, $traceurRuntime.type.any);
             this.$__13 = value;
           },
-          get actionSnap() {
-            return assert.returnType((this._actionSnap), $traceurRuntime.type.any);
+          get actionValue() {
+            return assert.returnType((this.$__14), $traceurRuntime.type.string);
           },
-          set actionSnap(actionSnap) {
-            assert.argumentTypes(actionSnap, $traceurRuntime.type.any);
-            this._actionSnap = actionSnap;
-            this.ruleAction = actionSnap.val();
+          set actionValue(value) {
+            assert.argumentTypes(value, $traceurRuntime.type.string);
+            this.$__14 = value;
           },
-          saveChanges: function() {},
-          onChange: function(action) {},
-          removeRuleAction: function() {}
+          get actionlet() {
+            return assert.returnType((this.$__15), $traceurRuntime.type.any);
+          },
+          set actionlet(value) {
+            assert.argumentTypes(value, $traceurRuntime.type.any);
+            this.$__15 = value;
+          },
+          get actionlets() {
+            return assert.returnType((this.$__16), Array);
+          },
+          set actionlets(value) {
+            assert.argumentTypes(value, Array);
+            this.$__16 = value;
+          },
+          onChange: function(snapshot) {
+            log(this.idCount, " action's type is ", this.action);
+            this.action = snapshot.val();
+            this.actionlet = actionletsMap.get(this.action.actionlet);
+            log('Loaded action with actionlet: ', this.actionlet);
+          },
+          set actionMeta(actionMeta) {
+            log(this.idCount, " Setting actionMeta: ", actionMeta.key());
+            this._actionMeta = actionMeta;
+            this._actionMeta.once('value', this.onChange.bind(this));
+          },
+          get actionMeta() {
+            return this._actionMeta;
+          },
+          setActionlet: function(actionletId) {
+            log('Setting actionlet id to: ', actionletId);
+            this.action.actionlet = actionletId;
+            this.actionlet = actionletsMap.get(this.action.actionlet);
+            this.updateAction();
+          },
+          updateAction: function() {
+            log('Updating RuleAction: ', this.action);
+            this.actionMeta.set(this.action);
+          },
+          removeRuleAction: function() {
+            this.actionMeta.remove();
+          }
         }, {});
       }());
       Object.defineProperty(RuleActionComponent, "annotations", {get: function() {
           return [new Component({
             selector: 'rule-action',
-            properties: {
-              "actionSnap": "action-snap",
-              "ruleAction": "rule-action",
-              "index": "index"
-            }
+            properties: {"actionMeta": "action-meta"}
           }), new View({
             template: ruleActionTemplate,
             directives: [If, For]
           })];
-        }});
-      Object.defineProperty(Object.getOwnPropertyDescriptor(RuleActionComponent.prototype, "actionSnap").set, "parameters", {get: function() {
-          return [[$traceurRuntime.type.any]];
         }});
       RuleComponent = (function() {
         function RuleComponent() {
@@ -36080,53 +36139,73 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
           this.collapsed = true;
           this.fireOnDropDownExpanded = false;
           this.ruleGroups = [];
+          this.ruleActions = [];
         }
         return ($traceurRuntime.createClass)(RuleComponent, {
           get rule() {
-            return assert.returnType((this.$__14), $traceurRuntime.type.any);
+            return assert.returnType((this.$__17), $traceurRuntime.type.any);
           },
           set rule(value) {
             assert.argumentTypes(value, $traceurRuntime.type.any);
-            this.$__14 = value;
+            this.$__17 = value;
           },
           get _ruleSnap() {
-            return assert.returnType((this.$__15), $traceurRuntime.type.any);
+            return assert.returnType((this.$__18), $traceurRuntime.type.any);
           },
           set _ruleSnap(value) {
             assert.argumentTypes(value, $traceurRuntime.type.any);
-            this.$__15 = value;
+            this.$__18 = value;
           },
           get collapsed() {
-            return assert.returnType((this.$__16), $traceurRuntime.type.boolean);
+            return assert.returnType((this.$__19), $traceurRuntime.type.boolean);
           },
           set collapsed(value) {
             assert.argumentTypes(value, $traceurRuntime.type.boolean);
-            this.$__16 = value;
+            this.$__19 = value;
           },
           get fireOnDropDownExpanded() {
-            return assert.returnType((this.$__17), $traceurRuntime.type.boolean);
+            return assert.returnType((this.$__20), $traceurRuntime.type.boolean);
           },
           set fireOnDropDownExpanded(value) {
             assert.argumentTypes(value, $traceurRuntime.type.boolean);
-            this.$__17 = value;
+            this.$__20 = value;
           },
           get ruleGroups() {
-            return assert.returnType((this.$__18), Array);
+            return assert.returnType((this.$__21), Array);
           },
           set ruleGroups(value) {
             assert.argumentTypes(value, Array);
-            this.$__18 = value;
+            this.$__21 = value;
+          },
+          get ruleActions() {
+            return assert.returnType((this.$__22), Array);
+          },
+          set ruleActions(value) {
+            assert.argumentTypes(value, Array);
+            this.$__22 = value;
           },
           set ruleSnap(ruleSnap) {
-            var $__22 = this;
+            var $__26 = this;
             assert.argumentTypes(ruleSnap, $traceurRuntime.type.any);
             log('Setting Rule snapshot');
             this._ruleSnap = ruleSnap;
             this.rule = ruleSnap.val();
             this.ruleGroups = [];
             this.ruleSnap.child('conditionGroups').forEach((function(childSnap) {
-              $__22.ruleGroups.push(childSnap);
+              $__26.ruleGroups.push(childSnap);
             }));
+            this.ruleActions = this.getRuleActions();
+          },
+          getRuleActions: function() {
+            var actionMetas = [];
+            var actionsSnap = this.ruleSnap.child('ruleActions');
+            if (actionsSnap.exists()) {
+              actionsSnap.forEach((function(childSnap) {
+                var key = childSnap.key();
+                actionMetas.push(new EntityMeta('/api/v1/sites/48190c8c-42c4-46af-8d1a-0cd5db894797/ruleengine/ruleActions/' + key));
+              }));
+            }
+            return actionMetas;
           },
           get ruleSnap() {
             return assert.returnType((this._ruleSnap), $traceurRuntime.type.any);
@@ -36143,26 +36222,34 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             this.updateRule();
           },
           addGroup: function() {
-            var $__22 = this;
+            var $__26 = this;
             var group = {
               priority: 10,
               operator: 'OR'
             };
             this.ruleSnap.ref().child('conditiongroups').push(group).then((function(snapshot) {
               var group = snapshot['val']();
-              $__22.rule.conditionGroups[snapshot.key()] = group;
+              $__26.rule.conditionGroups[snapshot.key()] = group;
               group.conditions = group.conditions || {};
-              $__22.updateRule();
+              $__26.updateRule();
             })).catch((function(e) {
               log(e);
             }));
           },
           addRuleAction: function() {
+            var $__26 = this;
             var action = {
               name: "CoreWeb created this action: " + new Date().toISOString(),
               priority: 10,
-              actionlet: 'Set user variable'
+              owningRule: this.ruleSnap.key(),
+              actionlet: 'CountRequestsActionlet'
             };
+            var actionRoot = assert.type(new EntityMeta('/api/v1/sites/48190c8c-42c4-46af-8d1a-0cd5db894797/ruleengine/ruleActions'), EntityMeta);
+            actionRoot.push(action).then((function(snapshot) {
+              $__26.rule.actions = $__26.rule.ruleActions || {};
+              $__26.rule.actions[snapshot.key()] = true;
+              $__26.updateRule();
+            }));
           },
           removeRule: function() {
             this.ruleSnap.ref().remove().then((function(x) {
@@ -36175,6 +36262,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
           updateRule: function() {
             log('Updating Rule');
             this.ruleSnap.ref().set(this.rule);
+            this.ruleActions = this.getRuleActions();
           }
         }, {});
       }());
@@ -36185,7 +36273,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             injectables: [FormBuilder]
           }), new View({
             template: ruleTemplate,
-            directives: [ConditionGroupComponent, If, For]
+            directives: [RuleActionComponent, ConditionGroupComponent, If, For]
           })];
         }});
       Object.defineProperty(Object.getOwnPropertyDescriptor(RuleComponent.prototype, "ruleSnap").set, "parameters", {get: function() {
@@ -36208,48 +36296,48 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
         }
         return ($traceurRuntime.createClass)(RuleEngine, {
           get rules() {
-            return assert.returnType((this.$__19), Array);
+            return assert.returnType((this.$__23), Array);
           },
           set rules(value) {
             assert.argumentTypes(value, Array);
-            this.$__19 = value;
+            this.$__23 = value;
           },
           get baseUrl() {
-            return assert.returnType((this.$__20), $traceurRuntime.type.string);
+            return assert.returnType((this.$__24), $traceurRuntime.type.string);
           },
           set baseUrl(value) {
             assert.argumentTypes(value, $traceurRuntime.type.string);
-            this.$__20 = value;
+            this.$__24 = value;
           },
           get rulesRef() {
-            return assert.returnType((this.$__21), EntityMeta);
+            return assert.returnType((this.$__25), EntityMeta);
           },
           set rulesRef(value) {
             assert.argumentTypes(value, EntityMeta);
-            this.$__21 = value;
+            this.$__25 = value;
           },
           updateBaseUrl: function(value) {
-            var $__22 = this;
+            var $__26 = this;
             var oldUrl = ServerManager.baseUrl;
             ServerManager.baseUrl = value;
             this.baseUrl = value;
             this.testBaseUrl(value).catch(((function(e) {
               alert("Error using provided Base Url. Check the development console.");
               log("Error using provided Base Url: ", e);
-              $__22.baseUrl = oldUrl;
+              $__26.baseUrl = oldUrl;
               ServerManager.baseUrl = oldUrl;
               throw e;
             })));
           },
           onChange: function() {
             var event = arguments[0] !== (void 0) ? arguments[0] : null;
-            var $__22 = this;
+            var $__26 = this;
             log("RuleEngine change event: ", event);
             this.rulesRef.once('value', (function(rulesSnap) {
-              $__22.rules = [];
+              $__26.rules = [];
               if (rulesSnap && rulesSnap.forEach) {
                 rulesSnap.forEach((function(ruleSnap) {
-                  $__22.rules.push(ruleSnap);
+                  $__26.rules.push(ruleSnap);
                 }));
               } else {
                 throw rulesSnap;
@@ -36257,7 +36345,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             }));
           },
           addRule: function() {
-            var $__22 = this;
+            var $__26 = this;
             log("Adding Rule");
             var testRule = new Rule();
             testRule.name = "CoreWeb created this rule. " + new Date().toISOString();
@@ -36268,7 +36356,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
             testRule.conditionGroups = {};
             testRule.actions = {};
             this.rulesRef.push(testRule).then((function(ruleRef) {
-              return $__22.onChange();
+              return $__26.onChange();
             }));
           },
           testBaseUrl: function(baseUrl) {
@@ -36287,6 +36375,7 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
       conditionletsAry = [];
       conditionletsMap = new Map();
       actionletsAry = [];
+      actionletsMap = new Map();
       initConditionlets = function() {
         var conditionletsRef = assert.type(new EntityMeta('/api/v1/system/conditionlets'), EntityMeta);
         conditionletsPromise = new Promise((function(resolve, reject) {
@@ -36297,6 +36386,20 @@ System.register("src/rule-engine-view/app/rule-engine.ts", ["rtts_assert/rtts_as
               return conditionlets[key];
             })));
             Array.prototype.push.apply(conditionletsAry, results);
+            resolve(snap);
+          }));
+        }));
+      };
+      initActionlets = function() {
+        var actionletsRef = assert.type(new EntityMeta('/api/v1/system/ruleengine/actionlets'), EntityMeta);
+        actionletsPromise = new Promise((function(resolve, reject) {
+          actionletsRef.once('value').then((function(snap) {
+            var actionlets = snap['val']();
+            var results = (Object.keys(actionlets).map((function(key) {
+              actionletsMap.set(key, actionlets[key]);
+              return actionlets[key];
+            })));
+            Array.prototype.push.apply(actionletsAry, results);
             resolve(snap);
           }));
         }));
