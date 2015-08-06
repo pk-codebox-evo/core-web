@@ -27054,15 +27054,6 @@ System.registerDynamic("rule-engine-view/app/templates/rule-engine.tpl.html!gith
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/templates/rule-condition-group-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = "<div class=\"panel panel-default clause-group\">\n  <div class=\"panel-heading\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button *ng-if=\"groupIndex !== 0\" class=\"btn btn-default\" (click)=\"toggleGroupOperator()\">\n          {{group.operator}}\n        </button>\n      </div>\n      <div class=\"col-xs-11\">\n        <div class=\"operations clause-group-operations\">\n          <button type=\"button\" class=\"btn btn-default btn-md\" (click)=\"groupCollapsed = !groupCollapsed\">\n            <span class=\"glyphicon glyphicon-resize-vertical\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md\" aria-label=\"Add Condition\" (click)=\"addCondition()\">\n            <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\" (click)=\"addCondition()\"></span>\n          </button>\n        </div>\n\n        <!--Remove group will happen when there is no clauses-->\n        <!--<button class=\"btn btn-default\" aria-label=\"Delete Group\" (click)=\"removeGroup(rule, group)\">-->\n          <!--<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>-->\n        <!--</button>-->\n      </div>\n    </div>\n  </div>\n  <div class=\"panel-body collapse\" [class.in]=\"!groupCollapsed\">\n    <rule-condition *ng-for=\"var meta of conditions; var i=index\" [condition-meta]=\"meta\" [index]=\"i\"> </rule-condition>\n  </div>\n</div>\n";
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("rule-engine-view/app/templates/rule-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
@@ -27072,20 +27063,29 @@ System.registerDynamic("rule-engine-view/app/templates/rule-component.tpl.html!g
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/templates/rule-condition-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = "<div class=\"panel panel-default clause\">\n  <div class=\"panel-body\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button *ng-if=\"index !== 0\" type=\"button\"class=\"btn btn-default\" (click)=\"toggleOperator()\">\n          {{condition.operator}}\n        </button>\n      </div>\n      <div class=\"col-sm-11\">\n        <div class=\"row\">\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.conditionlet\" (change)=\"setConditionlet($event.target.value)\">\n              <option value=\"{{conditionlet.id}}\"  *ng-for=\"var conditionlet of conditionlets; var i=index\">{{conditionlet.id}} - {{conditionlet.name}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <conditionlet class=\"row col-sm-7\" [condition]=\"condition\" [conditionlet]=\"conditionlet\"\n                        [value]=\"conditionValue\"\n                        (value-change)=\"setComparisonValue($event.isNow)\"\n                        (comparison-change)=\"setComparison($event.isNow)\">\n            <users-visited-url-conditionlet *ng-if=\"conditionlet.id == 'UsersVisitedUrlConditionlet'\"></users-visited-url-conditionlet>\n            <users-ip-address-conditionlet *ng-if=\"conditionlet.id == 'UsersIpAddressConditionlet'\"></users-ip-address-conditionlet>\n            <users-city-conditionlet *ng-if=\"conditionlet.id == 'UsersCityConditionlet'\"></users-city-conditionlet>\n            <users-time-conditionlet *ng-if=\"conditionlet.id == 'UsersTimeConditionlet'\"></users-time-conditionlet>\n            <users-landing-page-url-conditionlet *ng-if=\"conditionlet.id == 'UsersLandingPageUrlConditionlet'\"></users-landing-page-url-conditionlet>\n            <users-browser-header-conditionlet *ng-if=\"conditionlet.id == 'UsersBrowserHeaderConditionlet'\"></users-browser-header-conditionlet>\n            <users-platform-conditionlet *ng-if=\"conditionlet.id == 'UsersPlatformConditionlet'\"></users-platform-conditionlet>\n            <users-language-conditionlet *ng-if=\"conditionlet.id == 'UsersLanguageConditionlet'\"></users-language-conditionlet>\n            <users-page-visits-conditionlet *ng-if=\"conditionlet.id == 'UsersPageVisitsConditionlet'\"></users-page-visits-conditionlet>\n            <users-country-conditionlet *ng-if=\"conditionlet.id == 'UsersCountryConditionlet'\"></users-country-conditionlet>\n            <mock-true-conditionlet *ng-if=\"conditionlet.id == 'MockTrueConditionlet'\"></mock-true-conditionlet>\n            <users-url-parameter-conditionlet *ng-if=\"conditionlet.id == 'UsersUrlParameterConditionlet'\"></users-url-parameter-conditionlet>\n            <users-referring-url-conditionlet *ng-if=\"conditionlet.id == 'UsersReferringUrlConditionlet'\"></users-referring-url-conditionlet>\n            <users-current-url-conditionlet *ng-if=\"conditionlet.id == 'UsersCurrentUrlConditionlet'\"></users-current-url-conditionlet>\n            <users-host-conditionlet *ng-if=\"conditionlet.id == 'UsersHostConditionlet'\"></users-host-conditionlet>\n            <users-state-conditionlet *ng-if=\"conditionlet.id == 'UsersStateConditionlet'\"></users-state-conditionlet>\n            <users-site-visits-conditionlet *ng-if=\"conditionlet.id == 'UsersSiteVisitsConditionlet'\"></users-site-visits-conditionlet>\n            <users-date-time-conditionlet *ng-if=\"conditionlet.id == 'UsersDateTimeConditionlet'\"></users-date-time-conditionlet>\n            <users-operating-system-conditionlet *ng-if=\"conditionlet.id == 'UsersOperatingSystemConditionlet'\"></users-operating-system-conditionlet>\n            <users-log-in-conditionlet *ng-if=\"conditionlet.id == 'UsersLogInConditionlet'\"></users-log-in-conditionlet>\n            <users-browser-conditionlet *ng-if=\"conditionlet.id == 'UsersBrowserConditionlet'\"></users-browser-conditionlet>\n          </conditionlet>\n\n\n\n          <!--\n                 <single-value-input>\n            <bob></bob>\n          </single-value-input>\n          <!--<users-country class=\"conditionlet users-country\" [value]=\"conditionValue\" (change)=\"setComparisonValue($event)\"></users-country>-->\n          <div class=\"col-sm-1\">\n            <div class=\"operations clause-operations\">\n              <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Clause\" (click)=\"removeCondition()\">\n                <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>";
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("rule-engine-view/app/templates/rule-action-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = "<li class=\"list-group-item action-item\">\n  <div class=\"row\">\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control\" placeholder=\"Action Description\" [value]=\"action.name\" />\n    </div>\n    <div class=\"col-sm-1\">\n    </div>\n    <div class=\"col-sm-3\">\n      <select class=\"form-control clause-selector\" [value]=\"actionlet.id\" (change)=\"setActionlet($event.target.value)\">\n        <option value=\"{{actionlet.id}}\" *ng-for=\"var actionlet of actionlets\">{{actionlet.name}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <!--<input type=\"text\" class=\"form-control\" placeholder=\"Action Description\" [value]=\"action.name\" />-->\n    </div>\n    <div class=\"col-sm-1\">\n      <div class=\"operations actions-operations\">\n        <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Remove Action\" (click)=\"removeRuleAction()\">\n          <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n        </button>\n      </div>\n    </div>\n  </div>\n</li>\n\n";
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine-view/app/templates/rule-condition-group-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<div class=\"panel panel-default clause-group\">\n  <div class=\"panel-heading\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button *ng-if=\"groupIndex !== 0\" class=\"btn btn-default\" (click)=\"toggleGroupOperator()\">\n          {{group.operator}}\n        </button>\n      </div>\n      <div class=\"col-xs-11\">\n        <div class=\"operations clause-group-operations\">\n          <button type=\"button\" class=\"btn btn-default btn-md\" (click)=\"groupCollapsed = !groupCollapsed\">\n            <span class=\"glyphicon glyphicon-resize-vertical\" aria-hidden=\"true\"></span>\n          </button>\n          <button type=\"button\" class=\"btn btn-default btn-md\" aria-label=\"Add Condition\" (click)=\"addCondition()\">\n            <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\" (click)=\"addCondition()\"></span>\n          </button>\n        </div>\n\n        <!--Remove group will happen when there is no clauses-->\n        <!--<button class=\"btn btn-default\" aria-label=\"Delete Group\" (click)=\"removeGroup(rule, group)\">-->\n          <!--<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>-->\n        <!--</button>-->\n      </div>\n    </div>\n  </div>\n  <div class=\"panel-body collapse\" [class.in]=\"!groupCollapsed\">\n    <rule-condition *ng-for=\"var meta of conditions; var i=index\" [condition-meta]=\"meta\" [index]=\"i\"> </rule-condition>\n  </div>\n</div>\n";
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine-view/app/templates/rule-condition-component.tpl.html!github:systemjs/plugin-text@0.0.2.js", [], true, function(require, exports, module) {
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = "<div class=\"panel panel-default clause\">\n  <div class=\"panel-body\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button *ng-if=\"index !== 0\" type=\"button\"class=\"btn btn-default\" (click)=\"toggleOperator()\">\n          {{condition.operator}}\n        </button>\n      </div>\n      <div class=\"col-sm-11\">\n        <div class=\"row\">\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"condition.conditionlet\" (change)=\"setConditionlet($event.target.value)\">\n              <option value=\"{{conditionlet.id}}\"  *ng-for=\"var conditionlet of conditionlets; var i=index\">{{conditionlet.id}} - {{conditionlet.name}}</option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <conditionlet class=\"row col-sm-7\" [condition]=\"condition\" [conditionlet]=\"conditionlet\"\n                        [value]=\"conditionValue\"\n                        (value-change)=\"setComparisonValue($event.isNow)\"\n                        (comparison-change)=\"setComparison($event.isNow)\">\n            <users-visited-url-conditionlet *ng-if=\"conditionlet.id == 'UsersVisitedUrlConditionlet'\"></users-visited-url-conditionlet>\n            <users-ip-address-conditionlet *ng-if=\"conditionlet.id == 'UsersIpAddressConditionlet'\"></users-ip-address-conditionlet>\n            <users-city-conditionlet *ng-if=\"conditionlet.id == 'UsersCityConditionlet'\"></users-city-conditionlet>\n            <users-time-conditionlet *ng-if=\"conditionlet.id == 'UsersTimeConditionlet'\"></users-time-conditionlet>\n            <users-landing-page-url-conditionlet *ng-if=\"conditionlet.id == 'UsersLandingPageUrlConditionlet'\"></users-landing-page-url-conditionlet>\n            <users-browser-header-conditionlet *ng-if=\"conditionlet.id == 'UsersBrowserHeaderConditionlet'\"></users-browser-header-conditionlet>\n            <users-platform-conditionlet *ng-if=\"conditionlet.id == 'UsersPlatformConditionlet'\"></users-platform-conditionlet>\n            <users-language-conditionlet *ng-if=\"conditionlet.id == 'UsersLanguageConditionlet'\"></users-language-conditionlet>\n            <users-page-visits-conditionlet *ng-if=\"conditionlet.id == 'UsersPageVisitsConditionlet'\"></users-page-visits-conditionlet>\n            <users-country-conditionlet *ng-if=\"conditionlet.id == 'UsersCountryConditionlet'\"></users-country-conditionlet>\n            <mock-true-conditionlet *ng-if=\"conditionlet.id == 'MockTrueConditionlet'\"></mock-true-conditionlet>\n            <users-url-parameter-conditionlet *ng-if=\"conditionlet.id == 'UsersUrlParameterConditionlet'\"></users-url-parameter-conditionlet>\n            <users-referring-url-conditionlet *ng-if=\"conditionlet.id == 'UsersReferringUrlConditionlet'\"></users-referring-url-conditionlet>\n            <users-current-url-conditionlet *ng-if=\"conditionlet.id == 'UsersCurrentUrlConditionlet'\"></users-current-url-conditionlet>\n            <users-host-conditionlet *ng-if=\"conditionlet.id == 'UsersHostConditionlet'\"></users-host-conditionlet>\n            <users-state-conditionlet *ng-if=\"conditionlet.id == 'UsersStateConditionlet'\"></users-state-conditionlet>\n            <users-site-visits-conditionlet *ng-if=\"conditionlet.id == 'UsersSiteVisitsConditionlet'\"></users-site-visits-conditionlet>\n            <users-date-time-conditionlet *ng-if=\"conditionlet.id == 'UsersDateTimeConditionlet'\"></users-date-time-conditionlet>\n            <users-operating-system-conditionlet *ng-if=\"conditionlet.id == 'UsersOperatingSystemConditionlet'\"></users-operating-system-conditionlet>\n            <users-log-in-conditionlet *ng-if=\"conditionlet.id == 'UsersLogInConditionlet'\"></users-log-in-conditionlet>\n            <users-browser-conditionlet *ng-if=\"conditionlet.id == 'UsersBrowserConditionlet'\"></users-browser-conditionlet>\n          </conditionlet>\n\n\n\n          <!--\n                 <single-value-input>\n            <bob></bob>\n          </single-value-input>\n          <!--<users-country class=\"conditionlet users-country\" [value]=\"conditionValue\" (change)=\"setComparisonValue($event)\"></users-country>-->\n          <div class=\"col-sm-1\">\n            <div class=\"operations clause-operations\">\n              <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Clause\" (click)=\"removeCondition()\">\n                <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>";
   global.define = __define;
   return module.exports;
 });
@@ -28475,7 +28475,7 @@ System.registerDynamic("rule-engine-view/app/conditionlets/users-browser-conditi
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/rule-condition-group-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-condition-component.js", "rule-engine-view/app/templatesHack.js"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine-view/app/rule-condition-group-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-condition-component.js", "rule-engine-view/app/templates/index.js"], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
@@ -28505,7 +28505,7 @@ System.registerDynamic("rule-engine-view/app/rule-condition-group-component.js",
     };
   var angular2_1 = require("npm:angular2@2.0.0-alpha.31/angular2.js");
   var rule_condition_component_1 = require("rule-engine-view/app/rule-condition-component.js");
-  var templatesHack_1 = require("rule-engine-view/app/templatesHack.js");
+  var index_1 = require("rule-engine-view/app/templates/index.js");
   var ConditionGroupComponent = (function() {
     function ConditionGroupComponent() {
       var _this = this;
@@ -28591,7 +28591,7 @@ System.registerDynamic("rule-engine-view/app/rule-condition-group-component.js",
       selector: 'condition-group',
       properties: ["rule", "groupSnap", "groupIndex"]
     }), angular2_1.View({
-      template: templatesHack_1.conditionGroupTemplate,
+      template: index_1.conditionGroupTemplate,
       directives: [rule_condition_component_1.ConditionComponent, angular2_1.NgIf, angular2_1.NgFor]
     }), __metadata('design:paramtypes', [])], ConditionGroupComponent);
     return ConditionGroupComponent;
@@ -33207,7 +33207,7 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.31/src/http/backends/xhr_backen
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/conditionlets/conditionlet-base.js", "rule-engine-view/app/templatesHack.js", "rule-engine-view/app/conditionlets/users-visited-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-ip-address-conditionlet.js", "rule-engine-view/app/conditionlets/users-city-conditionlet.js", "rule-engine-view/app/conditionlets/users-time-conditionlet.js", "rule-engine-view/app/conditionlets/users-landing-page-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-browser-header-conditionlet.js", "rule-engine-view/app/conditionlets/users-platform-conditionlet.js", "rule-engine-view/app/conditionlets/users-language-conditionlet.js", "rule-engine-view/app/conditionlets/users-page-visits-conditionlet.js", "rule-engine-view/app/conditionlets/users-country-conditionlet.js", "rule-engine-view/app/conditionlets/mock-true-conditionlet.js", "rule-engine-view/app/conditionlets/users-url-parameter-conditionlet.js", "rule-engine-view/app/conditionlets/users-referring-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-current-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-host-conditionlet.js", "rule-engine-view/app/conditionlets/users-state-conditionlet.js", "rule-engine-view/app/conditionlets/users-site-visits-conditionlet.js", "rule-engine-view/app/conditionlets/users-date-time-conditionlet.js", "rule-engine-view/app/conditionlets/users-operating-system-conditionlet.js", "rule-engine-view/app/conditionlets/users-log-in-conditionlet.js", "rule-engine-view/app/conditionlets/users-browser-conditionlet.js"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/conditionlets/conditionlet-base.js", "rule-engine-view/app/templates/index.js", "rule-engine-view/app/conditionlets/users-visited-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-ip-address-conditionlet.js", "rule-engine-view/app/conditionlets/users-city-conditionlet.js", "rule-engine-view/app/conditionlets/users-time-conditionlet.js", "rule-engine-view/app/conditionlets/users-landing-page-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-browser-header-conditionlet.js", "rule-engine-view/app/conditionlets/users-platform-conditionlet.js", "rule-engine-view/app/conditionlets/users-language-conditionlet.js", "rule-engine-view/app/conditionlets/users-page-visits-conditionlet.js", "rule-engine-view/app/conditionlets/users-country-conditionlet.js", "rule-engine-view/app/conditionlets/mock-true-conditionlet.js", "rule-engine-view/app/conditionlets/users-url-parameter-conditionlet.js", "rule-engine-view/app/conditionlets/users-referring-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-current-url-conditionlet.js", "rule-engine-view/app/conditionlets/users-host-conditionlet.js", "rule-engine-view/app/conditionlets/users-state-conditionlet.js", "rule-engine-view/app/conditionlets/users-site-visits-conditionlet.js", "rule-engine-view/app/conditionlets/users-date-time-conditionlet.js", "rule-engine-view/app/conditionlets/users-operating-system-conditionlet.js", "rule-engine-view/app/conditionlets/users-log-in-conditionlet.js", "rule-engine-view/app/conditionlets/users-browser-conditionlet.js"], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
@@ -33237,7 +33237,7 @@ System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm
     };
   var angular2_1 = require("npm:angular2@2.0.0-alpha.31/angular2.js");
   var conditionlet_base_1 = require("rule-engine-view/app/conditionlets/conditionlet-base.js");
-  var templatesHack_1 = require("rule-engine-view/app/templatesHack.js");
+  var index_1 = require("rule-engine-view/app/templates/index.js");
   var users_visited_url_conditionlet_1 = require("rule-engine-view/app/conditionlets/users-visited-url-conditionlet.js");
   var users_ip_address_conditionlet_1 = require("rule-engine-view/app/conditionlets/users-ip-address-conditionlet.js");
   var users_city_conditionlet_1 = require("rule-engine-view/app/conditionlets/users-city-conditionlet.js");
@@ -33404,7 +33404,7 @@ System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm
       selector: 'rule-condition',
       properties: ["conditionMeta", "index"]
     }), angular2_1.View({
-      template: templatesHack_1.conditionTemplate,
+      template: index_1.conditionTemplate,
       directives: [angular2_1.NgIf, angular2_1.NgFor, conditionlet_base_1.ConditionletDirective, users_country_conditionlet_1.UsersCountryConditionlet, users_page_visits_conditionlet_1.UsersPageVisitsConditionlet, users_visited_url_conditionlet_1.UsersVisitedUrlConditionlet, users_ip_address_conditionlet_1.UsersIpAddressConditionlet, users_city_conditionlet_1.UsersCityConditionlet, users_time_conditionlet_1.UsersTimeConditionlet, users_landing_page_url_conditionlet_1.UsersLandingPageUrlConditionlet, users_browser_header_conditionlet_1.UsersBrowserHeaderConditionlet, users_platform_conditionlet_1.UsersPlatformConditionlet, users_language_conditionlet_1.UsersLanguageConditionlet, users_page_visits_conditionlet_1.UsersPageVisitsConditionlet, users_country_conditionlet_1.UsersCountryConditionlet, mock_true_conditionlet_1.MockTrueConditionlet, users_url_parameter_conditionlet_1.UsersUrlParameterConditionlet, users_referring_url_conditionlet_1.UsersReferringUrlConditionlet, users_current_url_conditionlet_1.UsersCurrentUrlConditionlet, users_host_conditionlet_1.UsersHostConditionlet, users_state_conditionlet_1.UsersStateConditionlet, users_site_visits_conditionlet_1.UsersSiteVisitsConditionlet, users_date_time_conditionlet_1.UsersDateTimeConditionlet, users_operating_system_conditionlet_1.UsersOperatingSystemConditionlet, users_log_in_conditionlet_1.UsersLogInConditionlet, users_browser_conditionlet_1.UsersBrowserConditionlet]
     }), __metadata('design:paramtypes', [])], ConditionComponent);
     return ConditionComponent;
@@ -33414,7 +33414,7 @@ System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/rule-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-action-component.js", "rule-engine-view/app/rule-condition-group-component.js", "rule-engine-view/app/templatesHack.js"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine-view/app/rule-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-action-component.js", "rule-engine-view/app/rule-condition-group-component.js", "rule-engine-view/app/templates/index.js"], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
@@ -33445,7 +33445,7 @@ System.registerDynamic("rule-engine-view/app/rule-component.js", ["npm:angular2@
   var angular2_1 = require("npm:angular2@2.0.0-alpha.31/angular2.js");
   var rule_action_component_1 = require("rule-engine-view/app/rule-action-component.js");
   var rule_condition_group_component_1 = require("rule-engine-view/app/rule-condition-group-component.js");
-  var templatesHack_1 = require("rule-engine-view/app/templatesHack.js");
+  var index_1 = require("rule-engine-view/app/templates/index.js");
   var RuleComponent = (function() {
     function RuleComponent() {
       console.log('Creating RuleComponent');
@@ -33572,7 +33572,7 @@ System.registerDynamic("rule-engine-view/app/rule-component.js", ["npm:angular2@
       selector: 'rule',
       properties: ["ruleSnap"]
     }), angular2_1.View({
-      template: templatesHack_1.ruleTemplate,
+      template: index_1.ruleTemplate,
       directives: [rule_action_component_1.RuleActionComponent, rule_condition_group_component_1.ConditionGroupComponent, angular2_1.NgIf, angular2_1.NgFor]
     }), __metadata('design:paramtypes', [])], RuleComponent);
     return RuleComponent;
@@ -36970,7 +36970,7 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.31/src/http/http.js", ["npm:ang
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/rule-action-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/templatesHack.js"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine-view/app/rule-action-component.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/templates/index.js"], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
@@ -36999,7 +36999,7 @@ System.registerDynamic("rule-engine-view/app/rule-action-component.js", ["npm:an
         return Reflect.metadata(k, v);
     };
   var angular2_1 = require("npm:angular2@2.0.0-alpha.31/angular2.js");
-  var templatesHack_1 = require("rule-engine-view/app/templatesHack.js");
+  var index_1 = require("rule-engine-view/app/templates/index.js");
   var actionletsAry = [];
   var actionletsMap = new Map();
   var actionletsPromise;
@@ -37064,7 +37064,7 @@ System.registerDynamic("rule-engine-view/app/rule-action-component.js", ["npm:an
       selector: 'rule-action',
       properties: ["actionMeta"]
     }), angular2_1.View({
-      template: templatesHack_1.ruleActionTemplate,
+      template: index_1.ruleActionTemplate,
       directives: [angular2_1.NgIf, angular2_1.NgFor]
     }), __metadata('design:paramtypes', [])], RuleActionComponent);
     return RuleActionComponent;
@@ -41550,7 +41550,7 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.31/angular2.js", ["npm:angular2
   return module.exports;
 });
 
-System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-action-component.js", "rule-engine-view/app/rule-condition-component.js", "rule-engine-view/app/rule-component.js", "rule-engine-view/app/templatesHack.js"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0.0-alpha.31/angular2.js", "rule-engine-view/app/rule-action-component.js", "rule-engine-view/app/rule-condition-component.js", "rule-engine-view/app/rule-component.js", "rule-engine-view/app/templates/index.js"], true, function(require, exports, module) {
   var global = this,
       __define = global.define;
   global.define = undefined;
@@ -41582,11 +41582,10 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
   var rule_action_component_1 = require("rule-engine-view/app/rule-action-component.js");
   var rule_condition_component_1 = require("rule-engine-view/app/rule-condition-component.js");
   var rule_component_1 = require("rule-engine-view/app/rule-component.js");
-  var templatesHack_1 = require("rule-engine-view/app/templatesHack.js");
+  var index_1 = require("rule-engine-view/app/templates/index.js");
   var RuleEngineComponent = (function() {
     function RuleEngineComponent() {
       var _this = this;
-      console.log('Creating RuleEngine component.');
       this.rules = [];
       this.baseUrl = ConnectionManager.baseUrl;
       this.rulesRef = new EntityMeta('/api/v1/sites/48190c8c-42c4-46af-8d1a-0cd5db894797/rules');
@@ -41604,17 +41603,16 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
       });
     }
     RuleEngineComponent.prototype.updateBaseUrl = function(value) {
-      var _this = this;
       var oldUrl = ConnectionManager.baseUrl;
-      ConnectionManager.baseUrl = value;
-      this.baseUrl = value;
-      this.testBaseUrl(value).catch((function(e) {
+      try {
+        ConnectionManager.setBaseUrl(value);
+        window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + '?baseUrl=' + value;
+      } catch (e) {
         alert("Error using provided Base Url. Check the development console.");
         console.log("Error using provided Base Url: ", e);
-        _this.baseUrl = oldUrl;
+        this.baseUrl = oldUrl;
         ConnectionManager.baseUrl = oldUrl;
-        throw e;
-      }));
+      }
     };
     RuleEngineComponent.prototype.readSnapshots = function(rulesRef) {
       return new Promise(function(resolve, reject) {
@@ -41632,11 +41630,7 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
         });
       });
     };
-    RuleEngineComponent.prototype.onChange = function(a) {
-      console.log('onChange', arguments);
-    };
     RuleEngineComponent.prototype.addRule = function() {
-      console.log("Adding Rule, yo");
       var testRule = new RuleEngine.Rule();
       testRule.name = "CoreWeb created this rule. " + new Date().toISOString();
       testRule.enabled = true;
@@ -41650,17 +41644,13 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
         throw e;
       });
     };
-    RuleEngineComponent.prototype.testBaseUrl = function(baseUrl) {
-      return new Promise(function(resolve, reject) {});
-    };
     RuleEngineComponent = __decorate([angular2_1.Component({selector: 'rule-engine'}), angular2_1.View({
-      template: templatesHack_1.ruleEngineTemplate,
+      template: index_1.ruleEngineTemplate,
       directives: [rule_component_1.RuleComponent, angular2_1.NgFor, angular2_1.NgIf]
     }), __metadata('design:paramtypes', [])], RuleEngineComponent);
     return RuleEngineComponent;
   })();
   function main() {
-    console.log("Bootstrapping rules engine");
     ConnectionManager.persistenceHandler = RestDataStore;
     rule_condition_component_1.initConditionlets();
     rule_action_component_1.initActionlets();
@@ -41679,7 +41669,7 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
 System.register('entity-forge/ConnectionManager.js', [], function (_export) {
   'use strict';
 
-  var ConnectionManager;
+  var ConnectionManager, q, token, idx, end;
   return {
     setters: [],
     execute: function () {
@@ -41687,8 +41677,30 @@ System.register('entity-forge/ConnectionManager.js', [], function (_export) {
         baseUrl: 'http://localhost:8080/',
         username: 'admin@dotcms.com',
         password: 'admin',
-        persistenceHandler: {}
+        persistenceHandler: {},
+        locationQuery: window.location.search.substring(1),
+        setBaseUrl: function setBaseUrl(url) {
+          if (url && url.startsWith('http://' || url.startsWith('https://'))) {
+            this.baseUrl = url.endsWith('/') ? url : url + '/';
+          } else {
+            throw new Error('Invalid proxy server base url: \'' + url + '\'');
+          }
+        }
       };
+
+      if (ConnectionManager.locationQuery && ConnectionManager.locationQuery.length) {
+        q = ConnectionManager.locationQuery;
+        token = 'baseUrl=';
+        idx = q.indexOf(token);
+
+        if (idx >= 0) {
+          end = q.indexOf('&', idx);
+
+          end = end != -1 ? end : q.length;
+          ConnectionManager.setBaseUrl(q.substring(idx + token.length, end));
+          console.log('Proxy server Base URL set to ', ConnectionManager.baseUrl);
+        }
+      }
 
       _export('ConnectionManager', ConnectionManager);
     }
@@ -41807,38 +41819,38 @@ System.register('rule-engine-api/index.js', ['rule-engine-api/api/RuleEngineType
   };
 });
 
-System.register('rule-engine-view/app/templatesHack.js', ['rule-engine-view/app/templates/rule-engine.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-condition-group-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-condition-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-action-component.tpl.html!github:systemjs/plugin-text@0.0.2.js'], function (_export) {
+System.register('rule-engine-view/app/templates/index.js', ['rule-engine-view/app/templates/rule-engine.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-action-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-condition-group-component.tpl.html!github:systemjs/plugin-text@0.0.2.js', 'rule-engine-view/app/templates/rule-condition-component.tpl.html!github:systemjs/plugin-text@0.0.2.js'], function (_export) {
     'use strict';
 
-    var ruleEngineTemplate, conditionGroupTemplate, ruleTemplate, conditionTemplate, ruleActionTemplate, a, b, c, d, e;
+    var ruleEngineTemplate, ruleTemplate, ruleActionTemplate, conditionGroupTemplate, conditionTemplate, a, b, c, d, e;
     return {
         setters: [function (_ruleEngineViewAppTemplatesRuleEngineTplHtmlGithubSystemjsPluginText002Js) {
             ruleEngineTemplate = _ruleEngineViewAppTemplatesRuleEngineTplHtmlGithubSystemjsPluginText002Js['default'];
-        }, function (_ruleEngineViewAppTemplatesRuleConditionGroupComponentTplHtmlGithubSystemjsPluginText002Js) {
-            conditionGroupTemplate = _ruleEngineViewAppTemplatesRuleConditionGroupComponentTplHtmlGithubSystemjsPluginText002Js['default'];
         }, function (_ruleEngineViewAppTemplatesRuleComponentTplHtmlGithubSystemjsPluginText002Js) {
             ruleTemplate = _ruleEngineViewAppTemplatesRuleComponentTplHtmlGithubSystemjsPluginText002Js['default'];
-        }, function (_ruleEngineViewAppTemplatesRuleConditionComponentTplHtmlGithubSystemjsPluginText002Js) {
-            conditionTemplate = _ruleEngineViewAppTemplatesRuleConditionComponentTplHtmlGithubSystemjsPluginText002Js['default'];
         }, function (_ruleEngineViewAppTemplatesRuleActionComponentTplHtmlGithubSystemjsPluginText002Js) {
             ruleActionTemplate = _ruleEngineViewAppTemplatesRuleActionComponentTplHtmlGithubSystemjsPluginText002Js['default'];
+        }, function (_ruleEngineViewAppTemplatesRuleConditionGroupComponentTplHtmlGithubSystemjsPluginText002Js) {
+            conditionGroupTemplate = _ruleEngineViewAppTemplatesRuleConditionGroupComponentTplHtmlGithubSystemjsPluginText002Js['default'];
+        }, function (_ruleEngineViewAppTemplatesRuleConditionComponentTplHtmlGithubSystemjsPluginText002Js) {
+            conditionTemplate = _ruleEngineViewAppTemplatesRuleConditionComponentTplHtmlGithubSystemjsPluginText002Js['default'];
         }],
         execute: function () {
             a = ruleEngineTemplate;
-            b = conditionGroupTemplate;
-            c = ruleTemplate;
-            d = conditionTemplate;
-            e = ruleActionTemplate;
+            b = ruleTemplate;
+            c = ruleActionTemplate;
+            d = conditionGroupTemplate;
+            e = conditionTemplate;
 
             _export('ruleEngineTemplate', a);
 
-            _export('conditionGroupTemplate', b);
+            _export('ruleTemplate', b);
 
-            _export('ruleTemplate', c);
+            _export('ruleActionTemplate', c);
 
-            _export('conditionTemplate', d);
+            _export('conditionGroupTemplate', d);
 
-            _export('ruleActionTemplate', e);
+            _export('conditionTemplate', e);
         }
     };
 });
