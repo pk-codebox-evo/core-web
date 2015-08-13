@@ -32660,17 +32660,10 @@ System.registerDynamic("rule-engine-view/app/rule-condition-component.js", ["npm
     conditionletsPromise = new Promise(function(resolve, reject) {
       conditionletsRef.once('value', function(snap) {
         var conditionlets = snap['val']();
-        var str = [];
         var results = (Object.keys(conditionlets).map(function(key) {
           conditionletsMap.set(key, conditionlets[key]);
-          var dashKey = key.replace(/([A-Z])/g, function($1) {
-            return '-' + $1.toLowerCase();
-          });
-          dashKey = dashKey.substring(1);
-          str.push("import {" + key + "} from './conditionlets/" + dashKey + "'");
           return conditionlets[key];
         }));
-        console.log(str.join('\n'));
         Array.prototype.push.apply(conditionletsAry, results);
         resolve(snap);
       });
@@ -40999,7 +40992,7 @@ System.registerDynamic("rule-engine-view/app/rule-engine.js", ["npm:angular2@2.0
       var oldUrl = ConnectionManager.baseUrl;
       try {
         ConnectionManager.setBaseUrl(value);
-        window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + '?baseUrl=' + value;
+        window.location.assign(window.location.protocol + '//' + window.location.host + window.location.pathname + '?baseUrl=' + value);
       } catch (e) {
         alert("Error using provided Base Url. Check the development console.");
         console.log("Error using provided Base Url: ", e);
@@ -41073,13 +41066,19 @@ System.register('entity-forge/ConnectionManager.js', [], function (_export) {
         persistenceHandler: {},
         locationQuery: window.location.search.substring(1),
         setBaseUrl: function setBaseUrl(url) {
-          if (url && url.startsWith('http://' || url.startsWith('https://'))) {
-            this.baseUrl = url.endsWith('/') ? url : url + '/';
+          if (url === null) {
+            // set to same as current request
+            var loc = document.location;
+            ConnectionManager.baseUrl = loc.protocol + '//' + loc.host;
+          } else if (url && url.startsWith('http://' || url.startsWith('https://'))) {
+            ConnectionManager.baseUrl = url.endsWith('/') ? url : url + '/';
           } else {
             throw new Error('Invalid proxy server base url: \'' + url + '\'');
           }
         }
       };
+
+      ConnectionManager.setBaseUrl(null);
 
       if (ConnectionManager.locationQuery && ConnectionManager.locationQuery.length) {
         q = ConnectionManager.locationQuery;

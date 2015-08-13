@@ -41673,19 +41673,13 @@ System.register('entity-forge/ConnectionManager.js', [], function (_export) {
         persistenceHandler: {},
         locationQuery: window.location.search.substring(1),
         setBaseUrl: function setBaseUrl(url) {
-          if (url === null) {
-            // set to same as current request
-            var loc = document.location;
-            ConnectionManager.baseUrl = loc.protocol + '//' + loc.host;
-          } else if (url && url.startsWith('http://' || url.startsWith('https://'))) {
-            ConnectionManager.baseUrl = url.endsWith('/') ? url : url + '/';
+          if (url && url.startsWith('http://' || url.startsWith('https://'))) {
+            this.baseUrl = url.endsWith('/') ? url : url + '/';
           } else {
             throw new Error('Invalid proxy server base url: \'' + url + '\'');
           }
         }
       };
-
-      ConnectionManager.setBaseUrl(null);
 
       if (ConnectionManager.locationQuery && ConnectionManager.locationQuery.length) {
         q = ConnectionManager.locationQuery;
