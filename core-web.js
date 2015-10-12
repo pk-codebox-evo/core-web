@@ -18,22 +18,22 @@ define("github:es-shims/es6-shim@0.32.3", ["github:es-shims/es6-shim@0.32.3/es6-
 
 _removeDefine();
 })();
-System.registerDynamic("npm:zone.js@0.5.4", ["npm:zone.js@0.5.4/lib/zone"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = require("npm:zone.js@0.5.4/lib/zone");
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:reflect-metadata@0.1.0", ["npm:reflect-metadata@0.1.0/Reflect"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = require("npm:reflect-metadata@0.1.0/Reflect");
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:zone.js@0.5.4", ["npm:zone.js@0.5.4/lib/zone"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:zone.js@0.5.4/lib/zone");
   global.define = __define;
   return module.exports;
 });
@@ -47,6 +47,23 @@ System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/assign", ["npm:c
     "default": require("npm:core-js@1.1.3/library/fn/object/assign"),
     __esModule: true
   };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-core@5.8.23/lib/polyfill", ["npm:core-js@1.1.3/shim", "npm:babel-runtime@5.8.20/regenerator/runtime"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  "format cjs";
+  "use strict";
+  require("npm:core-js@1.1.3/shim");
+  require("npm:babel-runtime@5.8.20/regenerator/runtime");
+  if (global._babelPolyfill) {
+    throw new Error("only one instance of babel/polyfill is allowed");
+  }
+  global._babelPolyfill = true;
   global.define = __define;
   return module.exports;
 });
@@ -2928,19 +2945,127 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 
 _removeDefine();
 })();
-System.registerDynamic("npm:babel-core@5.8.23/lib/polyfill", ["npm:core-js@1.1.3/shim", "npm:babel-runtime@5.8.20/regenerator/runtime"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine/rule-engine", ["npm:angular2@2.0.0-alpha.36/angular2", "api/persistence/ApiRoot", "api/rule-engine/ActionTypes", "api/rule-engine/ConditionTypes", "api/auth/UserModel", "api/system/locale/I18NCountryProvider", "rule-engine/rule-component", "rule-engine/templates/index"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  "format cjs";
-  "use strict";
-  require("npm:core-js@1.1.3/shim");
-  require("npm:babel-runtime@5.8.20/regenerator/runtime");
-  if (global._babelPolyfill) {
-    throw new Error("only one instance of babel/polyfill is allowed");
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var ActionTypes_1 = require("api/rule-engine/ActionTypes");
+  var ConditionTypes_1 = require("api/rule-engine/ConditionTypes");
+  var UserModel_1 = require("api/auth/UserModel");
+  var I18NCountryProvider_1 = require("api/system/locale/I18NCountryProvider");
+  var rule_component_1 = require("rule-engine/rule-component");
+  var index_1 = require("rule-engine/templates/index");
+  var RuleEngineComponent = (function() {
+    function RuleEngineComponent(apiRoot) {
+      var _this = this;
+      this.rules = [];
+      this.baseUrl = ConnectionManager.baseUrl;
+      this.rulesRef = apiRoot.defaultSite.child('rules');
+      this.filterText = "";
+      this.readSnapshots(this.rulesRef).catch(function(e) {
+        return console.log(e);
+      });
+      this.rulesRef.on('child_added', function(snap) {
+        _this.rules = _this.rules.concat(snap);
+      });
+      this.rulesRef.on('child_removed', function(snap) {
+        _this.rules = _this.rules.filter(function(rule) {
+          return rule.key() !== snap.key();
+        });
+      });
+    }
+    RuleEngineComponent.prototype.updateBaseUrl = function(value) {
+      var oldUrl = ConnectionManager.baseUrl;
+      try {
+        ConnectionManager.setBaseUrl(value);
+        window.location.assign(window.location.protocol + '//' + window.location.host + window.location.pathname + '?baseUrl=' + value);
+      } catch (e) {
+        alert("Error using provided Base Url. Check the development console.");
+        console.log("Error using provided Base Url: ", e);
+        this.baseUrl = oldUrl;
+        ConnectionManager.baseUrl = oldUrl;
+      }
+    };
+    RuleEngineComponent.prototype.readSnapshots = function(rulesRef) {
+      return new Promise(function(resolve, reject) {
+        var snaps = [];
+        rulesRef.once('value', function(rulesSnap) {
+          if (rulesSnap && rulesSnap.forEach) {
+            rulesSnap.forEach(function(ruleSnap) {
+              console.log('Rule read: ', ruleSnap);
+              snaps.push(ruleSnap);
+            });
+          } else {
+            reject(rulesSnap);
+          }
+          resolve(snaps);
+        });
+      });
+    };
+    RuleEngineComponent.prototype.addRule = function() {
+      var testRule = {
+        name: "CoreWeb created this rule.",
+        enabled: true,
+        priority: 10,
+        fireOn: "EVERY_PAGE",
+        shortCircuit: false,
+        conditionGroups: {},
+        actions: {}
+      };
+      this.rulesRef.push(testRule).catch(function(e) {
+        console.log("Error pushing new rule: ", e);
+        throw e;
+      });
+    };
+    RuleEngineComponent = __decorate([angular2_1.Component({selector: 'rule-engine'}), angular2_1.View({
+      template: index_1.ruleEngineTemplate,
+      directives: [rule_component_1.RuleComponent, angular2_1.NgFor, angular2_1.NgIf]
+    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object])], RuleEngineComponent);
+    return RuleEngineComponent;
+    var _a;
+  })();
+  function main() {
+    ConnectionManager.persistenceHandler = RestDataStore;
+    var app = angular2_1.bootstrap(RuleEngineComponent, [ApiRoot_1.ApiRoot, ActionTypes_1.ActionTypesProvider, ConditionTypes_1.ConditionTypesProvider, UserModel_1.UserModel, I18NCountryProvider_1.I18NCountryProvider]);
+    app.then(function(appRef) {
+      console.log("Bootstrapped App: ", appRef);
+    }).catch(function(e) {
+      console.log("Error bootstrapping app: ", e);
+      throw e;
+    });
+    return app;
   }
-  global._babelPolyfill = true;
+  exports.main = main;
   global.define = __define;
   return module.exports;
 });
@@ -3509,131 +3634,6 @@ System.registerDynamic("npm:reflect-metadata@0.1.0/Reflect", ["@empty"], true, f
   return module.exports;
 });
 
-System.registerDynamic("rule-engine/rule-engine", ["npm:angular2@2.0.0-alpha.36/angular2", "api/persistence/ApiRoot", "api/rule-engine/ActionTypes", "api/rule-engine/ConditionTypes", "api/auth/UserModel", "api/system/locale/I18NCountryProvider", "rule-engine/rule-component", "rule-engine/templates/index"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var ApiRoot_1 = require("api/persistence/ApiRoot");
-  var ActionTypes_1 = require("api/rule-engine/ActionTypes");
-  var ConditionTypes_1 = require("api/rule-engine/ConditionTypes");
-  var UserModel_1 = require("api/auth/UserModel");
-  var I18NCountryProvider_1 = require("api/system/locale/I18NCountryProvider");
-  var rule_component_1 = require("rule-engine/rule-component");
-  var index_1 = require("rule-engine/templates/index");
-  var RuleEngineComponent = (function() {
-    function RuleEngineComponent(apiRoot) {
-      var _this = this;
-      this.rules = [];
-      this.baseUrl = ConnectionManager.baseUrl;
-      this.rulesRef = apiRoot.defaultSite.child('rules');
-      this.filterText = "";
-      this.readSnapshots(this.rulesRef).catch(function(e) {
-        return console.log(e);
-      });
-      this.rulesRef.on('child_added', function(snap) {
-        _this.rules = _this.rules.concat(snap);
-      });
-      this.rulesRef.on('child_removed', function(snap) {
-        _this.rules = _this.rules.filter(function(rule) {
-          return rule.key() !== snap.key();
-        });
-      });
-    }
-    RuleEngineComponent.prototype.updateBaseUrl = function(value) {
-      var oldUrl = ConnectionManager.baseUrl;
-      try {
-        ConnectionManager.setBaseUrl(value);
-        window.location.assign(window.location.protocol + '//' + window.location.host + window.location.pathname + '?baseUrl=' + value);
-      } catch (e) {
-        alert("Error using provided Base Url. Check the development console.");
-        console.log("Error using provided Base Url: ", e);
-        this.baseUrl = oldUrl;
-        ConnectionManager.baseUrl = oldUrl;
-      }
-    };
-    RuleEngineComponent.prototype.readSnapshots = function(rulesRef) {
-      return new Promise(function(resolve, reject) {
-        var snaps = [];
-        rulesRef.once('value', function(rulesSnap) {
-          if (rulesSnap && rulesSnap.forEach) {
-            rulesSnap.forEach(function(ruleSnap) {
-              console.log('Rule read: ', ruleSnap);
-              snaps.push(ruleSnap);
-            });
-          } else {
-            reject(rulesSnap);
-          }
-          resolve(snaps);
-        });
-      });
-    };
-    RuleEngineComponent.prototype.addRule = function() {
-      var testRule = {
-        name: "CoreWeb created this rule.",
-        enabled: true,
-        priority: 10,
-        fireOn: "EVERY_PAGE",
-        shortCircuit: false,
-        conditionGroups: {},
-        actions: {}
-      };
-      this.rulesRef.push(testRule).catch(function(e) {
-        console.log("Error pushing new rule: ", e);
-        throw e;
-      });
-    };
-    RuleEngineComponent = __decorate([angular2_1.Component({selector: 'rule-engine'}), angular2_1.View({
-      template: index_1.ruleEngineTemplate,
-      directives: [rule_component_1.RuleComponent, angular2_1.NgFor, angular2_1.NgIf]
-    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object])], RuleEngineComponent);
-    return RuleEngineComponent;
-    var _a;
-  })();
-  function main() {
-    ConnectionManager.persistenceHandler = RestDataStore;
-    var app = angular2_1.bootstrap(RuleEngineComponent, [ApiRoot_1.ApiRoot, ActionTypes_1.ActionTypesProvider, ConditionTypes_1.ConditionTypesProvider, UserModel_1.UserModel, I18NCountryProvider_1.I18NCountryProvider]);
-    app.then(function(appRef) {
-      console.log("Bootstrapped App: ", appRef);
-    }).catch(function(e) {
-      console.log("Error bootstrapping app: ", e);
-      throw e;
-    });
-    return app;
-  }
-  exports.main = main;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/fn/object/assign", ["npm:core-js@1.1.3/library/modules/es6.object.assign", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -3641,119 +3641,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/fn/object/assign", ["npm:core-
   global.define = undefined;
   require("npm:core-js@1.1.3/library/modules/es6.object.assign");
   module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Object.assign;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/shim", ["npm:core-js@1.1.3/modules/es5", "npm:core-js@1.1.3/modules/es6.symbol", "npm:core-js@1.1.3/modules/es6.object.assign", "npm:core-js@1.1.3/modules/es6.object.is", "npm:core-js@1.1.3/modules/es6.object.set-prototype-of", "npm:core-js@1.1.3/modules/es6.object.to-string", "npm:core-js@1.1.3/modules/es6.object.freeze", "npm:core-js@1.1.3/modules/es6.object.seal", "npm:core-js@1.1.3/modules/es6.object.prevent-extensions", "npm:core-js@1.1.3/modules/es6.object.is-frozen", "npm:core-js@1.1.3/modules/es6.object.is-sealed", "npm:core-js@1.1.3/modules/es6.object.is-extensible", "npm:core-js@1.1.3/modules/es6.object.get-own-property-descriptor", "npm:core-js@1.1.3/modules/es6.object.get-prototype-of", "npm:core-js@1.1.3/modules/es6.object.keys", "npm:core-js@1.1.3/modules/es6.object.get-own-property-names", "npm:core-js@1.1.3/modules/es6.function.name", "npm:core-js@1.1.3/modules/es6.function.has-instance", "npm:core-js@1.1.3/modules/es6.number.constructor", "npm:core-js@1.1.3/modules/es6.number.epsilon", "npm:core-js@1.1.3/modules/es6.number.is-finite", "npm:core-js@1.1.3/modules/es6.number.is-integer", "npm:core-js@1.1.3/modules/es6.number.is-nan", "npm:core-js@1.1.3/modules/es6.number.is-safe-integer", "npm:core-js@1.1.3/modules/es6.number.max-safe-integer", "npm:core-js@1.1.3/modules/es6.number.min-safe-integer", "npm:core-js@1.1.3/modules/es6.number.parse-float", "npm:core-js@1.1.3/modules/es6.number.parse-int", "npm:core-js@1.1.3/modules/es6.math.acosh", "npm:core-js@1.1.3/modules/es6.math.asinh", "npm:core-js@1.1.3/modules/es6.math.atanh", "npm:core-js@1.1.3/modules/es6.math.cbrt", "npm:core-js@1.1.3/modules/es6.math.clz32", "npm:core-js@1.1.3/modules/es6.math.cosh", "npm:core-js@1.1.3/modules/es6.math.expm1", "npm:core-js@1.1.3/modules/es6.math.fround", "npm:core-js@1.1.3/modules/es6.math.hypot", "npm:core-js@1.1.3/modules/es6.math.imul", "npm:core-js@1.1.3/modules/es6.math.log10", "npm:core-js@1.1.3/modules/es6.math.log1p", "npm:core-js@1.1.3/modules/es6.math.log2", "npm:core-js@1.1.3/modules/es6.math.sign", "npm:core-js@1.1.3/modules/es6.math.sinh", "npm:core-js@1.1.3/modules/es6.math.tanh", "npm:core-js@1.1.3/modules/es6.math.trunc", "npm:core-js@1.1.3/modules/es6.string.from-code-point", "npm:core-js@1.1.3/modules/es6.string.raw", "npm:core-js@1.1.3/modules/es6.string.trim", "npm:core-js@1.1.3/modules/es6.string.iterator", "npm:core-js@1.1.3/modules/es6.string.code-point-at", "npm:core-js@1.1.3/modules/es6.string.ends-with", "npm:core-js@1.1.3/modules/es6.string.includes", "npm:core-js@1.1.3/modules/es6.string.repeat", "npm:core-js@1.1.3/modules/es6.string.starts-with", "npm:core-js@1.1.3/modules/es6.array.from", "npm:core-js@1.1.3/modules/es6.array.of", "npm:core-js@1.1.3/modules/es6.array.iterator", "npm:core-js@1.1.3/modules/es6.array.species", "npm:core-js@1.1.3/modules/es6.array.copy-within", "npm:core-js@1.1.3/modules/es6.array.fill", "npm:core-js@1.1.3/modules/es6.array.find", "npm:core-js@1.1.3/modules/es6.array.find-index", "npm:core-js@1.1.3/modules/es6.regexp.constructor", "npm:core-js@1.1.3/modules/es6.regexp.flags", "npm:core-js@1.1.3/modules/es6.regexp.match", "npm:core-js@1.1.3/modules/es6.regexp.replace", "npm:core-js@1.1.3/modules/es6.regexp.search", "npm:core-js@1.1.3/modules/es6.regexp.split", "npm:core-js@1.1.3/modules/es6.promise", "npm:core-js@1.1.3/modules/es6.map", "npm:core-js@1.1.3/modules/es6.set", "npm:core-js@1.1.3/modules/es6.weak-map", "npm:core-js@1.1.3/modules/es6.weak-set", "npm:core-js@1.1.3/modules/es6.reflect.apply", "npm:core-js@1.1.3/modules/es6.reflect.construct", "npm:core-js@1.1.3/modules/es6.reflect.define-property", "npm:core-js@1.1.3/modules/es6.reflect.delete-property", "npm:core-js@1.1.3/modules/es6.reflect.enumerate", "npm:core-js@1.1.3/modules/es6.reflect.get", "npm:core-js@1.1.3/modules/es6.reflect.get-own-property-descriptor", "npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of", "npm:core-js@1.1.3/modules/es6.reflect.has", "npm:core-js@1.1.3/modules/es6.reflect.is-extensible", "npm:core-js@1.1.3/modules/es6.reflect.own-keys", "npm:core-js@1.1.3/modules/es6.reflect.prevent-extensions", "npm:core-js@1.1.3/modules/es6.reflect.set", "npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of", "npm:core-js@1.1.3/modules/es7.array.includes", "npm:core-js@1.1.3/modules/es7.string.at", "npm:core-js@1.1.3/modules/es7.string.pad-left", "npm:core-js@1.1.3/modules/es7.string.pad-right", "npm:core-js@1.1.3/modules/es7.string.trim-left", "npm:core-js@1.1.3/modules/es7.string.trim-right", "npm:core-js@1.1.3/modules/es7.regexp.escape", "npm:core-js@1.1.3/modules/es7.object.get-own-property-descriptors", "npm:core-js@1.1.3/modules/es7.object.values", "npm:core-js@1.1.3/modules/es7.object.entries", "npm:core-js@1.1.3/modules/es7.map.to-json", "npm:core-js@1.1.3/modules/es7.set.to-json", "npm:core-js@1.1.3/modules/js.array.statics", "npm:core-js@1.1.3/modules/web.timers", "npm:core-js@1.1.3/modules/web.immediate", "npm:core-js@1.1.3/modules/web.dom.iterable", "npm:core-js@1.1.3/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/modules/es5");
-  require("npm:core-js@1.1.3/modules/es6.symbol");
-  require("npm:core-js@1.1.3/modules/es6.object.assign");
-  require("npm:core-js@1.1.3/modules/es6.object.is");
-  require("npm:core-js@1.1.3/modules/es6.object.set-prototype-of");
-  require("npm:core-js@1.1.3/modules/es6.object.to-string");
-  require("npm:core-js@1.1.3/modules/es6.object.freeze");
-  require("npm:core-js@1.1.3/modules/es6.object.seal");
-  require("npm:core-js@1.1.3/modules/es6.object.prevent-extensions");
-  require("npm:core-js@1.1.3/modules/es6.object.is-frozen");
-  require("npm:core-js@1.1.3/modules/es6.object.is-sealed");
-  require("npm:core-js@1.1.3/modules/es6.object.is-extensible");
-  require("npm:core-js@1.1.3/modules/es6.object.get-own-property-descriptor");
-  require("npm:core-js@1.1.3/modules/es6.object.get-prototype-of");
-  require("npm:core-js@1.1.3/modules/es6.object.keys");
-  require("npm:core-js@1.1.3/modules/es6.object.get-own-property-names");
-  require("npm:core-js@1.1.3/modules/es6.function.name");
-  require("npm:core-js@1.1.3/modules/es6.function.has-instance");
-  require("npm:core-js@1.1.3/modules/es6.number.constructor");
-  require("npm:core-js@1.1.3/modules/es6.number.epsilon");
-  require("npm:core-js@1.1.3/modules/es6.number.is-finite");
-  require("npm:core-js@1.1.3/modules/es6.number.is-integer");
-  require("npm:core-js@1.1.3/modules/es6.number.is-nan");
-  require("npm:core-js@1.1.3/modules/es6.number.is-safe-integer");
-  require("npm:core-js@1.1.3/modules/es6.number.max-safe-integer");
-  require("npm:core-js@1.1.3/modules/es6.number.min-safe-integer");
-  require("npm:core-js@1.1.3/modules/es6.number.parse-float");
-  require("npm:core-js@1.1.3/modules/es6.number.parse-int");
-  require("npm:core-js@1.1.3/modules/es6.math.acosh");
-  require("npm:core-js@1.1.3/modules/es6.math.asinh");
-  require("npm:core-js@1.1.3/modules/es6.math.atanh");
-  require("npm:core-js@1.1.3/modules/es6.math.cbrt");
-  require("npm:core-js@1.1.3/modules/es6.math.clz32");
-  require("npm:core-js@1.1.3/modules/es6.math.cosh");
-  require("npm:core-js@1.1.3/modules/es6.math.expm1");
-  require("npm:core-js@1.1.3/modules/es6.math.fround");
-  require("npm:core-js@1.1.3/modules/es6.math.hypot");
-  require("npm:core-js@1.1.3/modules/es6.math.imul");
-  require("npm:core-js@1.1.3/modules/es6.math.log10");
-  require("npm:core-js@1.1.3/modules/es6.math.log1p");
-  require("npm:core-js@1.1.3/modules/es6.math.log2");
-  require("npm:core-js@1.1.3/modules/es6.math.sign");
-  require("npm:core-js@1.1.3/modules/es6.math.sinh");
-  require("npm:core-js@1.1.3/modules/es6.math.tanh");
-  require("npm:core-js@1.1.3/modules/es6.math.trunc");
-  require("npm:core-js@1.1.3/modules/es6.string.from-code-point");
-  require("npm:core-js@1.1.3/modules/es6.string.raw");
-  require("npm:core-js@1.1.3/modules/es6.string.trim");
-  require("npm:core-js@1.1.3/modules/es6.string.iterator");
-  require("npm:core-js@1.1.3/modules/es6.string.code-point-at");
-  require("npm:core-js@1.1.3/modules/es6.string.ends-with");
-  require("npm:core-js@1.1.3/modules/es6.string.includes");
-  require("npm:core-js@1.1.3/modules/es6.string.repeat");
-  require("npm:core-js@1.1.3/modules/es6.string.starts-with");
-  require("npm:core-js@1.1.3/modules/es6.array.from");
-  require("npm:core-js@1.1.3/modules/es6.array.of");
-  require("npm:core-js@1.1.3/modules/es6.array.iterator");
-  require("npm:core-js@1.1.3/modules/es6.array.species");
-  require("npm:core-js@1.1.3/modules/es6.array.copy-within");
-  require("npm:core-js@1.1.3/modules/es6.array.fill");
-  require("npm:core-js@1.1.3/modules/es6.array.find");
-  require("npm:core-js@1.1.3/modules/es6.array.find-index");
-  require("npm:core-js@1.1.3/modules/es6.regexp.constructor");
-  require("npm:core-js@1.1.3/modules/es6.regexp.flags");
-  require("npm:core-js@1.1.3/modules/es6.regexp.match");
-  require("npm:core-js@1.1.3/modules/es6.regexp.replace");
-  require("npm:core-js@1.1.3/modules/es6.regexp.search");
-  require("npm:core-js@1.1.3/modules/es6.regexp.split");
-  require("npm:core-js@1.1.3/modules/es6.promise");
-  require("npm:core-js@1.1.3/modules/es6.map");
-  require("npm:core-js@1.1.3/modules/es6.set");
-  require("npm:core-js@1.1.3/modules/es6.weak-map");
-  require("npm:core-js@1.1.3/modules/es6.weak-set");
-  require("npm:core-js@1.1.3/modules/es6.reflect.apply");
-  require("npm:core-js@1.1.3/modules/es6.reflect.construct");
-  require("npm:core-js@1.1.3/modules/es6.reflect.define-property");
-  require("npm:core-js@1.1.3/modules/es6.reflect.delete-property");
-  require("npm:core-js@1.1.3/modules/es6.reflect.enumerate");
-  require("npm:core-js@1.1.3/modules/es6.reflect.get");
-  require("npm:core-js@1.1.3/modules/es6.reflect.get-own-property-descriptor");
-  require("npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of");
-  require("npm:core-js@1.1.3/modules/es6.reflect.has");
-  require("npm:core-js@1.1.3/modules/es6.reflect.is-extensible");
-  require("npm:core-js@1.1.3/modules/es6.reflect.own-keys");
-  require("npm:core-js@1.1.3/modules/es6.reflect.prevent-extensions");
-  require("npm:core-js@1.1.3/modules/es6.reflect.set");
-  require("npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of");
-  require("npm:core-js@1.1.3/modules/es7.array.includes");
-  require("npm:core-js@1.1.3/modules/es7.string.at");
-  require("npm:core-js@1.1.3/modules/es7.string.pad-left");
-  require("npm:core-js@1.1.3/modules/es7.string.pad-right");
-  require("npm:core-js@1.1.3/modules/es7.string.trim-left");
-  require("npm:core-js@1.1.3/modules/es7.string.trim-right");
-  require("npm:core-js@1.1.3/modules/es7.regexp.escape");
-  require("npm:core-js@1.1.3/modules/es7.object.get-own-property-descriptors");
-  require("npm:core-js@1.1.3/modules/es7.object.values");
-  require("npm:core-js@1.1.3/modules/es7.object.entries");
-  require("npm:core-js@1.1.3/modules/es7.map.to-json");
-  require("npm:core-js@1.1.3/modules/es7.set.to-json");
-  require("npm:core-js@1.1.3/modules/js.array.statics");
-  require("npm:core-js@1.1.3/modules/web.timers");
-  require("npm:core-js@1.1.3/modules/web.immediate");
-  require("npm:core-js@1.1.3/modules/web.dom.iterable");
-  module.exports = require("npm:core-js@1.1.3/modules/$.core");
   global.define = __define;
   return module.exports;
 });
@@ -4182,133 +4069,144 @@ System.registerDynamic("npm:babel-runtime@5.8.20/regenerator/runtime", ["npm:bab
   return module.exports;
 });
 
-System.registerDynamic("npm:zone.js@0.5.4/lib/core", ["npm:zone.js@0.5.4/lib/patch/promise"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/shim", ["npm:core-js@1.1.3/modules/es5", "npm:core-js@1.1.3/modules/es6.symbol", "npm:core-js@1.1.3/modules/es6.object.assign", "npm:core-js@1.1.3/modules/es6.object.is", "npm:core-js@1.1.3/modules/es6.object.set-prototype-of", "npm:core-js@1.1.3/modules/es6.object.to-string", "npm:core-js@1.1.3/modules/es6.object.freeze", "npm:core-js@1.1.3/modules/es6.object.seal", "npm:core-js@1.1.3/modules/es6.object.prevent-extensions", "npm:core-js@1.1.3/modules/es6.object.is-frozen", "npm:core-js@1.1.3/modules/es6.object.is-sealed", "npm:core-js@1.1.3/modules/es6.object.is-extensible", "npm:core-js@1.1.3/modules/es6.object.get-own-property-descriptor", "npm:core-js@1.1.3/modules/es6.object.get-prototype-of", "npm:core-js@1.1.3/modules/es6.object.keys", "npm:core-js@1.1.3/modules/es6.object.get-own-property-names", "npm:core-js@1.1.3/modules/es6.function.name", "npm:core-js@1.1.3/modules/es6.function.has-instance", "npm:core-js@1.1.3/modules/es6.number.constructor", "npm:core-js@1.1.3/modules/es6.number.epsilon", "npm:core-js@1.1.3/modules/es6.number.is-finite", "npm:core-js@1.1.3/modules/es6.number.is-integer", "npm:core-js@1.1.3/modules/es6.number.is-nan", "npm:core-js@1.1.3/modules/es6.number.is-safe-integer", "npm:core-js@1.1.3/modules/es6.number.max-safe-integer", "npm:core-js@1.1.3/modules/es6.number.min-safe-integer", "npm:core-js@1.1.3/modules/es6.number.parse-float", "npm:core-js@1.1.3/modules/es6.number.parse-int", "npm:core-js@1.1.3/modules/es6.math.acosh", "npm:core-js@1.1.3/modules/es6.math.asinh", "npm:core-js@1.1.3/modules/es6.math.atanh", "npm:core-js@1.1.3/modules/es6.math.cbrt", "npm:core-js@1.1.3/modules/es6.math.clz32", "npm:core-js@1.1.3/modules/es6.math.cosh", "npm:core-js@1.1.3/modules/es6.math.expm1", "npm:core-js@1.1.3/modules/es6.math.fround", "npm:core-js@1.1.3/modules/es6.math.hypot", "npm:core-js@1.1.3/modules/es6.math.imul", "npm:core-js@1.1.3/modules/es6.math.log10", "npm:core-js@1.1.3/modules/es6.math.log1p", "npm:core-js@1.1.3/modules/es6.math.log2", "npm:core-js@1.1.3/modules/es6.math.sign", "npm:core-js@1.1.3/modules/es6.math.sinh", "npm:core-js@1.1.3/modules/es6.math.tanh", "npm:core-js@1.1.3/modules/es6.math.trunc", "npm:core-js@1.1.3/modules/es6.string.from-code-point", "npm:core-js@1.1.3/modules/es6.string.raw", "npm:core-js@1.1.3/modules/es6.string.trim", "npm:core-js@1.1.3/modules/es6.string.iterator", "npm:core-js@1.1.3/modules/es6.string.code-point-at", "npm:core-js@1.1.3/modules/es6.string.ends-with", "npm:core-js@1.1.3/modules/es6.string.includes", "npm:core-js@1.1.3/modules/es6.string.repeat", "npm:core-js@1.1.3/modules/es6.string.starts-with", "npm:core-js@1.1.3/modules/es6.array.from", "npm:core-js@1.1.3/modules/es6.array.of", "npm:core-js@1.1.3/modules/es6.array.iterator", "npm:core-js@1.1.3/modules/es6.array.species", "npm:core-js@1.1.3/modules/es6.array.copy-within", "npm:core-js@1.1.3/modules/es6.array.fill", "npm:core-js@1.1.3/modules/es6.array.find", "npm:core-js@1.1.3/modules/es6.array.find-index", "npm:core-js@1.1.3/modules/es6.regexp.constructor", "npm:core-js@1.1.3/modules/es6.regexp.flags", "npm:core-js@1.1.3/modules/es6.regexp.match", "npm:core-js@1.1.3/modules/es6.regexp.replace", "npm:core-js@1.1.3/modules/es6.regexp.search", "npm:core-js@1.1.3/modules/es6.regexp.split", "npm:core-js@1.1.3/modules/es6.promise", "npm:core-js@1.1.3/modules/es6.map", "npm:core-js@1.1.3/modules/es6.set", "npm:core-js@1.1.3/modules/es6.weak-map", "npm:core-js@1.1.3/modules/es6.weak-set", "npm:core-js@1.1.3/modules/es6.reflect.apply", "npm:core-js@1.1.3/modules/es6.reflect.construct", "npm:core-js@1.1.3/modules/es6.reflect.define-property", "npm:core-js@1.1.3/modules/es6.reflect.delete-property", "npm:core-js@1.1.3/modules/es6.reflect.enumerate", "npm:core-js@1.1.3/modules/es6.reflect.get", "npm:core-js@1.1.3/modules/es6.reflect.get-own-property-descriptor", "npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of", "npm:core-js@1.1.3/modules/es6.reflect.has", "npm:core-js@1.1.3/modules/es6.reflect.is-extensible", "npm:core-js@1.1.3/modules/es6.reflect.own-keys", "npm:core-js@1.1.3/modules/es6.reflect.prevent-extensions", "npm:core-js@1.1.3/modules/es6.reflect.set", "npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of", "npm:core-js@1.1.3/modules/es7.array.includes", "npm:core-js@1.1.3/modules/es7.string.at", "npm:core-js@1.1.3/modules/es7.string.pad-left", "npm:core-js@1.1.3/modules/es7.string.pad-right", "npm:core-js@1.1.3/modules/es7.string.trim-left", "npm:core-js@1.1.3/modules/es7.string.trim-right", "npm:core-js@1.1.3/modules/es7.regexp.escape", "npm:core-js@1.1.3/modules/es7.object.get-own-property-descriptors", "npm:core-js@1.1.3/modules/es7.object.values", "npm:core-js@1.1.3/modules/es7.object.entries", "npm:core-js@1.1.3/modules/es7.map.to-json", "npm:core-js@1.1.3/modules/es7.set.to-json", "npm:core-js@1.1.3/modules/js.array.statics", "npm:core-js@1.1.3/modules/web.timers", "npm:core-js@1.1.3/modules/web.immediate", "npm:core-js@1.1.3/modules/web.dom.iterable", "npm:core-js@1.1.3/modules/$.core"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  'use strict';
-  function Zone(parentZone, data) {
-    var zone = (arguments.length) ? Object.create(parentZone) : this;
-    zone.parent = parentZone || null;
-    Object.keys(data || {}).forEach(function(property) {
-      var _property = property.substr(1);
-      if (property[0] === '$') {
-        zone[_property] = data[property](parentZone[_property] || function() {});
-      } else if (property[0] === '+') {
-        if (parentZone[_property]) {
-          zone[_property] = function() {
-            var result = parentZone[_property].apply(this, arguments);
-            data[property].apply(this, arguments);
-            return result;
-          };
-        } else {
-          zone[_property] = data[property];
-        }
-      } else if (property[0] === '-') {
-        if (parentZone[_property]) {
-          zone[_property] = function() {
-            data[property].apply(this, arguments);
-            return parentZone[_property].apply(this, arguments);
-          };
-        } else {
-          zone[_property] = data[property];
-        }
-      } else {
-        zone[property] = (typeof data[property] === 'object') ? JSON.parse(JSON.stringify(data[property])) : data[property];
-      }
-    });
-    zone.$id = Zone.nextId++;
-    return zone;
-  }
-  Zone.prototype = {
-    constructor: Zone,
-    fork: function(locals) {
-      this.onZoneCreated();
-      return new Zone(this, locals);
-    },
-    bind: function(fn, skipEnqueue) {
-      if (typeof fn !== 'function') {
-        throw new Error('Expecting function got: ' + fn);
-      }
-      skipEnqueue || this.enqueueTask(fn);
-      var zone = this.isRootZone() ? this : this.fork();
-      return function zoneBoundFn() {
-        return zone.run(fn, this, arguments);
-      };
-    },
-    bindOnce: function(fn) {
-      var boundZone = this;
-      return this.bind(function() {
-        var result = fn.apply(this, arguments);
-        boundZone.dequeueTask(fn);
-        return result;
-      });
-    },
-    isRootZone: function() {
-      return this.parent === null;
-    },
-    run: function run(fn, applyTo, applyWith) {
-      applyWith = applyWith || [];
-      var oldZone = global.zone;
-      global.zone = this;
-      try {
-        this.beforeTask();
-        return fn.apply(applyTo, applyWith);
-      } catch (e) {
-        if (this.onError) {
-          this.onError(e);
-        } else {
-          throw e;
-        }
-      } finally {
-        this.afterTask();
-        global.zone = oldZone;
-      }
-    },
-    onError: null,
-    beforeTask: function() {},
-    onZoneCreated: function() {},
-    afterTask: function() {},
-    enqueueTask: function() {},
-    dequeueTask: function() {}
-  };
-  Zone.nextId = 1;
-  Zone.bindPromiseFn = require("npm:zone.js@0.5.4/lib/patch/promise").bindPromiseFn;
-  module.exports = {Zone: Zone};
+  require("npm:core-js@1.1.3/modules/es5");
+  require("npm:core-js@1.1.3/modules/es6.symbol");
+  require("npm:core-js@1.1.3/modules/es6.object.assign");
+  require("npm:core-js@1.1.3/modules/es6.object.is");
+  require("npm:core-js@1.1.3/modules/es6.object.set-prototype-of");
+  require("npm:core-js@1.1.3/modules/es6.object.to-string");
+  require("npm:core-js@1.1.3/modules/es6.object.freeze");
+  require("npm:core-js@1.1.3/modules/es6.object.seal");
+  require("npm:core-js@1.1.3/modules/es6.object.prevent-extensions");
+  require("npm:core-js@1.1.3/modules/es6.object.is-frozen");
+  require("npm:core-js@1.1.3/modules/es6.object.is-sealed");
+  require("npm:core-js@1.1.3/modules/es6.object.is-extensible");
+  require("npm:core-js@1.1.3/modules/es6.object.get-own-property-descriptor");
+  require("npm:core-js@1.1.3/modules/es6.object.get-prototype-of");
+  require("npm:core-js@1.1.3/modules/es6.object.keys");
+  require("npm:core-js@1.1.3/modules/es6.object.get-own-property-names");
+  require("npm:core-js@1.1.3/modules/es6.function.name");
+  require("npm:core-js@1.1.3/modules/es6.function.has-instance");
+  require("npm:core-js@1.1.3/modules/es6.number.constructor");
+  require("npm:core-js@1.1.3/modules/es6.number.epsilon");
+  require("npm:core-js@1.1.3/modules/es6.number.is-finite");
+  require("npm:core-js@1.1.3/modules/es6.number.is-integer");
+  require("npm:core-js@1.1.3/modules/es6.number.is-nan");
+  require("npm:core-js@1.1.3/modules/es6.number.is-safe-integer");
+  require("npm:core-js@1.1.3/modules/es6.number.max-safe-integer");
+  require("npm:core-js@1.1.3/modules/es6.number.min-safe-integer");
+  require("npm:core-js@1.1.3/modules/es6.number.parse-float");
+  require("npm:core-js@1.1.3/modules/es6.number.parse-int");
+  require("npm:core-js@1.1.3/modules/es6.math.acosh");
+  require("npm:core-js@1.1.3/modules/es6.math.asinh");
+  require("npm:core-js@1.1.3/modules/es6.math.atanh");
+  require("npm:core-js@1.1.3/modules/es6.math.cbrt");
+  require("npm:core-js@1.1.3/modules/es6.math.clz32");
+  require("npm:core-js@1.1.3/modules/es6.math.cosh");
+  require("npm:core-js@1.1.3/modules/es6.math.expm1");
+  require("npm:core-js@1.1.3/modules/es6.math.fround");
+  require("npm:core-js@1.1.3/modules/es6.math.hypot");
+  require("npm:core-js@1.1.3/modules/es6.math.imul");
+  require("npm:core-js@1.1.3/modules/es6.math.log10");
+  require("npm:core-js@1.1.3/modules/es6.math.log1p");
+  require("npm:core-js@1.1.3/modules/es6.math.log2");
+  require("npm:core-js@1.1.3/modules/es6.math.sign");
+  require("npm:core-js@1.1.3/modules/es6.math.sinh");
+  require("npm:core-js@1.1.3/modules/es6.math.tanh");
+  require("npm:core-js@1.1.3/modules/es6.math.trunc");
+  require("npm:core-js@1.1.3/modules/es6.string.from-code-point");
+  require("npm:core-js@1.1.3/modules/es6.string.raw");
+  require("npm:core-js@1.1.3/modules/es6.string.trim");
+  require("npm:core-js@1.1.3/modules/es6.string.iterator");
+  require("npm:core-js@1.1.3/modules/es6.string.code-point-at");
+  require("npm:core-js@1.1.3/modules/es6.string.ends-with");
+  require("npm:core-js@1.1.3/modules/es6.string.includes");
+  require("npm:core-js@1.1.3/modules/es6.string.repeat");
+  require("npm:core-js@1.1.3/modules/es6.string.starts-with");
+  require("npm:core-js@1.1.3/modules/es6.array.from");
+  require("npm:core-js@1.1.3/modules/es6.array.of");
+  require("npm:core-js@1.1.3/modules/es6.array.iterator");
+  require("npm:core-js@1.1.3/modules/es6.array.species");
+  require("npm:core-js@1.1.3/modules/es6.array.copy-within");
+  require("npm:core-js@1.1.3/modules/es6.array.fill");
+  require("npm:core-js@1.1.3/modules/es6.array.find");
+  require("npm:core-js@1.1.3/modules/es6.array.find-index");
+  require("npm:core-js@1.1.3/modules/es6.regexp.constructor");
+  require("npm:core-js@1.1.3/modules/es6.regexp.flags");
+  require("npm:core-js@1.1.3/modules/es6.regexp.match");
+  require("npm:core-js@1.1.3/modules/es6.regexp.replace");
+  require("npm:core-js@1.1.3/modules/es6.regexp.search");
+  require("npm:core-js@1.1.3/modules/es6.regexp.split");
+  require("npm:core-js@1.1.3/modules/es6.promise");
+  require("npm:core-js@1.1.3/modules/es6.map");
+  require("npm:core-js@1.1.3/modules/es6.set");
+  require("npm:core-js@1.1.3/modules/es6.weak-map");
+  require("npm:core-js@1.1.3/modules/es6.weak-set");
+  require("npm:core-js@1.1.3/modules/es6.reflect.apply");
+  require("npm:core-js@1.1.3/modules/es6.reflect.construct");
+  require("npm:core-js@1.1.3/modules/es6.reflect.define-property");
+  require("npm:core-js@1.1.3/modules/es6.reflect.delete-property");
+  require("npm:core-js@1.1.3/modules/es6.reflect.enumerate");
+  require("npm:core-js@1.1.3/modules/es6.reflect.get");
+  require("npm:core-js@1.1.3/modules/es6.reflect.get-own-property-descriptor");
+  require("npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of");
+  require("npm:core-js@1.1.3/modules/es6.reflect.has");
+  require("npm:core-js@1.1.3/modules/es6.reflect.is-extensible");
+  require("npm:core-js@1.1.3/modules/es6.reflect.own-keys");
+  require("npm:core-js@1.1.3/modules/es6.reflect.prevent-extensions");
+  require("npm:core-js@1.1.3/modules/es6.reflect.set");
+  require("npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of");
+  require("npm:core-js@1.1.3/modules/es7.array.includes");
+  require("npm:core-js@1.1.3/modules/es7.string.at");
+  require("npm:core-js@1.1.3/modules/es7.string.pad-left");
+  require("npm:core-js@1.1.3/modules/es7.string.pad-right");
+  require("npm:core-js@1.1.3/modules/es7.string.trim-left");
+  require("npm:core-js@1.1.3/modules/es7.string.trim-right");
+  require("npm:core-js@1.1.3/modules/es7.regexp.escape");
+  require("npm:core-js@1.1.3/modules/es7.object.get-own-property-descriptors");
+  require("npm:core-js@1.1.3/modules/es7.object.values");
+  require("npm:core-js@1.1.3/modules/es7.object.entries");
+  require("npm:core-js@1.1.3/modules/es7.map.to-json");
+  require("npm:core-js@1.1.3/modules/es7.set.to-json");
+  require("npm:core-js@1.1.3/modules/js.array.statics");
+  require("npm:core-js@1.1.3/modules/web.timers");
+  require("npm:core-js@1.1.3/modules/web.immediate");
+  require("npm:core-js@1.1.3/modules/web.dom.iterable");
+  module.exports = require("npm:core-js@1.1.3/modules/$.core");
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:zone.js@0.5.4/lib/patch/browser", ["npm:zone.js@0.5.4/lib/patch/functions", "npm:zone.js@0.5.4/lib/patch/promise", "npm:zone.js@0.5.4/lib/patch/mutation-observer", "npm:zone.js@0.5.4/lib/patch/define-property", "npm:zone.js@0.5.4/lib/patch/register-element", "npm:zone.js@0.5.4/lib/patch/websocket", "npm:zone.js@0.5.4/lib/patch/event-target", "npm:zone.js@0.5.4/lib/patch/property-descriptor", "npm:zone.js@0.5.4/lib/patch/geolocation"], true, function(require, exports, module) {
+System.registerDynamic("npm:babel-runtime@5.8.20/helpers/class-call-check", [], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  'use strict';
-  var fnPatch = require("npm:zone.js@0.5.4/lib/patch/functions");
-  var promisePatch = require("npm:zone.js@0.5.4/lib/patch/promise");
-  var mutationObserverPatch = require("npm:zone.js@0.5.4/lib/patch/mutation-observer");
-  var definePropertyPatch = require("npm:zone.js@0.5.4/lib/patch/define-property");
-  var registerElementPatch = require("npm:zone.js@0.5.4/lib/patch/register-element");
-  var webSocketPatch = require("npm:zone.js@0.5.4/lib/patch/websocket");
-  var eventTargetPatch = require("npm:zone.js@0.5.4/lib/patch/event-target");
-  var propertyDescriptorPatch = require("npm:zone.js@0.5.4/lib/patch/property-descriptor");
-  var geolocationPatch = require("npm:zone.js@0.5.4/lib/patch/geolocation");
-  function apply() {
-    fnPatch.patchSetClearFunction(global, ['timeout', 'interval', 'immediate']);
-    fnPatch.patchRequestAnimationFrame(global, ['requestAnimationFrame', 'mozRequestAnimationFrame', 'webkitRequestAnimationFrame']);
-    fnPatch.patchFunction(global, ['alert', 'prompt']);
-    eventTargetPatch.apply();
-    propertyDescriptorPatch.apply();
-    promisePatch.apply();
-    mutationObserverPatch.patchClass('MutationObserver');
-    mutationObserverPatch.patchClass('WebKitMutationObserver');
-    definePropertyPatch.apply();
-    registerElementPatch.apply();
-    geolocationPatch.apply();
-  }
-  module.exports = {apply: apply};
+  "use strict";
+  exports["default"] = function(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+  exports.__esModule = true;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/keys", ["npm:core-js@1.1.3/library/fn/object/keys"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": require("npm:core-js@1.1.3/library/fn/object/keys"),
+    __esModule: true
+  };
   global.define = __define;
   return module.exports;
 });
@@ -4344,22 +4242,6 @@ System.registerDynamic("npm:babel-runtime@5.8.20/helpers/create-class", ["npm:ba
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/helpers/class-call-check", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  exports["default"] = function(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-  exports.__esModule = true;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:babel-runtime@5.8.20/core-js/set", ["npm:core-js@1.1.3/library/fn/set"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -4373,15 +4255,28 @@ System.registerDynamic("npm:babel-runtime@5.8.20/core-js/set", ["npm:core-js@1.1
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/keys", ["npm:core-js@1.1.3/library/fn/object/keys"], true, function(require, exports, module) {
+System.registerDynamic("npm:babel-runtime@5.8.20/helpers/inherits", ["npm:babel-runtime@5.8.20/core-js/object/create", "npm:babel-runtime@5.8.20/core-js/object/set-prototype-of"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/object/keys"),
-    __esModule: true
+  "use strict";
+  var _Object$create = require("npm:babel-runtime@5.8.20/core-js/object/create")["default"];
+  var _Object$setPrototypeOf = require("npm:babel-runtime@5.8.20/core-js/object/set-prototype-of")["default"];
+  exports["default"] = function(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    }
+    subClass.prototype = _Object$create(superClass && superClass.prototype, {constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }});
+    if (superClass)
+      _Object$setPrototypeOf ? _Object$setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   };
+  exports.__esModule = true;
   global.define = __define;
   return module.exports;
 });
@@ -4431,32 +4326,6 @@ System.registerDynamic("npm:babel-runtime@5.8.20/helpers/get", ["npm:babel-runti
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/helpers/inherits", ["npm:babel-runtime@5.8.20/core-js/object/create", "npm:babel-runtime@5.8.20/core-js/object/set-prototype-of"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "use strict";
-  var _Object$create = require("npm:babel-runtime@5.8.20/core-js/object/create")["default"];
-  var _Object$setPrototypeOf = require("npm:babel-runtime@5.8.20/core-js/object/set-prototype-of")["default"];
-  exports["default"] = function(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-    subClass.prototype = _Object$create(superClass && superClass.prototype, {constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }});
-    if (superClass)
-      _Object$setPrototypeOf ? _Object$setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-  exports.__esModule = true;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/get-own-property-names", ["npm:core-js@1.1.3/library/fn/object/get-own-property-names"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -4464,29 +4333,6 @@ System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/get-own-property
   global.define = undefined;
   module.exports = {
     "default": require("npm:core-js@1.1.3/library/fn/object/get-own-property-names"),
-    __esModule: true
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:whatwg-fetch@0.9.0", ["npm:whatwg-fetch@0.9.0/fetch"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = require("npm:whatwg-fetch@0.9.0/fetch");
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/promise", ["npm:core-js@1.1.3/library/fn/promise"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/promise"),
     __esModule: true
   };
   global.define = __define;
@@ -4586,6 +4432,81 @@ System.registerDynamic("api/persistence/ApiRoot", ["npm:angular2@2.0.0-alpha.36/
   return module.exports;
 });
 
+System.registerDynamic("npm:whatwg-fetch@0.9.0", ["npm:whatwg-fetch@0.9.0/fetch"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:whatwg-fetch@0.9.0/fetch");
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("api/rule-engine/ActionTypes", ["npm:angular2@2.0.0-alpha.36/angular2", "api/persistence/ApiRoot", "api/rule-engine/rule-action"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var rule_action_1 = require("api/rule-engine/rule-action");
+  var ActionTypesProvider = (function() {
+    function ActionTypesProvider(apiRoot) {
+      this.map = new Map();
+      this.ary = [];
+      this.actionsRef = apiRoot.root.child('system/ruleengine/actionlets');
+      this.init();
+    }
+    ActionTypesProvider.prototype.init = function() {
+      var _this = this;
+      this.promise = new Promise(function(resolve, reject) {
+        _this.actionsRef.once('value', function(snap) {
+          var actionlets = snap['val']();
+          var results = (Object.keys(actionlets).map(function(key) {
+            var actionType = actionlets[key];
+            _this.map.set(key, new rule_action_1.ActionTypeModel(key, actionType.i18nKey));
+            return actionlets[key];
+          }));
+          Array.prototype.push.apply(_this.ary, results);
+          resolve(_this);
+        });
+      });
+    };
+    ActionTypesProvider = __decorate([__param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [Object])], ActionTypesProvider);
+    return ActionTypesProvider;
+  })();
+  exports.ActionTypesProvider = ActionTypesProvider;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("api/rule-engine/ConditionTypes", ["npm:angular2@2.0.0-alpha.36/angular2", "api/persistence/ApiRoot"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -4680,71 +4601,6 @@ System.registerDynamic("api/rule-engine/ConditionTypes", ["npm:angular2@2.0.0-al
     return ConditionTypesProvider;
   })();
   exports.ConditionTypesProvider = ConditionTypesProvider;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("api/rule-engine/ActionTypes", ["npm:angular2@2.0.0-alpha.36/angular2", "api/persistence/ApiRoot", "api/rule-engine/rule-action"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var ApiRoot_1 = require("api/persistence/ApiRoot");
-  var rule_action_1 = require("api/rule-engine/rule-action");
-  var ActionTypesProvider = (function() {
-    function ActionTypesProvider(apiRoot) {
-      this.map = new Map();
-      this.ary = [];
-      this.actionsRef = apiRoot.root.child('system/ruleengine/actionlets');
-      this.init();
-    }
-    ActionTypesProvider.prototype.init = function() {
-      var _this = this;
-      this.promise = new Promise(function(resolve, reject) {
-        _this.actionsRef.once('value', function(snap) {
-          var actionlets = snap['val']();
-          var results = (Object.keys(actionlets).map(function(key) {
-            var actionType = actionlets[key];
-            _this.map.set(key, new rule_action_1.ActionTypeModel(key, actionType.i18nKey));
-            return actionlets[key];
-          }));
-          Array.prototype.push.apply(_this.ary, results);
-          resolve(_this);
-        });
-      });
-    };
-    ActionTypesProvider = __decorate([__param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [Object])], ActionTypesProvider);
-    return ActionTypesProvider;
-  })();
-  exports.ActionTypesProvider = ActionTypesProvider;
   global.define = __define;
   return module.exports;
 });
@@ -4887,6 +4743,12 @@ System.registerDynamic("rule-engine/rule-component", ["npm:angular2@2.0.0-alpha.
   var rule_condition_group_component_1 = require("rule-engine/rule-condition-group-component");
   var index_1 = require("rule-engine/templates/index");
   var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var rsrc = {fireOn: {
+      EVERY_PAGE: 'Every Page',
+      ONCE_PER_VISIT: 'Once per visit',
+      ONCE_PER_VISITOR: 'Once per visitor',
+      EVERY_REQUEST: 'Every Request'
+    }};
   var RuleComponent = (function() {
     function RuleComponent(elementRef, apiRoot) {
       var _this = this;
@@ -4950,6 +4812,9 @@ System.registerDynamic("rule-engine/rule-component", ["npm:angular2@2.0.0-alpha.
         });
       }
       return actionMetas;
+    };
+    RuleComponent.prototype.fireOnLabel = function(fireOnId) {
+      return rsrc.fireOn[fireOnId];
     };
     RuleComponent.prototype.setFireOn = function(value) {
       this.rule.fireOn = value;
@@ -5061,6 +4926,19 @@ System.registerDynamic("rule-engine/rule-component", ["npm:angular2@2.0.0-alpha.
   return module.exports;
 });
 
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/promise", ["npm:core-js@1.1.3/library/fn/promise"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": require("npm:core-js@1.1.3/library/fn/promise"),
+    __esModule: true
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/angular2", ["npm:angular2@2.0.0-alpha.36/metadata", "npm:angular2@2.0.0-alpha.36/change_detection", "npm:angular2@2.0.0-alpha.36/core", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/directives", "npm:angular2@2.0.0-alpha.36/forms", "npm:angular2@2.0.0-alpha.36/render", "npm:angular2@2.0.0-alpha.36/profile"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -5080,6 +4958,137 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/angular2", ["npm:angular2@2.
   __export(require("npm:angular2@2.0.0-alpha.36/forms"));
   __export(require("npm:angular2@2.0.0-alpha.36/render"));
   __export(require("npm:angular2@2.0.0-alpha.36/profile"));
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:zone.js@0.5.4/lib/core", ["npm:zone.js@0.5.4/lib/patch/promise"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function Zone(parentZone, data) {
+    var zone = (arguments.length) ? Object.create(parentZone) : this;
+    zone.parent = parentZone || null;
+    Object.keys(data || {}).forEach(function(property) {
+      var _property = property.substr(1);
+      if (property[0] === '$') {
+        zone[_property] = data[property](parentZone[_property] || function() {});
+      } else if (property[0] === '+') {
+        if (parentZone[_property]) {
+          zone[_property] = function() {
+            var result = parentZone[_property].apply(this, arguments);
+            data[property].apply(this, arguments);
+            return result;
+          };
+        } else {
+          zone[_property] = data[property];
+        }
+      } else if (property[0] === '-') {
+        if (parentZone[_property]) {
+          zone[_property] = function() {
+            data[property].apply(this, arguments);
+            return parentZone[_property].apply(this, arguments);
+          };
+        } else {
+          zone[_property] = data[property];
+        }
+      } else {
+        zone[property] = (typeof data[property] === 'object') ? JSON.parse(JSON.stringify(data[property])) : data[property];
+      }
+    });
+    zone.$id = Zone.nextId++;
+    return zone;
+  }
+  Zone.prototype = {
+    constructor: Zone,
+    fork: function(locals) {
+      this.onZoneCreated();
+      return new Zone(this, locals);
+    },
+    bind: function(fn, skipEnqueue) {
+      if (typeof fn !== 'function') {
+        throw new Error('Expecting function got: ' + fn);
+      }
+      skipEnqueue || this.enqueueTask(fn);
+      var zone = this.isRootZone() ? this : this.fork();
+      return function zoneBoundFn() {
+        return zone.run(fn, this, arguments);
+      };
+    },
+    bindOnce: function(fn) {
+      var boundZone = this;
+      return this.bind(function() {
+        var result = fn.apply(this, arguments);
+        boundZone.dequeueTask(fn);
+        return result;
+      });
+    },
+    isRootZone: function() {
+      return this.parent === null;
+    },
+    run: function run(fn, applyTo, applyWith) {
+      applyWith = applyWith || [];
+      var oldZone = global.zone;
+      global.zone = this;
+      try {
+        this.beforeTask();
+        return fn.apply(applyTo, applyWith);
+      } catch (e) {
+        if (this.onError) {
+          this.onError(e);
+        } else {
+          throw e;
+        }
+      } finally {
+        this.afterTask();
+        global.zone = oldZone;
+      }
+    },
+    onError: null,
+    beforeTask: function() {},
+    onZoneCreated: function() {},
+    afterTask: function() {},
+    enqueueTask: function() {},
+    dequeueTask: function() {}
+  };
+  Zone.nextId = 1;
+  Zone.bindPromiseFn = require("npm:zone.js@0.5.4/lib/patch/promise").bindPromiseFn;
+  module.exports = {Zone: Zone};
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:zone.js@0.5.4/lib/patch/browser", ["npm:zone.js@0.5.4/lib/patch/functions", "npm:zone.js@0.5.4/lib/patch/promise", "npm:zone.js@0.5.4/lib/patch/mutation-observer", "npm:zone.js@0.5.4/lib/patch/define-property", "npm:zone.js@0.5.4/lib/patch/register-element", "npm:zone.js@0.5.4/lib/patch/websocket", "npm:zone.js@0.5.4/lib/patch/event-target", "npm:zone.js@0.5.4/lib/patch/property-descriptor", "npm:zone.js@0.5.4/lib/patch/geolocation"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var fnPatch = require("npm:zone.js@0.5.4/lib/patch/functions");
+  var promisePatch = require("npm:zone.js@0.5.4/lib/patch/promise");
+  var mutationObserverPatch = require("npm:zone.js@0.5.4/lib/patch/mutation-observer");
+  var definePropertyPatch = require("npm:zone.js@0.5.4/lib/patch/define-property");
+  var registerElementPatch = require("npm:zone.js@0.5.4/lib/patch/register-element");
+  var webSocketPatch = require("npm:zone.js@0.5.4/lib/patch/websocket");
+  var eventTargetPatch = require("npm:zone.js@0.5.4/lib/patch/event-target");
+  var propertyDescriptorPatch = require("npm:zone.js@0.5.4/lib/patch/property-descriptor");
+  var geolocationPatch = require("npm:zone.js@0.5.4/lib/patch/geolocation");
+  function apply() {
+    fnPatch.patchSetClearFunction(global, ['timeout', 'interval', 'immediate']);
+    fnPatch.patchRequestAnimationFrame(global, ['requestAnimationFrame', 'mozRequestAnimationFrame', 'webkitRequestAnimationFrame']);
+    fnPatch.patchFunction(global, ['alert', 'prompt']);
+    eventTargetPatch.apply();
+    propertyDescriptorPatch.apply();
+    promisePatch.apply();
+    mutationObserverPatch.patchClass('MutationObserver');
+    mutationObserverPatch.patchClass('WebKitMutationObserver');
+    definePropertyPatch.apply();
+    registerElementPatch.apply();
+    geolocationPatch.apply();
+  }
+  module.exports = {apply: apply};
   global.define = __define;
   return module.exports;
 });
@@ -5107,13 +5116,51 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.core", [], true, fun
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.assign", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.assign"], true, function(require, exports, module) {
+System.registerDynamic("github:jspm/nodelibs-process@0.1.2", ["github:jspm/nodelibs-process@0.1.2/index"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def");
-  $def($def.S, 'Object', {assign: require("npm:core-js@1.1.3/modules/$.assign")});
+  module.exports = require("github:jspm/nodelibs-process@0.1.2/index");
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/symbol", ["npm:core-js@1.1.3/library/fn/symbol"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": require("npm:core-js@1.1.3/library/fn/symbol"),
+    __esModule: true
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/create", ["npm:core-js@1.1.3/library/fn/object/create"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": require("npm:core-js@1.1.3/library/fn/object/create"),
+    __esModule: true
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/symbol/iterator", ["npm:core-js@1.1.3/library/fn/symbol/iterator"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {
+    "default": require("npm:core-js@1.1.3/library/fn/symbol/iterator"),
+    __esModule: true
+  };
   global.define = __define;
   return module.exports;
 });
@@ -5561,6 +5608,17 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es5", ["npm:core-js@1.1.3/modu
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.assign", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.assign"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $def = require("npm:core-js@1.1.3/modules/$.def");
+  $def($def.S, 'Object', {assign: require("npm:core-js@1.1.3/modules/$.assign")});
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.same"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -5661,21 +5719,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is-frozen", ["npm:c
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is-sealed", ["npm:core-js@1.1.3/modules/$.is-object", "npm:core-js@1.1.3/modules/$.object-sap"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var isObject = require("npm:core-js@1.1.3/modules/$.is-object");
-  require("npm:core-js@1.1.3/modules/$.object-sap")('isSealed', function($isSealed) {
-    return function isSealed(it) {
-      return isObject(it) ? $isSealed ? $isSealed(it) : false : true;
-    };
-  });
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is-extensible", ["npm:core-js@1.1.3/modules/$.is-object", "npm:core-js@1.1.3/modules/$.object-sap"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -5685,6 +5728,21 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is-extensible", ["n
   require("npm:core-js@1.1.3/modules/$.object-sap")('isExtensible', function($isExtensible) {
     return function isExtensible(it) {
       return isObject(it) ? $isExtensible ? $isExtensible(it) : true : false;
+    };
+  });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.object.is-sealed", ["npm:core-js@1.1.3/modules/$.is-object", "npm:core-js@1.1.3/modules/$.object-sap"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var isObject = require("npm:core-js@1.1.3/modules/$.is-object");
+  require("npm:core-js@1.1.3/modules/$.object-sap")('isSealed', function($isSealed) {
+    return function isSealed(it) {
+      return isObject(it) ? $isSealed ? $isSealed(it) : false : true;
     };
   });
   global.define = __define;
@@ -5870,6 +5928,17 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.epsilon", ["npm:cor
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-integer", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.is-integer"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $def = require("npm:core-js@1.1.3/modules/$.def");
+  $def($def.S, 'Number', {isInteger: require("npm:core-js@1.1.3/modules/$.is-integer")});
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-finite", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.global"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -5884,13 +5953,15 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-finite", ["npm:c
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-integer", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.is-integer"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-nan", ["npm:core-js@1.1.3/modules/$.def"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   var $def = require("npm:core-js@1.1.3/modules/$.def");
-  $def($def.S, 'Number', {isInteger: require("npm:core-js@1.1.3/modules/$.is-integer")});
+  $def($def.S, 'Number', {isNaN: function isNaN(number) {
+      return number != number;
+    }});
   global.define = __define;
   return module.exports;
 });
@@ -5910,15 +5981,13 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-safe-integer", [
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.is-nan", ["npm:core-js@1.1.3/modules/$.def"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.max-safe-integer", ["npm:core-js@1.1.3/modules/$.def"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   var $def = require("npm:core-js@1.1.3/modules/$.def");
-  $def($def.S, 'Number', {isNaN: function isNaN(number) {
-      return number != number;
-    }});
+  $def($def.S, 'Number', {MAX_SAFE_INTEGER: 0x1fffffffffffff});
   global.define = __define;
   return module.exports;
 });
@@ -5930,17 +5999,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.min-safe-integer", 
   global.define = undefined;
   var $def = require("npm:core-js@1.1.3/modules/$.def");
   $def($def.S, 'Number', {MIN_SAFE_INTEGER: -0x1fffffffffffff});
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.number.max-safe-integer", ["npm:core-js@1.1.3/modules/$.def"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def");
-  $def($def.S, 'Number', {MAX_SAFE_INTEGER: 0x1fffffffffffff});
   global.define = __define;
   return module.exports;
 });
@@ -6719,23 +6777,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.regexp.match", ["npm:core-
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.regexp.search", ["npm:core-js@1.1.3/modules/$.fix-re-wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/modules/$.fix-re-wks")('search', 1, function(defined, SEARCH) {
-    return function search(regexp) {
-      'use strict';
-      var O = defined(this),
-          fn = regexp == undefined ? undefined : regexp[SEARCH];
-      return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
-    };
-  });
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.regexp.replace", ["npm:core-js@1.1.3/modules/$.fix-re-wks"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -6747,6 +6788,23 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.regexp.replace", ["npm:cor
       var O = defined(this),
           fn = searchValue == undefined ? undefined : searchValue[REPLACE];
       return fn !== undefined ? fn.call(searchValue, O, replaceValue) : $replace.call(String(O), searchValue, replaceValue);
+    };
+  });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.regexp.search", ["npm:core-js@1.1.3/modules/$.fix-re-wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/modules/$.fix-re-wks")('search', 1, function(defined, SEARCH) {
+    return function search(regexp) {
+      'use strict';
+      var O = defined(this),
+          fn = regexp == undefined ? undefined : regexp[SEARCH];
+      return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
     };
   });
   global.define = __define;
@@ -7070,6 +7128,24 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.map", ["npm:core-js@1.1.3/
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.set", ["npm:core-js@1.1.3/modules/$.collection-strong", "npm:core-js@1.1.3/modules/$.collection"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var strong = require("npm:core-js@1.1.3/modules/$.collection-strong");
+  require("npm:core-js@1.1.3/modules/$.collection")('Set', function(get) {
+    return function Set() {
+      return get(this, arguments[0]);
+    };
+  }, {add: function add(value) {
+      return strong.def(this, value = value === 0 ? 0 : value, value);
+    }}, strong);
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.weak-map", ["npm:core-js@1.1.3/modules/$", "npm:core-js@1.1.3/modules/$.collection-weak", "npm:core-js@1.1.3/modules/$.is-object", "npm:core-js@1.1.3/modules/$.has", "npm:core-js@1.1.3/modules/$.collection", "npm:core-js@1.1.3/modules/$.redef"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -7132,24 +7208,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.weak-set", ["npm:core-js@1
   }, {add: function add(value) {
       return weak.def(this, value, true);
     }}, weak, false, true);
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.set", ["npm:core-js@1.1.3/modules/$.collection-strong", "npm:core-js@1.1.3/modules/$.collection"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var strong = require("npm:core-js@1.1.3/modules/$.collection-strong");
-  require("npm:core-js@1.1.3/modules/$.collection")('Set', function(get) {
-    return function Set() {
-      return get(this, arguments[0]);
-    };
-  }, {add: function add(value) {
-      return strong.def(this, value = value === 0 ? 0 : value, value);
-    }}, strong);
   global.define = __define;
   return module.exports;
 });
@@ -7234,22 +7292,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.define-property", 
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.delete-property", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$", "npm:core-js@1.1.3/modules/$.an-object"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def"),
-      getDesc = require("npm:core-js@1.1.3/modules/$").getDesc,
-      anObject = require("npm:core-js@1.1.3/modules/$.an-object");
-  $def($def.S, 'Reflect', {deleteProperty: function deleteProperty(target, propertyKey) {
-      var desc = getDesc(anObject(target), propertyKey);
-      return desc && !desc.configurable ? false : delete target[propertyKey];
-    }});
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.enumerate", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.an-object", "npm:core-js@1.1.3/modules/$.iter-create"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -7284,6 +7326,22 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.enumerate", ["npm:
   });
   $def($def.S, 'Reflect', {enumerate: function enumerate(target) {
       return new Enumerate(target);
+    }});
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.delete-property", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$", "npm:core-js@1.1.3/modules/$.an-object"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $def = require("npm:core-js@1.1.3/modules/$.def"),
+      getDesc = require("npm:core-js@1.1.3/modules/$").getDesc,
+      anObject = require("npm:core-js@1.1.3/modules/$.an-object");
+  $def($def.S, 'Reflect', {deleteProperty: function deleteProperty(target, propertyKey) {
+      var desc = getDesc(anObject(target), propertyKey);
+      return desc && !desc.configurable ? false : delete target[propertyKey];
     }});
   global.define = __define;
   return module.exports;
@@ -7330,21 +7388,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.get-own-property-d
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$", "npm:core-js@1.1.3/modules/$.an-object"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def"),
-      getProto = require("npm:core-js@1.1.3/modules/$").getProto,
-      anObject = require("npm:core-js@1.1.3/modules/$.an-object");
-  $def($def.S, 'Reflect', {getPrototypeOf: function getPrototypeOf(target) {
-      return getProto(anObject(target));
-    }});
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.has", ["npm:core-js@1.1.3/modules/$.def"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -7358,13 +7401,17 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.has", ["npm:core-j
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.own-keys", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.own-keys"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.get-prototype-of", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$", "npm:core-js@1.1.3/modules/$.an-object"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def");
-  $def($def.S, 'Reflect', {ownKeys: require("npm:core-js@1.1.3/modules/$.own-keys")});
+  var $def = require("npm:core-js@1.1.3/modules/$.def"),
+      getProto = require("npm:core-js@1.1.3/modules/$").getProto,
+      anObject = require("npm:core-js@1.1.3/modules/$.an-object");
+  $def($def.S, 'Reflect', {getPrototypeOf: function getPrototypeOf(target) {
+      return getProto(anObject(target));
+    }});
   global.define = __define;
   return module.exports;
 });
@@ -7381,6 +7428,17 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.is-extensible", ["
       anObject(target);
       return $isExtensible ? $isExtensible(target) : true;
     }});
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.own-keys", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.own-keys"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $def = require("npm:core-js@1.1.3/modules/$.def");
+  $def($def.S, 'Reflect', {ownKeys: require("npm:core-js@1.1.3/modules/$.own-keys")});
   global.define = __define;
   return module.exports;
 });
@@ -7403,6 +7461,27 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.prevent-extensions
         return false;
       }
     }});
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.set-proto"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $def = require("npm:core-js@1.1.3/modules/$.def"),
+      setProto = require("npm:core-js@1.1.3/modules/$.set-proto");
+  if (setProto)
+    $def($def.S, 'Reflect', {setPrototypeOf: function setPrototypeOf(target, proto) {
+        setProto.check(target, proto);
+        try {
+          setProto.set(target, proto);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }});
   global.define = __define;
   return module.exports;
 });
@@ -7440,27 +7519,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.set", ["npm:core-j
     return ownDesc.set === undefined ? false : (ownDesc.set.call(receiver, V), true);
   }
   $def($def.S, 'Reflect', {set: set});
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/es6.reflect.set-prototype-of", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.set-proto"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/modules/$.def"),
-      setProto = require("npm:core-js@1.1.3/modules/$.set-proto");
-  if (setProto)
-    $def($def.S, 'Reflect', {setPrototypeOf: function setPrototypeOf(target, proto) {
-        setProto.check(target, proto);
-        try {
-          setProto.set(target, proto);
-          return true;
-        } catch (e) {
-          return false;
-        }
-      }});
   global.define = __define;
   return module.exports;
 });
@@ -7751,51 +7809,941 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.core", [], true, function(re
   return module.exports;
 });
 
-System.registerDynamic("github:jspm/nodelibs-process@0.1.2", ["github:jspm/nodelibs-process@0.1.2/index"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = require("github:jspm/nodelibs-process@0.1.2/index");
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/symbol", ["npm:core-js@1.1.3/library/fn/symbol"], true, function(require, exports, module) {
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/set-prototype-of", ["npm:core-js@1.1.3/library/fn/object/set-prototype-of"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/symbol"),
+    "default": require("npm:core-js@1.1.3/library/fn/object/set-prototype-of"),
     __esModule: true
   };
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/symbol/iterator", ["npm:core-js@1.1.3/library/fn/symbol/iterator"], true, function(require, exports, module) {
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/define-property", ["npm:core-js@1.1.3/library/fn/object/define-property"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/symbol/iterator"),
+    "default": require("npm:core-js@1.1.3/library/fn/object/define-property"),
     __esModule: true
   };
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/create", ["npm:core-js@1.1.3/library/fn/object/create"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/fn/set", ["npm:core-js@1.1.3/library/modules/es6.object.to-string", "npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/es6.set", "npm:core-js@1.1.3/library/modules/es7.set.to-json", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/library/modules/es6.object.to-string");
+  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
+  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
+  require("npm:core-js@1.1.3/library/modules/es6.set");
+  require("npm:core-js@1.1.3/library/modules/es7.set.to-json");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Set;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/object/keys", ["npm:core-js@1.1.3/library/modules/es6.object.keys", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/library/modules/es6.object.keys");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Object.keys;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("api/rule-engine/rule-action", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+  var ActionTypeModel = (function() {
+    function ActionTypeModel(id, i18nKey) {
+      if (id === void 0) {
+        id = null;
+      }
+      if (i18nKey === void 0) {
+        i18nKey = null;
+      }
+      this.id = id;
+      this.i18nKey = i18nKey;
+    }
+    ActionTypeModel.prototype.clone = function() {
+      throw new Error("Extending classes must implement their own clone method and should not call super.");
+    };
+    return ActionTypeModel;
+  })();
+  exports.ActionTypeModel = ActionTypeModel;
+  var ActionConfigModel = (function() {
+    function ActionConfigModel(actionTypeId) {
+      this.actionTypeId = actionTypeId;
+    }
+    ActionConfigModel.prototype.clone = function() {
+      throw new Error("Extending classes must implement their own clone method and should not call super.");
+    };
+    ActionConfigModel.prototype.out = function() {
+      return {};
+    };
+    return ActionConfigModel;
+  })();
+  exports.ActionConfigModel = ActionConfigModel;
+  var SetSessionValueActionModel = (function(_super) {
+    __extends(SetSessionValueActionModel, _super);
+    function SetSessionValueActionModel(parameters) {
+      var _this = this;
+      if (parameters === void 0) {
+        parameters = {};
+      }
+      _super.call(this, "SetSessionAttributeActionlet");
+      this.sessionKeyValue = '';
+      this.sessionValue = '';
+      Object.keys(parameters).forEach(function(paramId) {
+        var param = parameters[paramId];
+        switch (param.key) {
+          case 'sessionValue':
+            {
+              _this.sessionValue = param.value || '';
+              break;
+            }
+          case 'sessionKeyValue':
+            {
+              _this.sessionKeyValue = param.value || '';
+              break;
+            }
+        }
+      });
+    }
+    SetSessionValueActionModel.prototype.clone = function() {
+      var model = new SetSessionValueActionModel();
+      model.sessionKeyValue = this.sessionKeyValue;
+      model.sessionValue = this.sessionValue;
+      return model;
+    };
+    SetSessionValueActionModel.prototype.out = function() {
+      return {
+        sessionKeyValue: {
+          id: 'sessionKeyValue',
+          key: 'sessionKeyValue',
+          value: this.sessionKeyValue
+        },
+        sessionValue: {
+          id: 'sessionValue',
+          key: 'sessionValue',
+          value: this.sessionValue
+        }
+      };
+    };
+    return SetSessionValueActionModel;
+  })(ActionConfigModel);
+  exports.SetSessionValueActionModel = SetSessionValueActionModel;
+  var RuleActionModel = (function() {
+    function RuleActionModel(id, actionConfig) {
+      if (id === void 0) {
+        id = null;
+      }
+      if (actionConfig === void 0) {
+        actionConfig = null;
+      }
+      this.id = id;
+      this.actionConfig = actionConfig;
+      this.priority = 0;
+    }
+    RuleActionModel.prototype.setActionType = function(actionType, parameters) {
+      if (parameters === void 0) {
+        parameters = {};
+      }
+      if (actionType.id === 'SetSessionAttributeActionlet') {
+        this.actionConfig = new SetSessionValueActionModel(parameters);
+      } else {
+        this.actionConfig = new ActionConfigModel(actionType.id);
+      }
+    };
+    RuleActionModel.prototype.out = function() {
+      return {
+        id: this.id,
+        actionlet: this.actionConfig.actionTypeId,
+        priority: this.priority,
+        name: this.name,
+        owningRule: this.owningRuleId,
+        parameters: this.actionConfig.out()
+      };
+    };
+    RuleActionModel.prototype.clone = function() {
+      return new RuleActionModel(this.id, this.actionConfig.clone());
+    };
+    return RuleActionModel;
+  })();
+  exports.RuleActionModel = RuleActionModel;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine/rule-action-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/templates/index", "rule-engine/actionlets/set-session-value-actionlet/set-session-value-action", "api/rule-engine/rule-action", "api/persistence/ApiRoot", "api/rule-engine/ActionTypes"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var index_1 = require("rule-engine/templates/index");
+  var set_session_value_action_1 = require("rule-engine/actionlets/set-session-value-actionlet/set-session-value-action");
+  var rule_action_1 = require("api/rule-engine/rule-action");
+  var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var ActionTypes_1 = require("api/rule-engine/ActionTypes");
+  var RuleActionComponent = (function() {
+    function RuleActionComponent(apiRoot, typesProvider) {
+      var _this = this;
+      this.actionTypes = [];
+      this.typesProvider = typesProvider;
+      typesProvider.promise.then(function() {
+        _this.actionTypes = typesProvider.ary;
+      });
+      this.actionModel = new rule_action_1.RuleActionModel();
+    }
+    RuleActionComponent.prototype.onSetActionMeta = function(snapshot) {
+      var val = snapshot.val();
+      this.actionModel.id = val.id;
+      this.actionModel.name = val.name;
+      this.actionModel.owningRuleId = val.owningRule;
+      this.actionModel.priority = val.priority;
+      this.actionModel.setActionType(this.typesProvider.map.get(val.actionlet), val.parameters);
+    };
+    Object.defineProperty(RuleActionComponent.prototype, "actionMeta", {
+      get: function() {
+        return this._actionMeta;
+      },
+      set: function(actionMeta) {
+        this._actionMeta = actionMeta;
+        this._actionMeta.once('value', this.onSetActionMeta.bind(this));
+      },
+      enumerable: true,
+      configurable: true
+    });
+    RuleActionComponent.prototype.setActionlet = function(actionletId) {
+      this.actionModel.setActionType(this.typesProvider.map.get(actionletId));
+      this.updateAction();
+    };
+    RuleActionComponent.prototype.actionConfigChanged = function(event) {
+      this.actionModel.actionConfig = event.ngTarget.value;
+      this.updateAction();
+    };
+    RuleActionComponent.prototype.updateAction = function() {
+      this.actionMeta.set(this.actionModel.out());
+    };
+    RuleActionComponent.prototype.removeRuleAction = function() {
+      this.actionMeta.remove();
+    };
+    RuleActionComponent = __decorate([angular2_1.Component({
+      selector: 'rule-action',
+      properties: ["actionMeta"]
+    }), angular2_1.View({
+      template: index_1.ruleActionTemplate,
+      directives: [angular2_1.NgIf, angular2_1.NgFor, set_session_value_action_1.SetSessionValueAction]
+    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __param(1, angular2_1.Inject(ActionTypes_1.ActionTypesProvider)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object, (typeof(_b = typeof ActionTypes_1.ActionTypesProvider !== 'undefined' && ActionTypes_1.ActionTypesProvider) === 'function' && _b) || Object])], RuleActionComponent);
+    return RuleActionComponent;
+    var _a,
+        _b;
+  })();
+  exports.RuleActionComponent = RuleActionComponent;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine/rule-condition-group-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/rule-condition-component", "rule-engine/templates/index", "api/persistence/ApiRoot"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var rule_condition_component_1 = require("rule-engine/rule-condition-component");
+  var index_1 = require("rule-engine/templates/index");
+  var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var ConditionGroupComponent = (function() {
+    function ConditionGroupComponent(apiRoot) {
+      var _this = this;
+      this.apiRoot = apiRoot;
+      this.groupCollapsed = false;
+      this.conditions = [];
+      this.groupIndex = 0;
+      this.conditionsRef = this.apiRoot.defaultSite.child('ruleengine/conditions');
+      this.conditionsRef.on('child_added', function(conditionSnap) {
+        if (conditionSnap.val().owningGroup == _this.groupSnap.key()) {
+          _this.conditions.push(conditionSnap.ref());
+        }
+      });
+      this.conditionsRef.on('child_removed', function(conditionSnap) {
+        if (conditionSnap.val().owningGroup == _this.groupSnap.key()) {
+          _this.conditions = _this.conditions.filter(function(existingSnap) {
+            return existingSnap.key() != conditionSnap.key();
+          });
+          if (_this.conditions.length === 0) {
+            _this._groupSnap.ref().remove();
+          }
+        }
+      });
+    }
+    Object.defineProperty(ConditionGroupComponent.prototype, "groupSnap", {
+      get: function() {
+        return this._groupSnap;
+      },
+      set: function(groupSnap) {
+        console.log('Setting ConditionGroup snapshot: ', groupSnap.key());
+        this._groupSnap = groupSnap;
+        this.group = groupSnap.val();
+        this.getConditions();
+      },
+      enumerable: true,
+      configurable: true
+    });
+    ConditionGroupComponent.prototype.getConditions = function() {
+      var _this = this;
+      var conditionMetas = [];
+      var conditionSnap = this.groupSnap.child('conditions');
+      conditionSnap.forEach(function(childSnap) {
+        var key = childSnap.key();
+        var ref = _this.conditionsRef.child(key);
+        conditionMetas.push(ref);
+        ref.once('value', function(snap) {});
+      });
+      return conditionMetas;
+    };
+    ConditionGroupComponent.prototype.addCondition = function() {
+      var _this = this;
+      console.log('Adding condition to ConditionsGroup');
+      var condition = {
+        priority: 10,
+        name: "Condition. " + new Date().toISOString(),
+        owningGroup: this._groupSnap.key(),
+        conditionlet: 'UsersBrowserHeaderConditionlet',
+        comparison: 'Is',
+        operator: 'AND',
+        values: {
+          headerKeyValue: {
+            id: 'fakeId',
+            key: 'headerKeyValue',
+            value: '',
+            priority: 10
+          },
+          compareTo: {
+            id: 'fakeId2',
+            key: 'compareTo',
+            value: '',
+            priority: 1
+          },
+          isoCode: {
+            id: 'fakeId3',
+            key: 'isoCode',
+            value: '',
+            priority: 1
+          }
+        }
+      };
+      this.conditionsRef.push(condition, function(result) {
+        _this.group.conditions = _this.group.conditions || {};
+        _this.group.conditions[result.key()] = true;
+        _this.updateGroup();
+      });
+    };
+    ConditionGroupComponent.prototype.toggleGroupOperator = function() {
+      this.group.operator = this.group.operator === "AND" ? "OR" : "AND";
+      this.updateGroup();
+    };
+    ConditionGroupComponent.prototype.updateGroup = function() {
+      console.log('Updating ConditionsGroup');
+      this.groupSnap.ref().set(this.group);
+    };
+    ConditionGroupComponent = __decorate([angular2_1.Component({
+      selector: 'condition-group',
+      properties: ["rule", "groupSnap", "groupIndex"]
+    }), angular2_1.View({
+      template: index_1.conditionGroupTemplate,
+      directives: [rule_condition_component_1.ConditionComponent, angular2_1.NgIf, angular2_1.NgFor]
+    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object])], ConditionGroupComponent);
+    return ConditionGroupComponent;
+    var _a;
+  })();
+  exports.ConditionGroupComponent = ConditionGroupComponent;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/object/get-own-property-names", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/es6.object.get-own-property-names"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $ = require("npm:core-js@1.1.3/library/modules/$");
+  require("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-names");
+  module.exports = function getOwnPropertyNames(it) {
+    return $.getNames(it);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:whatwg-fetch@0.9.0/fetch", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  "format cjs";
+  (function() {
+    'use strict';
+    if (self.fetch) {
+      return;
+    }
+    function normalizeName(name) {
+      if (typeof name !== 'string') {
+        name = name.toString();
+      }
+      if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+        throw new TypeError('Invalid character in header field name');
+      }
+      return name.toLowerCase();
+    }
+    function normalizeValue(value) {
+      if (typeof value !== 'string') {
+        value = value.toString();
+      }
+      return value;
+    }
+    function Headers(headers) {
+      this.map = {};
+      if (headers instanceof Headers) {
+        headers.forEach(function(value, name) {
+          this.append(name, value);
+        }, this);
+      } else if (headers) {
+        Object.getOwnPropertyNames(headers).forEach(function(name) {
+          this.append(name, headers[name]);
+        }, this);
+      }
+    }
+    Headers.prototype.append = function(name, value) {
+      name = normalizeName(name);
+      value = normalizeValue(value);
+      var list = this.map[name];
+      if (!list) {
+        list = [];
+        this.map[name] = list;
+      }
+      list.push(value);
+    };
+    Headers.prototype['delete'] = function(name) {
+      delete this.map[normalizeName(name)];
+    };
+    Headers.prototype.get = function(name) {
+      var values = this.map[normalizeName(name)];
+      return values ? values[0] : null;
+    };
+    Headers.prototype.getAll = function(name) {
+      return this.map[normalizeName(name)] || [];
+    };
+    Headers.prototype.has = function(name) {
+      return this.map.hasOwnProperty(normalizeName(name));
+    };
+    Headers.prototype.set = function(name, value) {
+      this.map[normalizeName(name)] = [normalizeValue(value)];
+    };
+    Headers.prototype.forEach = function(callback, thisArg) {
+      Object.getOwnPropertyNames(this.map).forEach(function(name) {
+        this.map[name].forEach(function(value) {
+          callback.call(thisArg, value, name, this);
+        }, this);
+      }, this);
+    };
+    function consumed(body) {
+      if (body.bodyUsed) {
+        return Promise.reject(new TypeError('Already read'));
+      }
+      body.bodyUsed = true;
+    }
+    function fileReaderReady(reader) {
+      return new Promise(function(resolve, reject) {
+        reader.onload = function() {
+          resolve(reader.result);
+        };
+        reader.onerror = function() {
+          reject(reader.error);
+        };
+      });
+    }
+    function readBlobAsArrayBuffer(blob) {
+      var reader = new FileReader();
+      reader.readAsArrayBuffer(blob);
+      return fileReaderReady(reader);
+    }
+    function readBlobAsText(blob) {
+      var reader = new FileReader();
+      reader.readAsText(blob);
+      return fileReaderReady(reader);
+    }
+    var support = {
+      blob: 'FileReader' in self && 'Blob' in self && (function() {
+        try {
+          new Blob();
+          return true;
+        } catch (e) {
+          return false;
+        }
+      })(),
+      formData: 'FormData' in self
+    };
+    function Body() {
+      this.bodyUsed = false;
+      this._initBody = function(body) {
+        this._bodyInit = body;
+        if (typeof body === 'string') {
+          this._bodyText = body;
+        } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+          this._bodyBlob = body;
+        } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+          this._bodyFormData = body;
+        } else if (!body) {
+          this._bodyText = '';
+        } else {
+          throw new Error('unsupported BodyInit type');
+        }
+      };
+      if (support.blob) {
+        this.blob = function() {
+          var rejected = consumed(this);
+          if (rejected) {
+            return rejected;
+          }
+          if (this._bodyBlob) {
+            return Promise.resolve(this._bodyBlob);
+          } else if (this._bodyFormData) {
+            throw new Error('could not read FormData body as blob');
+          } else {
+            return Promise.resolve(new Blob([this._bodyText]));
+          }
+        };
+        this.arrayBuffer = function() {
+          return this.blob().then(readBlobAsArrayBuffer);
+        };
+        this.text = function() {
+          var rejected = consumed(this);
+          if (rejected) {
+            return rejected;
+          }
+          if (this._bodyBlob) {
+            return readBlobAsText(this._bodyBlob);
+          } else if (this._bodyFormData) {
+            throw new Error('could not read FormData body as text');
+          } else {
+            return Promise.resolve(this._bodyText);
+          }
+        };
+      } else {
+        this.text = function() {
+          var rejected = consumed(this);
+          return rejected ? rejected : Promise.resolve(this._bodyText);
+        };
+      }
+      if (support.formData) {
+        this.formData = function() {
+          return this.text().then(decode);
+        };
+      }
+      this.json = function() {
+        return this.text().then(JSON.parse);
+      };
+      return this;
+    }
+    var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
+    function normalizeMethod(method) {
+      var upcased = method.toUpperCase();
+      return (methods.indexOf(upcased) > -1) ? upcased : method;
+    }
+    function Request(url, options) {
+      options = options || {};
+      this.url = url;
+      this.credentials = options.credentials || 'omit';
+      this.headers = new Headers(options.headers);
+      this.method = normalizeMethod(options.method || 'GET');
+      this.mode = options.mode || null;
+      this.referrer = null;
+      if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
+        throw new TypeError('Body not allowed for GET or HEAD requests');
+      }
+      this._initBody(options.body);
+    }
+    function decode(body) {
+      var form = new FormData();
+      body.trim().split('&').forEach(function(bytes) {
+        if (bytes) {
+          var split = bytes.split('=');
+          var name = split.shift().replace(/\+/g, ' ');
+          var value = split.join('=').replace(/\+/g, ' ');
+          form.append(decodeURIComponent(name), decodeURIComponent(value));
+        }
+      });
+      return form;
+    }
+    function headers(xhr) {
+      var head = new Headers();
+      var pairs = xhr.getAllResponseHeaders().trim().split('\n');
+      pairs.forEach(function(header) {
+        var split = header.trim().split(':');
+        var key = split.shift().trim();
+        var value = split.join(':').trim();
+        head.append(key, value);
+      });
+      return head;
+    }
+    Body.call(Request.prototype);
+    function Response(bodyInit, options) {
+      if (!options) {
+        options = {};
+      }
+      this._initBody(bodyInit);
+      this.type = 'default';
+      this.url = null;
+      this.status = options.status;
+      this.ok = this.status >= 200 && this.status < 300;
+      this.statusText = options.statusText;
+      this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers);
+      this.url = options.url || '';
+    }
+    Body.call(Response.prototype);
+    self.Headers = Headers;
+    self.Request = Request;
+    self.Response = Response;
+    self.fetch = function(input, init) {
+      var request;
+      if (Request.prototype.isPrototypeOf(input) && !init) {
+        request = input;
+      } else {
+        request = new Request(input, init);
+      }
+      return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        function responseURL() {
+          if ('responseURL' in xhr) {
+            return xhr.responseURL;
+          }
+          if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+            return xhr.getResponseHeader('X-Request-URL');
+          }
+          return;
+        }
+        xhr.onload = function() {
+          var status = (xhr.status === 1223) ? 204 : xhr.status;
+          if (status < 100 || status > 599) {
+            reject(new TypeError('Network request failed'));
+            return;
+          }
+          var options = {
+            status: status,
+            statusText: xhr.statusText,
+            headers: headers(xhr),
+            url: responseURL()
+          };
+          var body = 'response' in xhr ? xhr.response : xhr.responseText;
+          resolve(new Response(body, options));
+        };
+        xhr.onerror = function() {
+          reject(new TypeError('Network request failed'));
+        };
+        xhr.open(request.method, request.url, true);
+        if (request.credentials === 'include') {
+          xhr.withCredentials = true;
+        }
+        if ('responseType' in xhr && support.blob) {
+          xhr.responseType = 'blob';
+        }
+        request.headers.forEach(function(value, name) {
+          xhr.setRequestHeader(name, value);
+        });
+        xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
+      });
+    };
+    self.fetch.polyfill = true;
+  })();
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/get-own-property-descriptor", ["npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/object/create"),
+    "default": require("npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor"),
     __esModule: true
   };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/promise", ["npm:core-js@1.1.3/library/modules/es6.object.to-string", "npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/es6.promise", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/library/modules/es6.object.to-string");
+  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
+  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
+  require("npm:core-js@1.1.3/library/modules/es6.promise");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Promise;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/metadata", ["npm:angular2@2.0.0-alpha.36/src/core/metadata", "npm:angular2@2.0.0-alpha.36/src/util/decorators"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
+  exports.ComponentMetadata = metadata_1.ComponentMetadata;
+  exports.DirectiveMetadata = metadata_1.DirectiveMetadata;
+  exports.PipeMetadata = metadata_1.PipeMetadata;
+  exports.LifecycleEvent = metadata_1.LifecycleEvent;
+  exports.ViewMetadata = metadata_1.ViewMetadata;
+  exports.ViewEncapsulation = metadata_1.ViewEncapsulation;
+  exports.QueryMetadata = metadata_1.QueryMetadata;
+  exports.AttributeMetadata = metadata_1.AttributeMetadata;
+  exports.Attribute = metadata_1.Attribute;
+  exports.Component = metadata_1.Component;
+  exports.Directive = metadata_1.Directive;
+  exports.View = metadata_1.View;
+  exports.Query = metadata_1.Query;
+  exports.ViewQuery = metadata_1.ViewQuery;
+  exports.Pipe = metadata_1.Pipe;
+  var decorators_1 = require("npm:angular2@2.0.0-alpha.36/src/util/decorators");
+  exports.Class = decorators_1.Class;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/change_detection", ["npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection");
+  exports.CHECK_ONCE = change_detection_1.CHECK_ONCE;
+  exports.CHECK_ALWAYS = change_detection_1.CHECK_ALWAYS;
+  exports.DETACHED = change_detection_1.DETACHED;
+  exports.CHECKED = change_detection_1.CHECKED;
+  exports.ON_PUSH = change_detection_1.ON_PUSH;
+  exports.DEFAULT = change_detection_1.DEFAULT;
+  exports.ExpressionChangedAfterItHasBeenCheckedException = change_detection_1.ExpressionChangedAfterItHasBeenCheckedException;
+  exports.ChangeDetectionError = change_detection_1.ChangeDetectionError;
+  exports.Locals = change_detection_1.Locals;
+  exports.ChangeDetectorRef = change_detection_1.ChangeDetectorRef;
+  exports.WrappedValue = change_detection_1.WrappedValue;
+  exports.IterableDiffers = change_detection_1.IterableDiffers;
+  exports.KeyValueDiffers = change_detection_1.KeyValueDiffers;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/core", ["npm:angular2@2.0.0-alpha.36/src/core/application_tokens", "npm:angular2@2.0.0-alpha.36/src/core/application_common", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/core/application_ref", "npm:angular2@2.0.0-alpha.36/src/services/app_root_url", "npm:angular2@2.0.0-alpha.36/src/services/url_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/component_url_mapper", "npm:angular2@2.0.0-alpha.36/src/core/compiler/directive_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager", "npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list", "npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader", "npm:angular2@2.0.0-alpha.36/src/core/life_cycle/life_cycle", "npm:angular2@2.0.0-alpha.36/src/core/compiler/element_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/template_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_container_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader", "npm:angular2@2.0.0-alpha.36/src/core/zone/ng_zone", "npm:angular2@2.0.0-alpha.36/src/facade/async"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var application_tokens_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_tokens");
+  exports.APP_COMPONENT = application_tokens_1.APP_COMPONENT;
+  var application_common_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_common");
+  exports.bootstrap = application_common_1.commonBootstrap;
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  exports.Type = lang_1.Type;
+  var application_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_ref");
+  exports.ApplicationRef = application_ref_1.ApplicationRef;
+  var app_root_url_1 = require("npm:angular2@2.0.0-alpha.36/src/services/app_root_url");
+  exports.AppRootUrl = app_root_url_1.AppRootUrl;
+  var url_resolver_1 = require("npm:angular2@2.0.0-alpha.36/src/services/url_resolver");
+  exports.UrlResolver = url_resolver_1.UrlResolver;
+  var component_url_mapper_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/component_url_mapper");
+  exports.ComponentUrlMapper = component_url_mapper_1.ComponentUrlMapper;
+  var directive_resolver_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/directive_resolver");
+  exports.DirectiveResolver = directive_resolver_1.DirectiveResolver;
+  var compiler_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler");
+  exports.Compiler = compiler_1.Compiler;
+  var view_manager_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager");
+  exports.AppViewManager = view_manager_1.AppViewManager;
+  var query_list_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list");
+  exports.QueryList = query_list_1.QueryList;
+  var dynamic_component_loader_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader");
+  exports.DynamicComponentLoader = dynamic_component_loader_1.DynamicComponentLoader;
+  var life_cycle_1 = require("npm:angular2@2.0.0-alpha.36/src/core/life_cycle/life_cycle");
+  exports.LifeCycle = life_cycle_1.LifeCycle;
+  var element_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/element_ref");
+  exports.ElementRef = element_ref_1.ElementRef;
+  var template_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/template_ref");
+  exports.TemplateRef = template_ref_1.TemplateRef;
+  var view_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref");
+  exports.ViewRef = view_ref_1.ViewRef;
+  exports.ProtoViewRef = view_ref_1.ProtoViewRef;
+  var view_container_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_container_ref");
+  exports.ViewContainerRef = view_container_ref_1.ViewContainerRef;
+  var dynamic_component_loader_2 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader");
+  exports.ComponentRef = dynamic_component_loader_2.ComponentRef;
+  var ng_zone_1 = require("npm:angular2@2.0.0-alpha.36/src/core/zone/ng_zone");
+  exports.NgZone = ng_zone_1.NgZone;
+  var async_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/async");
+  exports.Observable = async_1.Observable;
+  exports.EventEmitter = async_1.EventEmitter;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/di", ["npm:angular2@2.0.0-alpha.36/src/di/metadata", "npm:angular2@2.0.0-alpha.36/src/di/decorators", "npm:angular2@2.0.0-alpha.36/src/di/forward_ref", "npm:angular2@2.0.0-alpha.36/src/di/injector", "npm:angular2@2.0.0-alpha.36/src/di/binding", "npm:angular2@2.0.0-alpha.36/src/di/key", "npm:angular2@2.0.0-alpha.36/src/di/exceptions", "npm:angular2@2.0.0-alpha.36/src/di/opaque_token"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function __export(m) {
+    for (var p in m)
+      if (!exports.hasOwnProperty(p))
+        exports[p] = m[p];
+  }
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/di/metadata");
+  exports.InjectMetadata = metadata_1.InjectMetadata;
+  exports.OptionalMetadata = metadata_1.OptionalMetadata;
+  exports.InjectableMetadata = metadata_1.InjectableMetadata;
+  exports.SelfMetadata = metadata_1.SelfMetadata;
+  exports.HostMetadata = metadata_1.HostMetadata;
+  exports.SkipSelfMetadata = metadata_1.SkipSelfMetadata;
+  exports.DependencyMetadata = metadata_1.DependencyMetadata;
+  __export(require("npm:angular2@2.0.0-alpha.36/src/di/decorators"));
+  var forward_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/di/forward_ref");
+  exports.forwardRef = forward_ref_1.forwardRef;
+  exports.resolveForwardRef = forward_ref_1.resolveForwardRef;
+  var injector_1 = require("npm:angular2@2.0.0-alpha.36/src/di/injector");
+  exports.Injector = injector_1.Injector;
+  exports.ProtoInjector = injector_1.ProtoInjector;
+  exports.BindingWithVisibility = injector_1.BindingWithVisibility;
+  exports.Visibility = injector_1.Visibility;
+  exports.UNDEFINED = injector_1.UNDEFINED;
+  var binding_1 = require("npm:angular2@2.0.0-alpha.36/src/di/binding");
+  exports.Binding = binding_1.Binding;
+  exports.BindingBuilder = binding_1.BindingBuilder;
+  exports.ResolvedBinding = binding_1.ResolvedBinding;
+  exports.Dependency = binding_1.Dependency;
+  exports.bind = binding_1.bind;
+  var key_1 = require("npm:angular2@2.0.0-alpha.36/src/di/key");
+  exports.Key = key_1.Key;
+  exports.KeyRegistry = key_1.KeyRegistry;
+  exports.TypeLiteral = key_1.TypeLiteral;
+  var exceptions_1 = require("npm:angular2@2.0.0-alpha.36/src/di/exceptions");
+  exports.NoBindingError = exceptions_1.NoBindingError;
+  exports.AbstractBindingError = exceptions_1.AbstractBindingError;
+  exports.CyclicDependencyError = exceptions_1.CyclicDependencyError;
+  exports.InstantiationError = exceptions_1.InstantiationError;
+  exports.InvalidBindingError = exceptions_1.InvalidBindingError;
+  exports.NoAnnotationError = exceptions_1.NoAnnotationError;
+  exports.OutOfBoundsError = exceptions_1.OutOfBoundsError;
+  var opaque_token_1 = require("npm:angular2@2.0.0-alpha.36/src/di/opaque_token");
+  exports.OpaqueToken = opaque_token_1.OpaqueToken;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/directives", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/directives/ng_class", "npm:angular2@2.0.0-alpha.36/src/directives/ng_for", "npm:angular2@2.0.0-alpha.36/src/directives/ng_if", "npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable", "npm:angular2@2.0.0-alpha.36/src/directives/ng_switch", "npm:angular2@2.0.0-alpha.36/src/directives/ng_class", "npm:angular2@2.0.0-alpha.36/src/directives/ng_for", "npm:angular2@2.0.0-alpha.36/src/directives/ng_if", "npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable", "npm:angular2@2.0.0-alpha.36/src/directives/ng_style", "npm:angular2@2.0.0-alpha.36/src/directives/ng_switch"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function __export(m) {
+    for (var p in m)
+      if (!exports.hasOwnProperty(p))
+        exports[p] = m[p];
+  }
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var ng_class_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_class");
+  var ng_for_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_for");
+  var ng_if_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_if");
+  var ng_non_bindable_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable");
+  var ng_switch_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_switch");
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_class"));
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_for"));
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_if"));
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable"));
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_style"));
+  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_switch"));
+  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_non_bindable_1.NgNonBindable, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault]);
   global.define = __define;
   return module.exports;
 });
@@ -7871,6 +8819,95 @@ System.registerDynamic("npm:zone.js@0.5.4/lib/patch/promise", ["npm:zone.js@0.5.
     apply: apply,
     bindPromiseFn: bindPromiseFn
   };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/forms", ["npm:angular2@2.0.0-alpha.36/src/forms/model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/abstract_control_directive", "npm:angular2@2.0.0-alpha.36/src/forms/directives/control_container", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_name", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_control", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_group", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form", "npm:angular2@2.0.0-alpha.36/src/forms/directives/default_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives/checkbox_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives/select_control_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives", "npm:angular2@2.0.0-alpha.36/src/forms/validators", "npm:angular2@2.0.0-alpha.36/src/forms/directives/validators", "npm:angular2@2.0.0-alpha.36/src/forms/form_builder", "npm:angular2@2.0.0-alpha.36/src/forms/form_builder", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/model");
+  exports.AbstractControl = model_1.AbstractControl;
+  exports.Control = model_1.Control;
+  exports.ControlGroup = model_1.ControlGroup;
+  exports.ControlArray = model_1.ControlArray;
+  var abstract_control_directive_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/abstract_control_directive");
+  exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
+  var control_container_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/control_container");
+  exports.ControlContainer = control_container_1.ControlContainer;
+  var ng_control_name_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_name");
+  exports.NgControlName = ng_control_name_1.NgControlName;
+  var ng_form_control_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_control");
+  exports.NgFormControl = ng_form_control_1.NgFormControl;
+  var ng_model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_model");
+  exports.NgModel = ng_model_1.NgModel;
+  var ng_control_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control");
+  exports.NgControl = ng_control_1.NgControl;
+  var ng_control_group_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_group");
+  exports.NgControlGroup = ng_control_group_1.NgControlGroup;
+  var ng_form_model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_model");
+  exports.NgFormModel = ng_form_model_1.NgFormModel;
+  var ng_form_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form");
+  exports.NgForm = ng_form_1.NgForm;
+  var default_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/default_value_accessor");
+  exports.DefaultValueAccessor = default_value_accessor_1.DefaultValueAccessor;
+  var checkbox_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/checkbox_value_accessor");
+  exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
+  var select_control_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/select_control_value_accessor");
+  exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
+  exports.SelectControlValueAccessor = select_control_value_accessor_1.SelectControlValueAccessor;
+  var directives_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives");
+  exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
+  var validators_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/validators");
+  exports.Validators = validators_1.Validators;
+  var validators_2 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/validators");
+  exports.NgValidator = validators_2.NgValidator;
+  exports.NgRequiredValidator = validators_2.NgRequiredValidator;
+  var form_builder_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/form_builder");
+  exports.FormBuilder = form_builder_1.FormBuilder;
+  var form_builder_2 = require("npm:angular2@2.0.0-alpha.36/src/forms/form_builder");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  exports.FORM_BINDINGS = lang_1.CONST_EXPR([form_builder_2.FormBuilder]);
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/render", ["npm:angular2@2.0.0-alpha.36/src/render/render"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var render_1 = require("npm:angular2@2.0.0-alpha.36/src/render/render");
+  exports.RenderDirectiveMetadata = render_1.RenderDirectiveMetadata;
+  exports.DomRenderer = render_1.DomRenderer;
+  exports.Renderer = render_1.Renderer;
+  exports.RenderViewRef = render_1.RenderViewRef;
+  exports.RenderProtoViewRef = render_1.RenderProtoViewRef;
+  exports.RenderFragmentRef = render_1.RenderFragmentRef;
+  exports.RenderViewWithFragments = render_1.RenderViewWithFragments;
+  exports.ViewDefinition = render_1.ViewDefinition;
+  exports.DOCUMENT = render_1.DOCUMENT;
+  exports.APP_ID = render_1.APP_ID;
+  exports.MAX_IN_MEMORY_ELEMENTS_PER_TEMPLATE = render_1.MAX_IN_MEMORY_ELEMENTS_PER_TEMPLATE;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/profile", ["npm:angular2@2.0.0-alpha.36/src/profile/profile"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var profile_1 = require("npm:angular2@2.0.0-alpha.36/src/profile/profile");
+  exports.wtfCreateScope = profile_1.wtfCreateScope;
+  exports.wtfLeave = profile_1.wtfLeave;
+  exports.wtfStartTimeRange = profile_1.wtfStartTimeRange;
+  exports.wtfEndTimeRange = profile_1.wtfEndTimeRange;
   global.define = __define;
   return module.exports;
 });
@@ -8296,1034 +9333,6 @@ System.registerDynamic("npm:zone.js@0.5.4/lib/patch/geolocation", ["npm:zone.js@
   return module.exports;
 });
 
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/define-property", ["npm:core-js@1.1.3/library/fn/object/define-property"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/object/define-property"),
-    __esModule: true
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/set", ["npm:core-js@1.1.3/library/modules/es6.object.to-string", "npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/es6.set", "npm:core-js@1.1.3/library/modules/es7.set.to-json", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.object.to-string");
-  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
-  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
-  require("npm:core-js@1.1.3/library/modules/es6.set");
-  require("npm:core-js@1.1.3/library/modules/es7.set.to-json");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Set;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/object/keys", ["npm:core-js@1.1.3/library/modules/es6.object.keys", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.object.keys");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Object.keys;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/get-own-property-descriptor", ["npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor"),
-    __esModule: true
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:babel-runtime@5.8.20/core-js/object/set-prototype-of", ["npm:core-js@1.1.3/library/fn/object/set-prototype-of"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = {
-    "default": require("npm:core-js@1.1.3/library/fn/object/set-prototype-of"),
-    __esModule: true
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/object/get-own-property-names", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/es6.object.get-own-property-names"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $ = require("npm:core-js@1.1.3/library/modules/$");
-  require("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-names");
-  module.exports = function getOwnPropertyNames(it) {
-    return $.getNames(it);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:whatwg-fetch@0.9.0/fetch", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  (function() {
-    'use strict';
-    if (self.fetch) {
-      return;
-    }
-    function normalizeName(name) {
-      if (typeof name !== 'string') {
-        name = name.toString();
-      }
-      if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
-        throw new TypeError('Invalid character in header field name');
-      }
-      return name.toLowerCase();
-    }
-    function normalizeValue(value) {
-      if (typeof value !== 'string') {
-        value = value.toString();
-      }
-      return value;
-    }
-    function Headers(headers) {
-      this.map = {};
-      if (headers instanceof Headers) {
-        headers.forEach(function(value, name) {
-          this.append(name, value);
-        }, this);
-      } else if (headers) {
-        Object.getOwnPropertyNames(headers).forEach(function(name) {
-          this.append(name, headers[name]);
-        }, this);
-      }
-    }
-    Headers.prototype.append = function(name, value) {
-      name = normalizeName(name);
-      value = normalizeValue(value);
-      var list = this.map[name];
-      if (!list) {
-        list = [];
-        this.map[name] = list;
-      }
-      list.push(value);
-    };
-    Headers.prototype['delete'] = function(name) {
-      delete this.map[normalizeName(name)];
-    };
-    Headers.prototype.get = function(name) {
-      var values = this.map[normalizeName(name)];
-      return values ? values[0] : null;
-    };
-    Headers.prototype.getAll = function(name) {
-      return this.map[normalizeName(name)] || [];
-    };
-    Headers.prototype.has = function(name) {
-      return this.map.hasOwnProperty(normalizeName(name));
-    };
-    Headers.prototype.set = function(name, value) {
-      this.map[normalizeName(name)] = [normalizeValue(value)];
-    };
-    Headers.prototype.forEach = function(callback, thisArg) {
-      Object.getOwnPropertyNames(this.map).forEach(function(name) {
-        this.map[name].forEach(function(value) {
-          callback.call(thisArg, value, name, this);
-        }, this);
-      }, this);
-    };
-    function consumed(body) {
-      if (body.bodyUsed) {
-        return Promise.reject(new TypeError('Already read'));
-      }
-      body.bodyUsed = true;
-    }
-    function fileReaderReady(reader) {
-      return new Promise(function(resolve, reject) {
-        reader.onload = function() {
-          resolve(reader.result);
-        };
-        reader.onerror = function() {
-          reject(reader.error);
-        };
-      });
-    }
-    function readBlobAsArrayBuffer(blob) {
-      var reader = new FileReader();
-      reader.readAsArrayBuffer(blob);
-      return fileReaderReady(reader);
-    }
-    function readBlobAsText(blob) {
-      var reader = new FileReader();
-      reader.readAsText(blob);
-      return fileReaderReady(reader);
-    }
-    var support = {
-      blob: 'FileReader' in self && 'Blob' in self && (function() {
-        try {
-          new Blob();
-          return true;
-        } catch (e) {
-          return false;
-        }
-      })(),
-      formData: 'FormData' in self
-    };
-    function Body() {
-      this.bodyUsed = false;
-      this._initBody = function(body) {
-        this._bodyInit = body;
-        if (typeof body === 'string') {
-          this._bodyText = body;
-        } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
-          this._bodyBlob = body;
-        } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
-          this._bodyFormData = body;
-        } else if (!body) {
-          this._bodyText = '';
-        } else {
-          throw new Error('unsupported BodyInit type');
-        }
-      };
-      if (support.blob) {
-        this.blob = function() {
-          var rejected = consumed(this);
-          if (rejected) {
-            return rejected;
-          }
-          if (this._bodyBlob) {
-            return Promise.resolve(this._bodyBlob);
-          } else if (this._bodyFormData) {
-            throw new Error('could not read FormData body as blob');
-          } else {
-            return Promise.resolve(new Blob([this._bodyText]));
-          }
-        };
-        this.arrayBuffer = function() {
-          return this.blob().then(readBlobAsArrayBuffer);
-        };
-        this.text = function() {
-          var rejected = consumed(this);
-          if (rejected) {
-            return rejected;
-          }
-          if (this._bodyBlob) {
-            return readBlobAsText(this._bodyBlob);
-          } else if (this._bodyFormData) {
-            throw new Error('could not read FormData body as text');
-          } else {
-            return Promise.resolve(this._bodyText);
-          }
-        };
-      } else {
-        this.text = function() {
-          var rejected = consumed(this);
-          return rejected ? rejected : Promise.resolve(this._bodyText);
-        };
-      }
-      if (support.formData) {
-        this.formData = function() {
-          return this.text().then(decode);
-        };
-      }
-      this.json = function() {
-        return this.text().then(JSON.parse);
-      };
-      return this;
-    }
-    var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT'];
-    function normalizeMethod(method) {
-      var upcased = method.toUpperCase();
-      return (methods.indexOf(upcased) > -1) ? upcased : method;
-    }
-    function Request(url, options) {
-      options = options || {};
-      this.url = url;
-      this.credentials = options.credentials || 'omit';
-      this.headers = new Headers(options.headers);
-      this.method = normalizeMethod(options.method || 'GET');
-      this.mode = options.mode || null;
-      this.referrer = null;
-      if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
-        throw new TypeError('Body not allowed for GET or HEAD requests');
-      }
-      this._initBody(options.body);
-    }
-    function decode(body) {
-      var form = new FormData();
-      body.trim().split('&').forEach(function(bytes) {
-        if (bytes) {
-          var split = bytes.split('=');
-          var name = split.shift().replace(/\+/g, ' ');
-          var value = split.join('=').replace(/\+/g, ' ');
-          form.append(decodeURIComponent(name), decodeURIComponent(value));
-        }
-      });
-      return form;
-    }
-    function headers(xhr) {
-      var head = new Headers();
-      var pairs = xhr.getAllResponseHeaders().trim().split('\n');
-      pairs.forEach(function(header) {
-        var split = header.trim().split(':');
-        var key = split.shift().trim();
-        var value = split.join(':').trim();
-        head.append(key, value);
-      });
-      return head;
-    }
-    Body.call(Request.prototype);
-    function Response(bodyInit, options) {
-      if (!options) {
-        options = {};
-      }
-      this._initBody(bodyInit);
-      this.type = 'default';
-      this.url = null;
-      this.status = options.status;
-      this.ok = this.status >= 200 && this.status < 300;
-      this.statusText = options.statusText;
-      this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers);
-      this.url = options.url || '';
-    }
-    Body.call(Response.prototype);
-    self.Headers = Headers;
-    self.Request = Request;
-    self.Response = Response;
-    self.fetch = function(input, init) {
-      var request;
-      if (Request.prototype.isPrototypeOf(input) && !init) {
-        request = input;
-      } else {
-        request = new Request(input, init);
-      }
-      return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        function responseURL() {
-          if ('responseURL' in xhr) {
-            return xhr.responseURL;
-          }
-          if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-            return xhr.getResponseHeader('X-Request-URL');
-          }
-          return;
-        }
-        xhr.onload = function() {
-          var status = (xhr.status === 1223) ? 204 : xhr.status;
-          if (status < 100 || status > 599) {
-            reject(new TypeError('Network request failed'));
-            return;
-          }
-          var options = {
-            status: status,
-            statusText: xhr.statusText,
-            headers: headers(xhr),
-            url: responseURL()
-          };
-          var body = 'response' in xhr ? xhr.response : xhr.responseText;
-          resolve(new Response(body, options));
-        };
-        xhr.onerror = function() {
-          reject(new TypeError('Network request failed'));
-        };
-        xhr.open(request.method, request.url, true);
-        if (request.credentials === 'include') {
-          xhr.withCredentials = true;
-        }
-        if ('responseType' in xhr && support.blob) {
-          xhr.responseType = 'blob';
-        }
-        request.headers.forEach(function(value, name) {
-          xhr.setRequestHeader(name, value);
-        });
-        xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit);
-      });
-    };
-    self.fetch.polyfill = true;
-  })();
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/promise", ["npm:core-js@1.1.3/library/modules/es6.object.to-string", "npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/es6.promise", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.object.to-string");
-  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
-  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
-  require("npm:core-js@1.1.3/library/modules/es6.promise");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Promise;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("api/rule-engine/rule-action", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-  var ActionTypeModel = (function() {
-    function ActionTypeModel(id, i18nKey) {
-      if (id === void 0) {
-        id = null;
-      }
-      if (i18nKey === void 0) {
-        i18nKey = null;
-      }
-      this.id = id;
-      this.i18nKey = i18nKey;
-    }
-    ActionTypeModel.prototype.clone = function() {
-      throw new Error("Extending classes must implement their own clone method and should not call super.");
-    };
-    return ActionTypeModel;
-  })();
-  exports.ActionTypeModel = ActionTypeModel;
-  var ActionConfigModel = (function() {
-    function ActionConfigModel(actionTypeId) {
-      this.actionTypeId = actionTypeId;
-    }
-    ActionConfigModel.prototype.clone = function() {
-      throw new Error("Extending classes must implement their own clone method and should not call super.");
-    };
-    ActionConfigModel.prototype.out = function() {
-      return {};
-    };
-    return ActionConfigModel;
-  })();
-  exports.ActionConfigModel = ActionConfigModel;
-  var SetSessionValueActionModel = (function(_super) {
-    __extends(SetSessionValueActionModel, _super);
-    function SetSessionValueActionModel(parameters) {
-      var _this = this;
-      if (parameters === void 0) {
-        parameters = {};
-      }
-      _super.call(this, "SetSessionAttributeActionlet");
-      this.sessionKeyValue = '';
-      this.sessionValue = '';
-      Object.keys(parameters).forEach(function(paramId) {
-        var param = parameters[paramId];
-        switch (param.key) {
-          case 'sessionValue':
-            {
-              _this.sessionValue = param.value || '';
-              break;
-            }
-          case 'sessionKeyValue':
-            {
-              _this.sessionKeyValue = param.value || '';
-              break;
-            }
-        }
-      });
-    }
-    SetSessionValueActionModel.prototype.clone = function() {
-      var model = new SetSessionValueActionModel();
-      model.sessionKeyValue = this.sessionKeyValue;
-      model.sessionValue = this.sessionValue;
-      return model;
-    };
-    SetSessionValueActionModel.prototype.out = function() {
-      return {
-        sessionKeyValue: {
-          id: 'sessionKeyValue',
-          key: 'sessionKeyValue',
-          value: this.sessionKeyValue
-        },
-        sessionValue: {
-          id: 'sessionValue',
-          key: 'sessionValue',
-          value: this.sessionValue
-        }
-      };
-    };
-    return SetSessionValueActionModel;
-  })(ActionConfigModel);
-  exports.SetSessionValueActionModel = SetSessionValueActionModel;
-  var RuleActionModel = (function() {
-    function RuleActionModel(id, actionConfig) {
-      if (id === void 0) {
-        id = null;
-      }
-      if (actionConfig === void 0) {
-        actionConfig = null;
-      }
-      this.id = id;
-      this.actionConfig = actionConfig;
-      this.priority = 0;
-    }
-    RuleActionModel.prototype.setActionType = function(actionType, parameters) {
-      if (parameters === void 0) {
-        parameters = {};
-      }
-      if (actionType.id === 'SetSessionAttributeActionlet') {
-        this.actionConfig = new SetSessionValueActionModel(parameters);
-      } else {
-        this.actionConfig = new ActionConfigModel(actionType.id);
-      }
-    };
-    RuleActionModel.prototype.out = function() {
-      return {
-        id: this.id,
-        actionlet: this.actionConfig.actionTypeId,
-        priority: this.priority,
-        name: this.name,
-        owningRule: this.owningRuleId,
-        parameters: this.actionConfig.out()
-      };
-    };
-    RuleActionModel.prototype.clone = function() {
-      return new RuleActionModel(this.id, this.actionConfig.clone());
-    };
-    return RuleActionModel;
-  })();
-  exports.RuleActionModel = RuleActionModel;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("rule-engine/rule-action-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/templates/index", "rule-engine/actionlets/set-session-value-actionlet/set-session-value-action", "api/rule-engine/rule-action", "api/persistence/ApiRoot", "api/rule-engine/ActionTypes"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var index_1 = require("rule-engine/templates/index");
-  var set_session_value_action_1 = require("rule-engine/actionlets/set-session-value-actionlet/set-session-value-action");
-  var rule_action_1 = require("api/rule-engine/rule-action");
-  var ApiRoot_1 = require("api/persistence/ApiRoot");
-  var ActionTypes_1 = require("api/rule-engine/ActionTypes");
-  var RuleActionComponent = (function() {
-    function RuleActionComponent(apiRoot, typesProvider) {
-      var _this = this;
-      this.actionTypes = [];
-      this.typesProvider = typesProvider;
-      typesProvider.promise.then(function() {
-        _this.actionTypes = typesProvider.ary;
-      });
-      this.actionModel = new rule_action_1.RuleActionModel();
-    }
-    RuleActionComponent.prototype.onSetActionMeta = function(snapshot) {
-      var val = snapshot.val();
-      this.actionModel.id = val.id;
-      this.actionModel.name = val.name;
-      this.actionModel.owningRuleId = val.owningRule;
-      this.actionModel.priority = val.priority;
-      this.actionModel.setActionType(this.typesProvider.map.get(val.actionlet), val.parameters);
-    };
-    Object.defineProperty(RuleActionComponent.prototype, "actionMeta", {
-      get: function() {
-        return this._actionMeta;
-      },
-      set: function(actionMeta) {
-        this._actionMeta = actionMeta;
-        this._actionMeta.once('value', this.onSetActionMeta.bind(this));
-      },
-      enumerable: true,
-      configurable: true
-    });
-    RuleActionComponent.prototype.setActionlet = function(actionletId) {
-      this.actionModel.setActionType(this.typesProvider.map.get(actionletId));
-      this.updateAction();
-    };
-    RuleActionComponent.prototype.actionConfigChanged = function(event) {
-      this.actionModel.actionConfig = event.ngTarget.value;
-      this.updateAction();
-    };
-    RuleActionComponent.prototype.updateAction = function() {
-      this.actionMeta.set(this.actionModel.out());
-    };
-    RuleActionComponent.prototype.removeRuleAction = function() {
-      this.actionMeta.remove();
-    };
-    RuleActionComponent = __decorate([angular2_1.Component({
-      selector: 'rule-action',
-      properties: ["actionMeta"]
-    }), angular2_1.View({
-      template: index_1.ruleActionTemplate,
-      directives: [angular2_1.NgIf, angular2_1.NgFor, set_session_value_action_1.SetSessionValueAction]
-    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __param(1, angular2_1.Inject(ActionTypes_1.ActionTypesProvider)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object, (typeof(_b = typeof ActionTypes_1.ActionTypesProvider !== 'undefined' && ActionTypes_1.ActionTypesProvider) === 'function' && _b) || Object])], RuleActionComponent);
-    return RuleActionComponent;
-    var _a,
-        _b;
-  })();
-  exports.RuleActionComponent = RuleActionComponent;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("rule-engine/rule-condition-group-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/rule-condition-component", "rule-engine/templates/index", "api/persistence/ApiRoot"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var rule_condition_component_1 = require("rule-engine/rule-condition-component");
-  var index_1 = require("rule-engine/templates/index");
-  var ApiRoot_1 = require("api/persistence/ApiRoot");
-  var ConditionGroupComponent = (function() {
-    function ConditionGroupComponent(apiRoot) {
-      var _this = this;
-      this.apiRoot = apiRoot;
-      this.groupCollapsed = false;
-      this.conditions = [];
-      this.groupIndex = 0;
-      this.conditionsRef = this.apiRoot.defaultSite.child('ruleengine/conditions');
-      this.conditionsRef.on('child_added', function(conditionSnap) {
-        if (conditionSnap.val().owningGroup == _this.groupSnap.key()) {
-          _this.conditions.push(conditionSnap.ref());
-        }
-      });
-      this.conditionsRef.on('child_removed', function(conditionSnap) {
-        if (conditionSnap.val().owningGroup == _this.groupSnap.key()) {
-          _this.conditions = _this.conditions.filter(function(existingSnap) {
-            return existingSnap.key() != conditionSnap.key();
-          });
-          if (_this.conditions.length === 0) {
-            _this._groupSnap.ref().remove();
-          }
-        }
-      });
-    }
-    Object.defineProperty(ConditionGroupComponent.prototype, "groupSnap", {
-      get: function() {
-        return this._groupSnap;
-      },
-      set: function(groupSnap) {
-        console.log('Setting ConditionGroup snapshot: ', groupSnap.key());
-        this._groupSnap = groupSnap;
-        this.group = groupSnap.val();
-        this.getConditions();
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ConditionGroupComponent.prototype.getConditions = function() {
-      var _this = this;
-      var conditionMetas = [];
-      var conditionSnap = this.groupSnap.child('conditions');
-      conditionSnap.forEach(function(childSnap) {
-        var key = childSnap.key();
-        var ref = _this.conditionsRef.child(key);
-        conditionMetas.push(ref);
-        ref.once('value', function(snap) {});
-      });
-      return conditionMetas;
-    };
-    ConditionGroupComponent.prototype.addCondition = function() {
-      var _this = this;
-      console.log('Adding condition to ConditionsGroup');
-      var condition = {
-        priority: 10,
-        name: "Condition. " + new Date().toISOString(),
-        owningGroup: this._groupSnap.key(),
-        conditionlet: 'UsersBrowserHeaderConditionlet',
-        comparison: 'Is',
-        operator: 'AND',
-        values: {
-          headerKeyValue: {
-            id: 'fakeId',
-            key: 'headerKeyValue',
-            value: '',
-            priority: 10
-          },
-          compareTo: {
-            id: 'fakeId2',
-            key: 'compareTo',
-            value: '',
-            priority: 1
-          },
-          isoCode: {
-            id: 'fakeId3',
-            key: 'isoCode',
-            value: '',
-            priority: 1
-          }
-        }
-      };
-      this.conditionsRef.push(condition, function(result) {
-        _this.group.conditions = _this.group.conditions || {};
-        _this.group.conditions[result.key()] = true;
-        _this.updateGroup();
-      });
-    };
-    ConditionGroupComponent.prototype.toggleGroupOperator = function() {
-      this.group.operator = this.group.operator === "AND" ? "OR" : "AND";
-      this.updateGroup();
-    };
-    ConditionGroupComponent.prototype.updateGroup = function() {
-      console.log('Updating ConditionsGroup');
-      this.groupSnap.ref().set(this.group);
-    };
-    ConditionGroupComponent = __decorate([angular2_1.Component({
-      selector: 'condition-group',
-      properties: ["rule", "groupSnap", "groupIndex"]
-    }), angular2_1.View({
-      template: index_1.conditionGroupTemplate,
-      directives: [rule_condition_component_1.ConditionComponent, angular2_1.NgIf, angular2_1.NgFor]
-    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object])], ConditionGroupComponent);
-    return ConditionGroupComponent;
-    var _a;
-  })();
-  exports.ConditionGroupComponent = ConditionGroupComponent;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/metadata", ["npm:angular2@2.0.0-alpha.36/src/core/metadata", "npm:angular2@2.0.0-alpha.36/src/util/decorators"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
-  exports.ComponentMetadata = metadata_1.ComponentMetadata;
-  exports.DirectiveMetadata = metadata_1.DirectiveMetadata;
-  exports.PipeMetadata = metadata_1.PipeMetadata;
-  exports.LifecycleEvent = metadata_1.LifecycleEvent;
-  exports.ViewMetadata = metadata_1.ViewMetadata;
-  exports.ViewEncapsulation = metadata_1.ViewEncapsulation;
-  exports.QueryMetadata = metadata_1.QueryMetadata;
-  exports.AttributeMetadata = metadata_1.AttributeMetadata;
-  exports.Attribute = metadata_1.Attribute;
-  exports.Component = metadata_1.Component;
-  exports.Directive = metadata_1.Directive;
-  exports.View = metadata_1.View;
-  exports.Query = metadata_1.Query;
-  exports.ViewQuery = metadata_1.ViewQuery;
-  exports.Pipe = metadata_1.Pipe;
-  var decorators_1 = require("npm:angular2@2.0.0-alpha.36/src/util/decorators");
-  exports.Class = decorators_1.Class;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/change_detection", ["npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection");
-  exports.CHECK_ONCE = change_detection_1.CHECK_ONCE;
-  exports.CHECK_ALWAYS = change_detection_1.CHECK_ALWAYS;
-  exports.DETACHED = change_detection_1.DETACHED;
-  exports.CHECKED = change_detection_1.CHECKED;
-  exports.ON_PUSH = change_detection_1.ON_PUSH;
-  exports.DEFAULT = change_detection_1.DEFAULT;
-  exports.ExpressionChangedAfterItHasBeenCheckedException = change_detection_1.ExpressionChangedAfterItHasBeenCheckedException;
-  exports.ChangeDetectionError = change_detection_1.ChangeDetectionError;
-  exports.Locals = change_detection_1.Locals;
-  exports.ChangeDetectorRef = change_detection_1.ChangeDetectorRef;
-  exports.WrappedValue = change_detection_1.WrappedValue;
-  exports.IterableDiffers = change_detection_1.IterableDiffers;
-  exports.KeyValueDiffers = change_detection_1.KeyValueDiffers;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/core", ["npm:angular2@2.0.0-alpha.36/src/core/application_tokens", "npm:angular2@2.0.0-alpha.36/src/core/application_common", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/core/application_ref", "npm:angular2@2.0.0-alpha.36/src/services/app_root_url", "npm:angular2@2.0.0-alpha.36/src/services/url_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/component_url_mapper", "npm:angular2@2.0.0-alpha.36/src/core/compiler/directive_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager", "npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list", "npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader", "npm:angular2@2.0.0-alpha.36/src/core/life_cycle/life_cycle", "npm:angular2@2.0.0-alpha.36/src/core/compiler/element_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/template_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_container_ref", "npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader", "npm:angular2@2.0.0-alpha.36/src/core/zone/ng_zone", "npm:angular2@2.0.0-alpha.36/src/facade/async"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var application_tokens_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_tokens");
-  exports.APP_COMPONENT = application_tokens_1.APP_COMPONENT;
-  var application_common_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_common");
-  exports.bootstrap = application_common_1.commonBootstrap;
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  exports.Type = lang_1.Type;
-  var application_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/application_ref");
-  exports.ApplicationRef = application_ref_1.ApplicationRef;
-  var app_root_url_1 = require("npm:angular2@2.0.0-alpha.36/src/services/app_root_url");
-  exports.AppRootUrl = app_root_url_1.AppRootUrl;
-  var url_resolver_1 = require("npm:angular2@2.0.0-alpha.36/src/services/url_resolver");
-  exports.UrlResolver = url_resolver_1.UrlResolver;
-  var component_url_mapper_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/component_url_mapper");
-  exports.ComponentUrlMapper = component_url_mapper_1.ComponentUrlMapper;
-  var directive_resolver_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/directive_resolver");
-  exports.DirectiveResolver = directive_resolver_1.DirectiveResolver;
-  var compiler_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler");
-  exports.Compiler = compiler_1.Compiler;
-  var view_manager_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager");
-  exports.AppViewManager = view_manager_1.AppViewManager;
-  var query_list_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list");
-  exports.QueryList = query_list_1.QueryList;
-  var dynamic_component_loader_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader");
-  exports.DynamicComponentLoader = dynamic_component_loader_1.DynamicComponentLoader;
-  var life_cycle_1 = require("npm:angular2@2.0.0-alpha.36/src/core/life_cycle/life_cycle");
-  exports.LifeCycle = life_cycle_1.LifeCycle;
-  var element_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/element_ref");
-  exports.ElementRef = element_ref_1.ElementRef;
-  var template_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/template_ref");
-  exports.TemplateRef = template_ref_1.TemplateRef;
-  var view_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref");
-  exports.ViewRef = view_ref_1.ViewRef;
-  exports.ProtoViewRef = view_ref_1.ProtoViewRef;
-  var view_container_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_container_ref");
-  exports.ViewContainerRef = view_container_ref_1.ViewContainerRef;
-  var dynamic_component_loader_2 = require("npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader");
-  exports.ComponentRef = dynamic_component_loader_2.ComponentRef;
-  var ng_zone_1 = require("npm:angular2@2.0.0-alpha.36/src/core/zone/ng_zone");
-  exports.NgZone = ng_zone_1.NgZone;
-  var async_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/async");
-  exports.Observable = async_1.Observable;
-  exports.EventEmitter = async_1.EventEmitter;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/di", ["npm:angular2@2.0.0-alpha.36/src/di/metadata", "npm:angular2@2.0.0-alpha.36/src/di/decorators", "npm:angular2@2.0.0-alpha.36/src/di/forward_ref", "npm:angular2@2.0.0-alpha.36/src/di/injector", "npm:angular2@2.0.0-alpha.36/src/di/binding", "npm:angular2@2.0.0-alpha.36/src/di/key", "npm:angular2@2.0.0-alpha.36/src/di/exceptions", "npm:angular2@2.0.0-alpha.36/src/di/opaque_token"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  function __export(m) {
-    for (var p in m)
-      if (!exports.hasOwnProperty(p))
-        exports[p] = m[p];
-  }
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/di/metadata");
-  exports.InjectMetadata = metadata_1.InjectMetadata;
-  exports.OptionalMetadata = metadata_1.OptionalMetadata;
-  exports.InjectableMetadata = metadata_1.InjectableMetadata;
-  exports.SelfMetadata = metadata_1.SelfMetadata;
-  exports.HostMetadata = metadata_1.HostMetadata;
-  exports.SkipSelfMetadata = metadata_1.SkipSelfMetadata;
-  exports.DependencyMetadata = metadata_1.DependencyMetadata;
-  __export(require("npm:angular2@2.0.0-alpha.36/src/di/decorators"));
-  var forward_ref_1 = require("npm:angular2@2.0.0-alpha.36/src/di/forward_ref");
-  exports.forwardRef = forward_ref_1.forwardRef;
-  exports.resolveForwardRef = forward_ref_1.resolveForwardRef;
-  var injector_1 = require("npm:angular2@2.0.0-alpha.36/src/di/injector");
-  exports.Injector = injector_1.Injector;
-  exports.ProtoInjector = injector_1.ProtoInjector;
-  exports.BindingWithVisibility = injector_1.BindingWithVisibility;
-  exports.Visibility = injector_1.Visibility;
-  exports.UNDEFINED = injector_1.UNDEFINED;
-  var binding_1 = require("npm:angular2@2.0.0-alpha.36/src/di/binding");
-  exports.Binding = binding_1.Binding;
-  exports.BindingBuilder = binding_1.BindingBuilder;
-  exports.ResolvedBinding = binding_1.ResolvedBinding;
-  exports.Dependency = binding_1.Dependency;
-  exports.bind = binding_1.bind;
-  var key_1 = require("npm:angular2@2.0.0-alpha.36/src/di/key");
-  exports.Key = key_1.Key;
-  exports.KeyRegistry = key_1.KeyRegistry;
-  exports.TypeLiteral = key_1.TypeLiteral;
-  var exceptions_1 = require("npm:angular2@2.0.0-alpha.36/src/di/exceptions");
-  exports.NoBindingError = exceptions_1.NoBindingError;
-  exports.AbstractBindingError = exceptions_1.AbstractBindingError;
-  exports.CyclicDependencyError = exceptions_1.CyclicDependencyError;
-  exports.InstantiationError = exceptions_1.InstantiationError;
-  exports.InvalidBindingError = exceptions_1.InvalidBindingError;
-  exports.NoAnnotationError = exceptions_1.NoAnnotationError;
-  exports.OutOfBoundsError = exceptions_1.OutOfBoundsError;
-  var opaque_token_1 = require("npm:angular2@2.0.0-alpha.36/src/di/opaque_token");
-  exports.OpaqueToken = opaque_token_1.OpaqueToken;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/directives", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/directives/ng_class", "npm:angular2@2.0.0-alpha.36/src/directives/ng_for", "npm:angular2@2.0.0-alpha.36/src/directives/ng_if", "npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable", "npm:angular2@2.0.0-alpha.36/src/directives/ng_switch", "npm:angular2@2.0.0-alpha.36/src/directives/ng_class", "npm:angular2@2.0.0-alpha.36/src/directives/ng_for", "npm:angular2@2.0.0-alpha.36/src/directives/ng_if", "npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable", "npm:angular2@2.0.0-alpha.36/src/directives/ng_style", "npm:angular2@2.0.0-alpha.36/src/directives/ng_switch"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  function __export(m) {
-    for (var p in m)
-      if (!exports.hasOwnProperty(p))
-        exports[p] = m[p];
-  }
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var ng_class_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_class");
-  var ng_for_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_for");
-  var ng_if_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_if");
-  var ng_non_bindable_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable");
-  var ng_switch_1 = require("npm:angular2@2.0.0-alpha.36/src/directives/ng_switch");
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_class"));
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_for"));
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_if"));
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable"));
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_style"));
-  __export(require("npm:angular2@2.0.0-alpha.36/src/directives/ng_switch"));
-  exports.CORE_DIRECTIVES = lang_1.CONST_EXPR([ng_class_1.NgClass, ng_for_1.NgFor, ng_if_1.NgIf, ng_non_bindable_1.NgNonBindable, ng_switch_1.NgSwitch, ng_switch_1.NgSwitchWhen, ng_switch_1.NgSwitchDefault]);
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/forms", ["npm:angular2@2.0.0-alpha.36/src/forms/model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/abstract_control_directive", "npm:angular2@2.0.0-alpha.36/src/forms/directives/control_container", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_name", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_control", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_group", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_model", "npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form", "npm:angular2@2.0.0-alpha.36/src/forms/directives/default_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives/checkbox_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives/select_control_value_accessor", "npm:angular2@2.0.0-alpha.36/src/forms/directives", "npm:angular2@2.0.0-alpha.36/src/forms/validators", "npm:angular2@2.0.0-alpha.36/src/forms/directives/validators", "npm:angular2@2.0.0-alpha.36/src/forms/form_builder", "npm:angular2@2.0.0-alpha.36/src/forms/form_builder", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/model");
-  exports.AbstractControl = model_1.AbstractControl;
-  exports.Control = model_1.Control;
-  exports.ControlGroup = model_1.ControlGroup;
-  exports.ControlArray = model_1.ControlArray;
-  var abstract_control_directive_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/abstract_control_directive");
-  exports.AbstractControlDirective = abstract_control_directive_1.AbstractControlDirective;
-  var control_container_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/control_container");
-  exports.ControlContainer = control_container_1.ControlContainer;
-  var ng_control_name_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_name");
-  exports.NgControlName = ng_control_name_1.NgControlName;
-  var ng_form_control_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_control");
-  exports.NgFormControl = ng_form_control_1.NgFormControl;
-  var ng_model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_model");
-  exports.NgModel = ng_model_1.NgModel;
-  var ng_control_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control");
-  exports.NgControl = ng_control_1.NgControl;
-  var ng_control_group_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_control_group");
-  exports.NgControlGroup = ng_control_group_1.NgControlGroup;
-  var ng_form_model_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form_model");
-  exports.NgFormModel = ng_form_model_1.NgFormModel;
-  var ng_form_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/ng_form");
-  exports.NgForm = ng_form_1.NgForm;
-  var default_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/default_value_accessor");
-  exports.DefaultValueAccessor = default_value_accessor_1.DefaultValueAccessor;
-  var checkbox_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/checkbox_value_accessor");
-  exports.CheckboxControlValueAccessor = checkbox_value_accessor_1.CheckboxControlValueAccessor;
-  var select_control_value_accessor_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/select_control_value_accessor");
-  exports.NgSelectOption = select_control_value_accessor_1.NgSelectOption;
-  exports.SelectControlValueAccessor = select_control_value_accessor_1.SelectControlValueAccessor;
-  var directives_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives");
-  exports.FORM_DIRECTIVES = directives_1.FORM_DIRECTIVES;
-  var validators_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/validators");
-  exports.Validators = validators_1.Validators;
-  var validators_2 = require("npm:angular2@2.0.0-alpha.36/src/forms/directives/validators");
-  exports.NgValidator = validators_2.NgValidator;
-  exports.NgRequiredValidator = validators_2.NgRequiredValidator;
-  var form_builder_1 = require("npm:angular2@2.0.0-alpha.36/src/forms/form_builder");
-  exports.FormBuilder = form_builder_1.FormBuilder;
-  var form_builder_2 = require("npm:angular2@2.0.0-alpha.36/src/forms/form_builder");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  exports.FORM_BINDINGS = lang_1.CONST_EXPR([form_builder_2.FormBuilder]);
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/render", ["npm:angular2@2.0.0-alpha.36/src/render/render"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var render_1 = require("npm:angular2@2.0.0-alpha.36/src/render/render");
-  exports.RenderDirectiveMetadata = render_1.RenderDirectiveMetadata;
-  exports.DomRenderer = render_1.DomRenderer;
-  exports.Renderer = render_1.Renderer;
-  exports.RenderViewRef = render_1.RenderViewRef;
-  exports.RenderProtoViewRef = render_1.RenderProtoViewRef;
-  exports.RenderFragmentRef = render_1.RenderFragmentRef;
-  exports.RenderViewWithFragments = render_1.RenderViewWithFragments;
-  exports.ViewDefinition = render_1.ViewDefinition;
-  exports.DOCUMENT = render_1.DOCUMENT;
-  exports.APP_ID = render_1.APP_ID;
-  exports.MAX_IN_MEMORY_ELEMENTS_PER_TEMPLATE = render_1.MAX_IN_MEMORY_ELEMENTS_PER_TEMPLATE;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/profile", ["npm:angular2@2.0.0-alpha.36/src/profile/profile"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var profile_1 = require("npm:angular2@2.0.0-alpha.36/src/profile/profile");
-  exports.wtfCreateScope = profile_1.wtfCreateScope;
-  exports.wtfLeave = profile_1.wtfLeave;
-  exports.wtfStartTimeRange = profile_1.wtfStartTimeRange;
-  exports.wtfEndTimeRange = profile_1.wtfEndTimeRange;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.def", ["npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -9409,6 +9418,113 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.assign", ["npm:core-
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol", ["npm:core-js@1.1.3/library/fn/symbol/index"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:core-js@1.1.3/library/fn/symbol/index");
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("github:jspm/nodelibs-process@0.1.2/index", ["npm:process@0.11.2"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = System._nodeRequire ? process : require("npm:process@0.11.2");
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/object/create", ["npm:core-js@1.1.3/library/modules/$"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $ = require("npm:core-js@1.1.3/library/modules/$");
+  module.exports = function create(P, D) {
+    return $.create(P, D);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol/iterator", ["npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
+  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator');
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $Object = Object;
+  module.exports = {
+    create: $Object.create,
+    getProto: $Object.getPrototypeOf,
+    isEnum: {}.propertyIsEnumerable,
+    getDesc: $Object.getOwnPropertyDescriptor,
+    setDesc: $Object.defineProperty,
+    setDescs: $Object.defineProperties,
+    getKeys: $Object.keys,
+    getNames: $Object.getOwnPropertyNames,
+    getSymbols: $Object.getOwnPropertySymbols,
+    each: [].forEach
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.global", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var UNDEFINED = 'undefined';
+  var global = module.exports = typeof window != UNDEFINED && window.Math == Math ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
+  if (typeof __g == 'number')
+    __g = global;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.support-desc", ["npm:core-js@1.1.3/modules/$.fails"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = !require("npm:core-js@1.1.3/modules/$.fails")(function() {
+    return Object.defineProperty({}, 'a', {get: function() {
+        return 7;
+      }}).a != 7;
+  });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.has", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var hasOwnProperty = {}.hasOwnProperty;
+  module.exports = function(it, key) {
+    return hasOwnProperty.call(it, key);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.def", ["npm:core-js@1.1.3/modules/$.global", "npm:core-js@1.1.3/modules/$.core", "npm:core-js@1.1.3/modules/$.hide", "npm:core-js@1.1.3/modules/$.redef"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -9462,81 +9578,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.def", ["npm:core-js@1.1.3/mo
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/$.assign", ["npm:core-js@1.1.3/modules/$.to-object", "npm:core-js@1.1.3/modules/$.iobject", "npm:core-js@1.1.3/modules/$.enum-keys"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toObject = require("npm:core-js@1.1.3/modules/$.to-object"),
-      IObject = require("npm:core-js@1.1.3/modules/$.iobject"),
-      enumKeys = require("npm:core-js@1.1.3/modules/$.enum-keys");
-  module.exports = Object.assign || function assign(target, source) {
-    var T = toObject(target),
-        l = arguments.length,
-        i = 1;
-    while (l > i) {
-      var S = IObject(arguments[i++]),
-          keys = enumKeys(S),
-          length = keys.length,
-          j = 0,
-          key;
-      while (length > j)
-        T[key = keys[j++]] = S[key];
-    }
-    return T;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $Object = Object;
-  module.exports = {
-    create: $Object.create,
-    getProto: $Object.getPrototypeOf,
-    isEnum: {}.propertyIsEnumerable,
-    getDesc: $Object.getOwnPropertyDescriptor,
-    setDesc: $Object.defineProperty,
-    setDescs: $Object.defineProperties,
-    getKeys: $Object.keys,
-    getNames: $Object.getOwnPropertyNames,
-    getSymbols: $Object.getOwnPropertySymbols,
-    each: [].forEach
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.global", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var UNDEFINED = 'undefined';
-  var global = module.exports = typeof window != UNDEFINED && window.Math == Math ? window : typeof self != UNDEFINED && self.Math == Math ? self : Function('return this')();
-  if (typeof __g == 'number')
-    __g = global;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.has", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var hasOwnProperty = {}.hasOwnProperty;
-  module.exports = function(it, key) {
-    return hasOwnProperty.call(it, key);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/$.redef", ["npm:core-js@1.1.3/modules/$.global", "npm:core-js@1.1.3/modules/$.hide", "npm:core-js@1.1.3/modules/$.uid", "npm:core-js@1.1.3/modules/$.core"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -9566,20 +9607,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.redef", ["npm:core-js@1.1.3/
     }
   })(Function.prototype, TO_STRING, function toString() {
     return typeof this == 'function' && this[SRC] || $toString.call(this);
-  });
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.support-desc", ["npm:core-js@1.1.3/modules/$.fails"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = !require("npm:core-js@1.1.3/modules/$.fails")(function() {
-    return Object.defineProperty({}, 'a', {get: function() {
-        return 7;
-      }}).a != 7;
   });
   global.define = __define;
   return module.exports;
@@ -9729,6 +9756,20 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.an-object", ["npm:core-js@1.
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/$.to-iobject", ["npm:core-js@1.1.3/modules/$.iobject", "npm:core-js@1.1.3/modules/$.defined"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var IObject = require("npm:core-js@1.1.3/modules/$.iobject"),
+      defined = require("npm:core-js@1.1.3/modules/$.defined");
+  module.exports = function(it) {
+    return IObject(defined(it));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.property-desc", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -9741,20 +9782,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.property-desc", [], true, fu
       writable: !(bitmap & 4),
       value: value
     };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.to-iobject", ["npm:core-js@1.1.3/modules/$.iobject", "npm:core-js@1.1.3/modules/$.defined"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var IObject = require("npm:core-js@1.1.3/modules/$.iobject"),
-      defined = require("npm:core-js@1.1.3/modules/$.defined");
-  module.exports = function(it) {
-    return IObject(defined(it));
   };
   global.define = __define;
   return module.exports;
@@ -9776,6 +9803,19 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.html", ["npm:core-js@1.1.3/m
       __define = global.define;
   global.define = undefined;
   module.exports = require("npm:core-js@1.1.3/modules/$.global").document && document.documentElement;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.cof", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toString = {}.toString;
+  module.exports = function(it) {
+    return toString.call(it).slice(8, -1);
+  };
   global.define = __define;
   return module.exports;
 });
@@ -9806,19 +9846,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.dom-create", ["npm:core-js@1
       is = isObject(document) && isObject(document.createElement);
   module.exports = function(it) {
     return is ? document.createElement(it) : {};
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.cof", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toString = {}.toString;
-  module.exports = function(it) {
-    return toString.call(it).slice(8, -1);
   };
   global.define = __define;
   return module.exports;
@@ -10032,6 +10059,33 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.array-includes", ["npm:core-
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/$.assign", ["npm:core-js@1.1.3/modules/$.to-object", "npm:core-js@1.1.3/modules/$.iobject", "npm:core-js@1.1.3/modules/$.enum-keys"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toObject = require("npm:core-js@1.1.3/modules/$.to-object"),
+      IObject = require("npm:core-js@1.1.3/modules/$.iobject"),
+      enumKeys = require("npm:core-js@1.1.3/modules/$.enum-keys");
+  module.exports = Object.assign || function assign(target, source) {
+    var T = toObject(target),
+        l = arguments.length,
+        i = 1;
+    while (l > i) {
+      var S = IObject(arguments[i++]),
+          keys = enumKeys(S),
+          length = keys.length,
+          j = 0,
+          key;
+      while (length > j)
+        T[key = keys[j++]] = S[key];
+    }
+    return T;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.same", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -10100,6 +10154,20 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.classof", ["npm:core-js@1.1.
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/$.is-integer", ["npm:core-js@1.1.3/modules/$.is-object"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var isObject = require("npm:core-js@1.1.3/modules/$.is-object"),
+      floor = Math.floor;
+  module.exports = function isInteger(it) {
+    return !isObject(it) && isFinite(it) && floor(it) === it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.object-sap", ["npm:core-js@1.1.3/modules/$.def", "npm:core-js@1.1.3/modules/$.core", "npm:core-js@1.1.3/modules/$.fails"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -10113,20 +10181,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.object-sap", ["npm:core-js@1
     $def($def.S + $def.F * require("npm:core-js@1.1.3/modules/$.fails")(function() {
       fn(1);
     }), 'Object', exp);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.is-integer", ["npm:core-js@1.1.3/modules/$.is-object"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var isObject = require("npm:core-js@1.1.3/modules/$.is-object"),
-      floor = Math.floor;
-  module.exports = function isInteger(it) {
-    return !isObject(it) && isFinite(it) && floor(it) === it;
   };
   global.define = __define;
   return module.exports;
@@ -10194,6 +10248,30 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.string-trim", ["npm:core-js@
     $def($def.P + $def.F * require("npm:core-js@1.1.3/modules/$.fails")(function() {
       return !!spaces[KEY]() || non[KEY]() != non;
     }), 'String', exp);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.string-at", ["npm:core-js@1.1.3/modules/$.to-integer", "npm:core-js@1.1.3/modules/$.defined"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toInteger = require("npm:core-js@1.1.3/modules/$.to-integer"),
+      defined = require("npm:core-js@1.1.3/modules/$.defined");
+  module.exports = function(TO_STRING) {
+    return function(that, pos) {
+      var s = String(defined(that)),
+          i = toInteger(pos),
+          l = s.length,
+          a,
+          b;
+      if (i < 0 || i >= l)
+        return TO_STRING ? '' : undefined;
+      a = s.charCodeAt(i);
+      return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff ? TO_STRING ? s.charAt(i) : a : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+    };
   };
   global.define = __define;
   return module.exports;
@@ -10270,6 +10348,22 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.iter-define", ["npm:core-js@
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/$.string-context", ["npm:core-js@1.1.3/modules/$.defined", "npm:core-js@1.1.3/modules/$.cof"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var defined = require("npm:core-js@1.1.3/modules/$.defined"),
+      cof = require("npm:core-js@1.1.3/modules/$.cof");
+  module.exports = function(that, searchString, NAME) {
+    if (cof(searchString) == 'RegExp')
+      throw TypeError('String#' + NAME + " doesn't accept regex!");
+    return String(defined(that));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.string-repeat", ["npm:core-js@1.1.3/modules/$.to-integer", "npm:core-js@1.1.3/modules/$.defined"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -10288,46 +10382,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.string-repeat", ["npm:core-j
       if (n & 1)
         res += str;
     return res;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.string-at", ["npm:core-js@1.1.3/modules/$.to-integer", "npm:core-js@1.1.3/modules/$.defined"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toInteger = require("npm:core-js@1.1.3/modules/$.to-integer"),
-      defined = require("npm:core-js@1.1.3/modules/$.defined");
-  module.exports = function(TO_STRING) {
-    return function(that, pos) {
-      var s = String(defined(that)),
-          i = toInteger(pos),
-          l = s.length,
-          a,
-          b;
-      if (i < 0 || i >= l)
-        return TO_STRING ? '' : undefined;
-      a = s.charCodeAt(i);
-      return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff ? TO_STRING ? s.charAt(i) : a : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-    };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.string-context", ["npm:core-js@1.1.3/modules/$.defined", "npm:core-js@1.1.3/modules/$.cof"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var defined = require("npm:core-js@1.1.3/modules/$.defined"),
-      cof = require("npm:core-js@1.1.3/modules/$.cof");
-  module.exports = function(that, searchString, NAME) {
-    if (cof(searchString) == 'RegExp')
-      throw TypeError('String#' + NAME + " doesn't accept regex!");
-    return String(defined(that));
   };
   global.define = __define;
   return module.exports;
@@ -10399,6 +10453,37 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.is-array-iter", ["npm:core-j
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/modules/core.get-iterator-method", ["npm:core-js@1.1.3/modules/$.classof", "npm:core-js@1.1.3/modules/$.wks", "npm:core-js@1.1.3/modules/$.iterators", "npm:core-js@1.1.3/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var classof = require("npm:core-js@1.1.3/modules/$.classof"),
+      ITERATOR = require("npm:core-js@1.1.3/modules/$.wks")('iterator'),
+      Iterators = require("npm:core-js@1.1.3/modules/$.iterators");
+  module.exports = require("npm:core-js@1.1.3/modules/$.core").getIteratorMethod = function(it) {
+    if (it != undefined)
+      return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/modules/$.unscope", ["npm:core-js@1.1.3/modules/$.wks", "npm:core-js@1.1.3/modules/$.hide"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var UNSCOPABLES = require("npm:core-js@1.1.3/modules/$.wks")('unscopables');
+  if (!(UNSCOPABLES in []))
+    require("npm:core-js@1.1.3/modules/$.hide")(Array.prototype, UNSCOPABLES, {});
+  module.exports = function(key) {
+    [][UNSCOPABLES][key] = true;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.iter-detect", ["npm:core-js@1.1.3/modules/$.wks"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -10436,22 +10521,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.iter-detect", ["npm:core-js@
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/modules/core.get-iterator-method", ["npm:core-js@1.1.3/modules/$.classof", "npm:core-js@1.1.3/modules/$.wks", "npm:core-js@1.1.3/modules/$.iterators", "npm:core-js@1.1.3/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var classof = require("npm:core-js@1.1.3/modules/$.classof"),
-      ITERATOR = require("npm:core-js@1.1.3/modules/$.wks")('iterator'),
-      Iterators = require("npm:core-js@1.1.3/modules/$.iterators");
-  module.exports = require("npm:core-js@1.1.3/modules/$.core").getIteratorMethod = function(it) {
-    if (it != undefined)
-      return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
-  };
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/modules/$.iter-step", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -10462,21 +10531,6 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.iter-step", [], true, functi
       value: value,
       done: !!done
     };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/modules/$.unscope", ["npm:core-js@1.1.3/modules/$.wks", "npm:core-js@1.1.3/modules/$.hide"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var UNSCOPABLES = require("npm:core-js@1.1.3/modules/$.wks")('unscopables');
-  if (!(UNSCOPABLES in []))
-    require("npm:core-js@1.1.3/modules/$.hide")(Array.prototype, UNSCOPABLES, {});
-  module.exports = function(key) {
-    [][UNSCOPABLES][key] = true;
   };
   global.define = __define;
   return module.exports;
@@ -11304,229 +11358,23 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.hide", ["npm:core-js@1.1.3/m
   return module.exports;
 });
 
-System.registerDynamic("github:jspm/nodelibs-process@0.1.2/index", ["npm:process@0.11.2"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/fn/object/set-prototype-of", ["npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = System._nodeRequire ? process : require("npm:process@0.11.2");
+  require("npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Object.setPrototypeOf;
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol", ["npm:core-js@1.1.3/library/fn/symbol/index"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.to-string", [], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = require("npm:core-js@1.1.3/library/fn/symbol/index");
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol/iterator", ["npm:core-js@1.1.3/library/modules/es6.string.iterator", "npm:core-js@1.1.3/library/modules/web.dom.iterable", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.string.iterator");
-  require("npm:core-js@1.1.3/library/modules/web.dom.iterable");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator');
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/fn/object/create", ["npm:core-js@1.1.3/library/modules/$"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $ = require("npm:core-js@1.1.3/library/modules/$");
-  module.exports = function create(P, D) {
-    return $.create(P, D);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:zone.js@0.5.4/lib/utils", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  function bindArguments(args) {
-    for (var i = args.length - 1; i >= 0; i--) {
-      if (typeof args[i] === 'function') {
-        args[i] = global.zone.bind(args[i]);
-      }
-    }
-    return args;
-  }
-  ;
-  function bindArgumentsOnce(args) {
-    for (var i = args.length - 1; i >= 0; i--) {
-      if (typeof args[i] === 'function') {
-        args[i] = global.zone.bindOnce(args[i]);
-      }
-    }
-    return args;
-  }
-  ;
-  function patchPrototype(obj, fnNames) {
-    fnNames.forEach(function(name) {
-      var delegate = obj[name];
-      if (delegate) {
-        obj[name] = function() {
-          return delegate.apply(this, bindArguments(arguments));
-        };
-      }
-    });
-  }
-  ;
-  function isWebWorker() {
-    return (typeof document === "undefined");
-  }
-  function patchProperty(obj, prop) {
-    var desc = Object.getOwnPropertyDescriptor(obj, prop) || {
-      enumerable: true,
-      configurable: true
-    };
-    delete desc.writable;
-    delete desc.value;
-    var eventName = prop.substr(2);
-    var _prop = '_' + prop;
-    desc.set = function(fn) {
-      if (this[_prop]) {
-        this.removeEventListener(eventName, this[_prop]);
-      }
-      if (typeof fn === 'function') {
-        this[_prop] = fn;
-        this.addEventListener(eventName, fn, false);
-      } else {
-        this[_prop] = null;
-      }
-    };
-    desc.get = function() {
-      return this[_prop];
-    };
-    Object.defineProperty(obj, prop, desc);
-  }
-  ;
-  function patchProperties(obj, properties) {
-    (properties || (function() {
-      var props = [];
-      for (var prop in obj) {
-        props.push(prop);
-      }
-      return props;
-    }()).filter(function(propertyName) {
-      return propertyName.substr(0, 2) === 'on';
-    })).forEach(function(eventName) {
-      patchProperty(obj, eventName);
-    });
-  }
-  ;
-  function patchEventTargetMethods(obj) {
-    var addDelegate = obj.addEventListener;
-    obj.addEventListener = function(eventName, handler) {
-      var fn;
-      if (handler.toString() !== "[object FunctionWrapper]") {
-        if (handler.handleEvent) {
-          fn = (function(handler) {
-            return function() {
-              handler.handleEvent.apply(handler, arguments);
-            };
-          })(handler);
-        } else {
-          fn = handler;
-        }
-        handler._fn = fn;
-        handler._bound = handler._bound || {};
-        arguments[1] = handler._bound[eventName] = zone.bind(fn);
-      }
-      return addDelegate.apply(this, arguments);
-    };
-    var removeDelegate = obj.removeEventListener;
-    obj.removeEventListener = function(eventName, handler) {
-      if (handler._bound && handler._bound[eventName]) {
-        var _bound = handler._bound;
-        arguments[1] = _bound[eventName];
-        delete _bound[eventName];
-      }
-      var result = removeDelegate.apply(this, arguments);
-      global.zone.dequeueTask(handler._fn);
-      return result;
-    };
-  }
-  ;
-  function patchClass(className) {
-    var OriginalClass = global[className];
-    if (!OriginalClass)
-      return;
-    global[className] = function() {
-      var a = bindArguments(arguments);
-      switch (a.length) {
-        case 0:
-          this._o = new OriginalClass();
-          break;
-        case 1:
-          this._o = new OriginalClass(a[0]);
-          break;
-        case 2:
-          this._o = new OriginalClass(a[0], a[1]);
-          break;
-        case 3:
-          this._o = new OriginalClass(a[0], a[1], a[2]);
-          break;
-        case 4:
-          this._o = new OriginalClass(a[0], a[1], a[2], a[3]);
-          break;
-        default:
-          throw new Error('what are you even doing?');
-      }
-    };
-    var instance = new OriginalClass();
-    var prop;
-    for (prop in instance) {
-      (function(prop) {
-        if (typeof instance[prop] === 'function') {
-          global[className].prototype[prop] = function() {
-            return this._o[prop].apply(this._o, arguments);
-          };
-        } else {
-          Object.defineProperty(global[className].prototype, prop, {
-            set: function(fn) {
-              if (typeof fn === 'function') {
-                this._o[prop] = global.zone.bind(fn);
-              } else {
-                this._o[prop] = fn;
-              }
-            },
-            get: function() {
-              return this._o[prop];
-            }
-          });
-        }
-      }(prop));
-    }
-    for (prop in OriginalClass) {
-      if (prop !== 'prototype' && OriginalClass.hasOwnProperty(prop)) {
-        global[className][prop] = OriginalClass[prop];
-      }
-    }
-  }
-  ;
-  module.exports = {
-    bindArguments: bindArguments,
-    bindArgumentsOnce: bindArgumentsOnce,
-    patchPrototype: patchPrototype,
-    patchProperty: patchProperty,
-    patchProperties: patchProperties,
-    patchEventTargetMethods: patchEventTargetMethods,
-    patchClass: patchClass,
-    isWebWorker: isWebWorker
-  };
+  "format cjs";
   global.define = __define;
   return module.exports;
 });
@@ -11540,16 +11388,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/fn/object/define-property", ["
   module.exports = function defineProperty(it, key, desc) {
     return $.setDesc(it, key, desc);
   };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.to-string", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
   global.define = __define;
   return module.exports;
 });
@@ -11584,18 +11422,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.string.iterator", 
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/modules/web.dom.iterable", ["npm:core-js@1.1.3/library/modules/es6.array.iterator", "npm:core-js@1.1.3/library/modules/$.iterators"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.array.iterator");
-  var Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators");
-  Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.set", ["npm:core-js@1.1.3/library/modules/$.collection-strong", "npm:core-js@1.1.3/library/modules/$.collection"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -11614,13 +11440,14 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.set", ["npm:core-j
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/modules/es7.set.to-json", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.collection-to-json"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/web.dom.iterable", ["npm:core-js@1.1.3/library/modules/es6.array.iterator", "npm:core-js@1.1.3/library/modules/$.iterators"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/library/modules/$.def");
-  $def($def.P, 'Set', {toJSON: require("npm:core-js@1.1.3/library/modules/$.collection-to-json")('Set')});
+  require("npm:core-js@1.1.3/library/modules/es6.array.iterator");
+  var Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators");
+  Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
   global.define = __define;
   return module.exports;
 });
@@ -11640,27 +11467,251 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.keys", ["np
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor"], true, function(require, exports, module) {
+System.registerDynamic("rule-engine/actionlets/set-session-value-actionlet/set-session-value-action", ["npm:angular2@2.0.0-alpha.36/angular2", "api/rule-engine/rule-action"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  var $ = require("npm:core-js@1.1.3/library/modules/$");
-  require("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor");
-  module.exports = function getOwnPropertyDescriptor(it, key) {
-    return $.getDesc(it, key);
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
   };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var rule_action_1 = require("api/rule-engine/rule-action");
+  var SetSessionValueAction = (function() {
+    function SetSessionValueAction(sessionKeyValue, sessionValue) {
+      if (sessionKeyValue === void 0) {
+        sessionKeyValue = '';
+      }
+      if (sessionValue === void 0) {
+        sessionValue = '';
+      }
+      this.value = new rule_action_1.SetSessionValueActionModel();
+      this.value.sessionKeyValue = sessionKeyValue;
+      this.value.sessionValue = sessionValue;
+      this.change = new angular2_1.EventEmitter();
+    }
+    SetSessionValueAction.prototype._modifyEventForForwarding = function(event, field, oldState) {
+      Object.assign(event, {
+        ngTarget: this,
+        was: oldState,
+        value: this.value,
+        valueField: field
+      });
+      return event;
+    };
+    Object.defineProperty(SetSessionValueAction.prototype, "sessionKeyValue", {
+      set: function(value) {
+        this.value.sessionKeyValue = value || '';
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(SetSessionValueAction.prototype, "sessionValue", {
+      set: function(value) {
+        this.value.sessionValue = value || '';
+      },
+      enumerable: true,
+      configurable: true
+    });
+    SetSessionValueAction.prototype.updateSessionKey = function(event) {
+      var value = event.target['value'];
+      var e = this._modifyEventForForwarding(event, 'sessionKeyValue', this.value.clone());
+      this.value.sessionKeyValue = value;
+      this.change.next(e);
+    };
+    SetSessionValueAction.prototype.updateSessionValue = function(event) {
+      var value = event.target['value'];
+      var e = this._modifyEventForForwarding(event, 'sessionValue', this.value.clone());
+      this.value.sessionValue = value;
+      this.change.next(e);
+    };
+    SetSessionValueAction = __decorate([angular2_1.Component({
+      selector: 'cw-set-session-value-action',
+      properties: ["sessionKeyValue", "sessionValue"],
+      events: ["change"]
+    }), angular2_1.View({
+      directives: [angular2_1.NgFor],
+      template: "<div class=\"row\">\n  <div class=\"col-sm-5\">\n    <input type=\"text\" class=\"form-control action-value\" [value]=\"value.sessionKeyValue\"\n           placeholder=\"Enter a session key\" (change)=\"updateSessionKey($event)\"/>\n  </div>\n  <div class=\"col-sm-6\">\n    <input type=\"text\" class=\"form-control action-value\" [value]=\"value.sessionValue\" placeholder=\"Enter a value\"\n           (change)=\"updateSessionValue($event)\"/>\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"btn btn-default\" aria-label=\"Info\">\n      <span class=\"glyphicon glyphicon-info-sign\"></span>\n    </button>\n  </div>\n</div>\n  "
+    }), __param(0, angular2_1.Attribute('sessionKeyValue')), __param(1, angular2_1.Attribute('sessionValue')), __metadata('design:paramtypes', [String, String])], SetSessionValueAction);
+    return SetSessionValueAction;
+  })();
+  exports.SetSessionValueAction = SetSessionValueAction;
   global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/fn/object/set-prototype-of", ["npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/es7.set.to-json", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.collection-to-json"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Object.setPrototypeOf;
+  var $def = require("npm:core-js@1.1.3/library/modules/$.def");
+  $def($def.P, 'Set', {toJSON: require("npm:core-js@1.1.3/library/modules/$.collection-to-json")('Set')});
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine/rule-condition-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/templates/index", "api/persistence/ApiRoot", "api/rule-engine/ConditionTypes", "rule-engine/conditionlets/browser-conditionlet/browser-conditionlet", "rule-engine/conditionlets/request-header-conditionlet/request-header-conditionlet", "rule-engine/conditionlets/users-visited-url-conditionlet", "rule-engine/conditionlets/users-ip-address-conditionlet", "rule-engine/conditionlets/users-city-conditionlet", "rule-engine/conditionlets/users-time-conditionlet", "rule-engine/conditionlets/users-landing-page-url-conditionlet", "rule-engine/conditionlets/users-platform-conditionlet", "rule-engine/conditionlets/users-language-conditionlet", "rule-engine/conditionlets/users-page-visits-conditionlet", "rule-engine/conditionlets/country/country-condition", "rule-engine/conditionlets/users-url-parameter-conditionlet", "rule-engine/conditionlets/users-referring-url-conditionlet", "rule-engine/conditionlets/users-current-url-conditionlet", "rule-engine/conditionlets/users-host-conditionlet", "rule-engine/conditionlets/users-state-conditionlet", "rule-engine/conditionlets/users-site-visits-conditionlet", "rule-engine/conditionlets/users-date-time-conditionlet", "rule-engine/conditionlets/users-operating-system-conditionlet", "rule-engine/conditionlets/users-log-in-conditionlet"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var index_1 = require("rule-engine/templates/index");
+  var ApiRoot_1 = require("api/persistence/ApiRoot");
+  var ConditionTypes_1 = require("api/rule-engine/ConditionTypes");
+  var browser_conditionlet_1 = require("rule-engine/conditionlets/browser-conditionlet/browser-conditionlet");
+  var request_header_conditionlet_1 = require("rule-engine/conditionlets/request-header-conditionlet/request-header-conditionlet");
+  var users_visited_url_conditionlet_1 = require("rule-engine/conditionlets/users-visited-url-conditionlet");
+  var users_ip_address_conditionlet_1 = require("rule-engine/conditionlets/users-ip-address-conditionlet");
+  var users_city_conditionlet_1 = require("rule-engine/conditionlets/users-city-conditionlet");
+  var users_time_conditionlet_1 = require("rule-engine/conditionlets/users-time-conditionlet");
+  var users_landing_page_url_conditionlet_1 = require("rule-engine/conditionlets/users-landing-page-url-conditionlet");
+  var users_platform_conditionlet_1 = require("rule-engine/conditionlets/users-platform-conditionlet");
+  var users_language_conditionlet_1 = require("rule-engine/conditionlets/users-language-conditionlet");
+  var users_page_visits_conditionlet_1 = require("rule-engine/conditionlets/users-page-visits-conditionlet");
+  var country_condition_1 = require("rule-engine/conditionlets/country/country-condition");
+  var users_url_parameter_conditionlet_1 = require("rule-engine/conditionlets/users-url-parameter-conditionlet");
+  var users_referring_url_conditionlet_1 = require("rule-engine/conditionlets/users-referring-url-conditionlet");
+  var users_current_url_conditionlet_1 = require("rule-engine/conditionlets/users-current-url-conditionlet");
+  var users_host_conditionlet_1 = require("rule-engine/conditionlets/users-host-conditionlet");
+  var users_state_conditionlet_1 = require("rule-engine/conditionlets/users-state-conditionlet");
+  var users_site_visits_conditionlet_1 = require("rule-engine/conditionlets/users-site-visits-conditionlet");
+  var users_date_time_conditionlet_1 = require("rule-engine/conditionlets/users-date-time-conditionlet");
+  var users_operating_system_conditionlet_1 = require("rule-engine/conditionlets/users-operating-system-conditionlet");
+  var users_log_in_conditionlet_1 = require("rule-engine/conditionlets/users-log-in-conditionlet");
+  var ConditionComponent = (function() {
+    function ConditionComponent(apiRoot, typesProvider) {
+      var _this = this;
+      this.conditionType = new ConditionTypes_1.ConditionTypeModel('', {});
+      this.conditionTypes = [];
+      this.typesProvider = typesProvider;
+      typesProvider.promise.then(function() {
+        _this.conditionTypes = typesProvider.ary;
+      });
+      this.condition = {};
+      this.conditionValue = '';
+      this.index = 0;
+    }
+    ConditionComponent.prototype.onSetConditionMeta = function(snapshot) {
+      var _this = this;
+      this.condition = snapshot.val();
+      this.typesProvider.promise.then(function() {
+        _this.conditionType = _this.typesProvider.getType(_this.condition.conditionlet);
+        _this.conditionValue = _this.condition.values;
+      });
+    };
+    Object.defineProperty(ConditionComponent.prototype, "conditionMeta", {
+      get: function() {
+        return this._conditionMeta;
+      },
+      set: function(conditionRef) {
+        this._conditionMeta = conditionRef;
+        conditionRef.once('value', this.onSetConditionMeta.bind(this));
+      },
+      enumerable: true,
+      configurable: true
+    });
+    ConditionComponent.prototype.setConditionlet = function(conditionTypeId) {
+      var newVal = '';
+      this.conditionType = this.typesProvider.getType(conditionTypeId);
+      this.conditionValue = newVal;
+      this.condition.conditionlet = conditionTypeId;
+      this.condition.values = {};
+      this.updateCondition();
+    };
+    ConditionComponent.prototype.toggleOperator = function() {
+      this.condition.operator = this.condition.operator === 'AND' ? 'OR' : 'AND';
+      this.updateCondition();
+    };
+    ConditionComponent.prototype.updateCondition = function() {
+      this.conditionMeta.set(this.condition);
+    };
+    ConditionComponent.prototype.removeCondition = function() {
+      this.conditionMeta.remove();
+    };
+    ConditionComponent.prototype.conditionChanged = function(event) {
+      var _this = this;
+      var target = event.ngTarget;
+      var val = target.value;
+      var parameterKeys = val['parameterKeys'];
+      var oldVals = this.condition.values;
+      parameterKeys.forEach(function(key) {
+        var oldVal = oldVals[key];
+        var id = oldVal ? oldVal.id : '';
+        _this.condition.values[key] = {
+          id: id,
+          key: key,
+          value: val[key] || oldVal[key],
+          priority: 0
+        };
+      });
+      this.condition.comparison = val.comparatorValue;
+      this.updateCondition();
+    };
+    ConditionComponent = __decorate([angular2_1.Component({
+      selector: 'rule-condition',
+      properties: ["conditionMeta", "index"]
+    }), angular2_1.View({
+      template: index_1.conditionTemplate,
+      directives: [angular2_1.NgIf, angular2_1.NgFor, users_visited_url_conditionlet_1.UsersVisitedUrlConditionlet, users_ip_address_conditionlet_1.UsersIpAddressConditionlet, users_city_conditionlet_1.UsersCityConditionlet, users_time_conditionlet_1.UsersTimeConditionlet, users_landing_page_url_conditionlet_1.UsersLandingPageUrlConditionlet, request_header_conditionlet_1.RequestHeaderConditionlet, users_platform_conditionlet_1.UsersPlatformConditionlet, users_language_conditionlet_1.UsersLanguageConditionlet, users_page_visits_conditionlet_1.UsersPageVisitsConditionlet, country_condition_1.CountryCondition, users_url_parameter_conditionlet_1.UsersUrlParameterConditionlet, users_referring_url_conditionlet_1.UsersReferringUrlConditionlet, users_current_url_conditionlet_1.UsersCurrentUrlConditionlet, users_host_conditionlet_1.UsersHostConditionlet, users_state_conditionlet_1.UsersStateConditionlet, users_site_visits_conditionlet_1.UsersSiteVisitsConditionlet, users_date_time_conditionlet_1.UsersDateTimeConditionlet, users_operating_system_conditionlet_1.UsersOperatingSystemConditionlet, users_log_in_conditionlet_1.UsersLogInConditionlet, browser_conditionlet_1.BrowserConditionlet]
+    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __param(1, angular2_1.Inject(ConditionTypes_1.ConditionTypesProvider)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object, (typeof(_b = typeof ConditionTypes_1.ConditionTypesProvider !== 'undefined' && ConditionTypes_1.ConditionTypesProvider) === 'function' && _b) || Object])], ConditionComponent);
+    return ConditionComponent;
+    var _a,
+        _b;
+  })();
+  exports.ConditionComponent = ConditionComponent;
   global.define = __define;
   return module.exports;
 });
@@ -11695,6 +11746,20 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.get-own-pro
   require("npm:core-js@1.1.3/library/modules/$.object-sap")('getOwnPropertyNames', function() {
     return require("npm:core-js@1.1.3/library/modules/$.get-names").get;
   });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/fn/object/get-own-property-descriptor", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $ = require("npm:core-js@1.1.3/library/modules/$");
+  require("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor");
+  module.exports = function getOwnPropertyDescriptor(it, key) {
+    return $.getDesc(it, key);
+  };
   global.define = __define;
   return module.exports;
 });
@@ -11971,241 +12036,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.promise", ["npm:co
       }
     });
   })(require("github:jspm/nodelibs-process@0.1.2"));
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("rule-engine/actionlets/set-session-value-actionlet/set-session-value-action", ["npm:angular2@2.0.0-alpha.36/angular2", "api/rule-engine/rule-action"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var rule_action_1 = require("api/rule-engine/rule-action");
-  var SetSessionValueAction = (function() {
-    function SetSessionValueAction(sessionKeyValue, sessionValue) {
-      if (sessionKeyValue === void 0) {
-        sessionKeyValue = '';
-      }
-      if (sessionValue === void 0) {
-        sessionValue = '';
-      }
-      this.value = new rule_action_1.SetSessionValueActionModel();
-      this.value.sessionKeyValue = sessionKeyValue;
-      this.value.sessionValue = sessionValue;
-      this.change = new angular2_1.EventEmitter();
-    }
-    SetSessionValueAction.prototype._modifyEventForForwarding = function(event, field, oldState) {
-      Object.assign(event, {
-        ngTarget: this,
-        was: oldState,
-        value: this.value,
-        valueField: field
-      });
-      return event;
-    };
-    Object.defineProperty(SetSessionValueAction.prototype, "sessionKeyValue", {
-      set: function(value) {
-        this.value.sessionKeyValue = value || '';
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(SetSessionValueAction.prototype, "sessionValue", {
-      set: function(value) {
-        this.value.sessionValue = value || '';
-      },
-      enumerable: true,
-      configurable: true
-    });
-    SetSessionValueAction.prototype.updateSessionKey = function(event) {
-      var value = event.target['value'];
-      var e = this._modifyEventForForwarding(event, 'sessionKeyValue', this.value.clone());
-      this.value.sessionKeyValue = value;
-      this.change.next(e);
-    };
-    SetSessionValueAction.prototype.updateSessionValue = function(event) {
-      var value = event.target['value'];
-      var e = this._modifyEventForForwarding(event, 'sessionValue', this.value.clone());
-      this.value.sessionValue = value;
-      this.change.next(e);
-    };
-    SetSessionValueAction = __decorate([angular2_1.Component({
-      selector: 'cw-set-session-value-action',
-      properties: ["sessionKeyValue", "sessionValue"],
-      events: ["change"]
-    }), angular2_1.View({
-      directives: [angular2_1.NgFor],
-      template: "<div class=\"row\">\n  <div class=\"col-sm-5\">\n    <input type=\"text\" class=\"form-control action-value\" [value]=\"value.sessionKeyValue\"\n           placeholder=\"Enter a session key\" (change)=\"updateSessionKey($event)\"/>\n  </div>\n  <div class=\"col-sm-6\">\n    <input type=\"text\" class=\"form-control action-value\" [value]=\"value.sessionValue\" placeholder=\"Enter a value\"\n           (change)=\"updateSessionValue($event)\"/>\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"btn btn-default\" aria-label=\"Info\">\n      <span class=\"glyphicon glyphicon-info-sign\"></span>\n    </button>\n  </div>\n</div>\n  "
-    }), __param(0, angular2_1.Attribute('sessionKeyValue')), __param(1, angular2_1.Attribute('sessionValue')), __metadata('design:paramtypes', [String, String])], SetSessionValueAction);
-    return SetSessionValueAction;
-  })();
-  exports.SetSessionValueAction = SetSessionValueAction;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("rule-engine/rule-condition-component", ["npm:angular2@2.0.0-alpha.36/angular2", "rule-engine/templates/index", "api/persistence/ApiRoot", "api/rule-engine/ConditionTypes", "rule-engine/conditionlets/browser-conditionlet/browser-conditionlet", "rule-engine/conditionlets/request-header-conditionlet/request-header-conditionlet", "rule-engine/conditionlets/users-visited-url-conditionlet", "rule-engine/conditionlets/users-ip-address-conditionlet", "rule-engine/conditionlets/users-city-conditionlet", "rule-engine/conditionlets/users-time-conditionlet", "rule-engine/conditionlets/users-landing-page-url-conditionlet", "rule-engine/conditionlets/users-platform-conditionlet", "rule-engine/conditionlets/users-language-conditionlet", "rule-engine/conditionlets/users-page-visits-conditionlet", "rule-engine/conditionlets/country/country-condition", "rule-engine/conditionlets/users-url-parameter-conditionlet", "rule-engine/conditionlets/users-referring-url-conditionlet", "rule-engine/conditionlets/users-current-url-conditionlet", "rule-engine/conditionlets/users-host-conditionlet", "rule-engine/conditionlets/users-state-conditionlet", "rule-engine/conditionlets/users-site-visits-conditionlet", "rule-engine/conditionlets/users-date-time-conditionlet", "rule-engine/conditionlets/users-operating-system-conditionlet", "rule-engine/conditionlets/users-log-in-conditionlet"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var index_1 = require("rule-engine/templates/index");
-  var ApiRoot_1 = require("api/persistence/ApiRoot");
-  var ConditionTypes_1 = require("api/rule-engine/ConditionTypes");
-  var browser_conditionlet_1 = require("rule-engine/conditionlets/browser-conditionlet/browser-conditionlet");
-  var request_header_conditionlet_1 = require("rule-engine/conditionlets/request-header-conditionlet/request-header-conditionlet");
-  var users_visited_url_conditionlet_1 = require("rule-engine/conditionlets/users-visited-url-conditionlet");
-  var users_ip_address_conditionlet_1 = require("rule-engine/conditionlets/users-ip-address-conditionlet");
-  var users_city_conditionlet_1 = require("rule-engine/conditionlets/users-city-conditionlet");
-  var users_time_conditionlet_1 = require("rule-engine/conditionlets/users-time-conditionlet");
-  var users_landing_page_url_conditionlet_1 = require("rule-engine/conditionlets/users-landing-page-url-conditionlet");
-  var users_platform_conditionlet_1 = require("rule-engine/conditionlets/users-platform-conditionlet");
-  var users_language_conditionlet_1 = require("rule-engine/conditionlets/users-language-conditionlet");
-  var users_page_visits_conditionlet_1 = require("rule-engine/conditionlets/users-page-visits-conditionlet");
-  var country_condition_1 = require("rule-engine/conditionlets/country/country-condition");
-  var users_url_parameter_conditionlet_1 = require("rule-engine/conditionlets/users-url-parameter-conditionlet");
-  var users_referring_url_conditionlet_1 = require("rule-engine/conditionlets/users-referring-url-conditionlet");
-  var users_current_url_conditionlet_1 = require("rule-engine/conditionlets/users-current-url-conditionlet");
-  var users_host_conditionlet_1 = require("rule-engine/conditionlets/users-host-conditionlet");
-  var users_state_conditionlet_1 = require("rule-engine/conditionlets/users-state-conditionlet");
-  var users_site_visits_conditionlet_1 = require("rule-engine/conditionlets/users-site-visits-conditionlet");
-  var users_date_time_conditionlet_1 = require("rule-engine/conditionlets/users-date-time-conditionlet");
-  var users_operating_system_conditionlet_1 = require("rule-engine/conditionlets/users-operating-system-conditionlet");
-  var users_log_in_conditionlet_1 = require("rule-engine/conditionlets/users-log-in-conditionlet");
-  var ConditionComponent = (function() {
-    function ConditionComponent(apiRoot, typesProvider) {
-      var _this = this;
-      this.conditionTypes = [];
-      this.typesProvider = typesProvider;
-      typesProvider.promise.then(function() {
-        _this.conditionTypes = typesProvider.ary;
-      });
-      this.condition = {};
-      this.conditionValue = '';
-      this.conditionType = new ConditionTypes_1.ConditionTypeModel('', {});
-      this.index = 0;
-    }
-    ConditionComponent.prototype.onSetConditionMeta = function(snapshot) {
-      this.condition = snapshot.val();
-      this.conditionType = this.typesProvider.getType(this.condition.conditionlet);
-      this.conditionValue = this.condition.values;
-    };
-    Object.defineProperty(ConditionComponent.prototype, "conditionMeta", {
-      get: function() {
-        return this._conditionMeta;
-      },
-      set: function(conditionRef) {
-        this._conditionMeta = conditionRef;
-        conditionRef.once('value', this.onSetConditionMeta.bind(this));
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ConditionComponent.prototype.setConditionlet = function(conditionTypeId) {
-      var newVal = '';
-      this.conditionType = this.typesProvider.getType(conditionTypeId);
-      this.conditionValue = newVal;
-      this.condition.conditionlet = conditionTypeId;
-      this.condition.values = {};
-      this.updateCondition();
-    };
-    ConditionComponent.prototype.toggleOperator = function() {
-      this.condition.operator = this.condition.operator === 'AND' ? 'OR' : 'AND';
-      this.updateCondition();
-    };
-    ConditionComponent.prototype.updateCondition = function() {
-      this.conditionMeta.set(this.condition);
-    };
-    ConditionComponent.prototype.removeCondition = function() {
-      this.conditionMeta.remove();
-    };
-    ConditionComponent.prototype.conditionChanged = function(event) {
-      var _this = this;
-      var target = event.ngTarget;
-      var val = target.value;
-      var parameterKeys = val['parameterKeys'];
-      var oldVals = this.condition.values;
-      parameterKeys.forEach(function(key) {
-        var oldVal = oldVals[key];
-        var id = oldVal ? oldVal.id : '';
-        _this.condition.values[key] = {
-          id: id,
-          key: key,
-          value: val[key] || oldVal[key],
-          priority: 0
-        };
-      });
-      this.condition.comparison = val.comparatorValue;
-      this.updateCondition();
-    };
-    ConditionComponent = __decorate([angular2_1.Component({
-      selector: 'rule-condition',
-      properties: ["conditionMeta", "index"]
-    }), angular2_1.View({
-      template: index_1.conditionTemplate,
-      directives: [angular2_1.NgIf, angular2_1.NgFor, users_visited_url_conditionlet_1.UsersVisitedUrlConditionlet, users_ip_address_conditionlet_1.UsersIpAddressConditionlet, users_city_conditionlet_1.UsersCityConditionlet, users_time_conditionlet_1.UsersTimeConditionlet, users_landing_page_url_conditionlet_1.UsersLandingPageUrlConditionlet, request_header_conditionlet_1.RequestHeaderConditionlet, users_platform_conditionlet_1.UsersPlatformConditionlet, users_language_conditionlet_1.UsersLanguageConditionlet, users_page_visits_conditionlet_1.UsersPageVisitsConditionlet, country_condition_1.CountryCondition, users_url_parameter_conditionlet_1.UsersUrlParameterConditionlet, users_referring_url_conditionlet_1.UsersReferringUrlConditionlet, users_current_url_conditionlet_1.UsersCurrentUrlConditionlet, users_host_conditionlet_1.UsersHostConditionlet, users_state_conditionlet_1.UsersStateConditionlet, users_site_visits_conditionlet_1.UsersSiteVisitsConditionlet, users_date_time_conditionlet_1.UsersDateTimeConditionlet, users_operating_system_conditionlet_1.UsersOperatingSystemConditionlet, users_log_in_conditionlet_1.UsersLogInConditionlet, browser_conditionlet_1.BrowserConditionlet]
-    }), __param(0, angular2_1.Inject(ApiRoot_1.ApiRoot)), __param(1, angular2_1.Inject(ConditionTypes_1.ConditionTypesProvider)), __metadata('design:paramtypes', [(typeof(_a = typeof ApiRoot_1.ApiRoot !== 'undefined' && ApiRoot_1.ApiRoot) === 'function' && _a) || Object, (typeof(_b = typeof ConditionTypes_1.ConditionTypesProvider !== 'undefined' && ConditionTypes_1.ConditionTypesProvider) === 'function' && _b) || Object])], ConditionComponent);
-    return ConditionComponent;
-    var _a,
-        _b;
-  })();
-  exports.ConditionComponent = ConditionComponent;
   global.define = __define;
   return module.exports;
 });
@@ -12584,20 +12414,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/change_
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/application_tokens", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  exports.APP_COMPONENT_REF_PROMISE = lang_1.CONST_EXPR(new di_1.OpaqueToken('Promise<ComponentRef>'));
-  exports.APP_COMPONENT = lang_1.CONST_EXPR(new di_1.OpaqueToken('AppComponent'));
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/application_common", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/browser_adapter", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler", "npm:angular2@2.0.0-alpha.36/src/reflection/reflection", "npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection", "npm:angular2@2.0.0-alpha.36/pipes", "npm:angular2@2.0.0-alpha.36/src/core/exception_handler", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_loader", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/style_url_resolver", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/style_inliner", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/directive_resolver", "npm:angular2@2.0.0-alpha.36/src/core/compiler/pipe_resolver", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/async", "npm:angular2@2.0.0-alpha.36/src/core/zone/ng_zone", "npm:angular2@2.0.0-alpha.36/src/core/life_cycle/life_cycle", "npm:angular2@2.0.0-alpha.36/src/render/xhr", "npm:angular2@2.0.0-alpha.36/src/render/xhr_impl", "npm:angular2@2.0.0-alpha.36/src/render/dom/events/event_manager", "npm:angular2@2.0.0-alpha.36/src/render/dom/events/key_events", "npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_gestures", "npm:angular2@2.0.0-alpha.36/src/core/compiler/component_url_mapper", "npm:angular2@2.0.0-alpha.36/src/services/url_resolver", "npm:angular2@2.0.0-alpha.36/src/services/app_root_url", "npm:angular2@2.0.0-alpha.36/src/services/anchor_based_app_root_url", "npm:angular2@2.0.0-alpha.36/src/core/compiler/dynamic_component_loader", "npm:angular2@2.0.0-alpha.36/src/core/testability/testability", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_pool", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager_utils", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_listener", "npm:angular2@2.0.0-alpha.36/src/core/compiler/proto_view_factory", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/render", "npm:angular2@2.0.0-alpha.36/src/render/dom/schema/element_schema_registry", "npm:angular2@2.0.0-alpha.36/src/render/dom/schema/dom_element_schema_registry", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/shared_styles_host", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", "npm:angular2@2.0.0-alpha.36/src/core/application_tokens", "npm:angular2@2.0.0-alpha.36/src/profile/wtf_init", "npm:angular2@2.0.0-alpha.36/src/core/platform_bindings", "npm:angular2@2.0.0-alpha.36/src/core/application_ref", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -12728,6 +12544,20 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/application_common"
       return _rootInjector.resolveAndCreateChild(mergedBindings);
     }
   })(require("github:jspm/nodelibs-process@0.1.2"));
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/application_tokens", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  exports.APP_COMPONENT_REF_PROMISE = lang_1.CONST_EXPR(new di_1.OpaqueToken('Promise<ComponentRef>'));
+  exports.APP_COMPONENT = lang_1.CONST_EXPR(new di_1.OpaqueToken('AppComponent'));
   global.define = __define;
   return module.exports;
 });
@@ -13842,6 +13672,78 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/compiler",
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list", ["npm:angular2@2.0.0-alpha.36/src/facade/collection"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var QueryList = (function() {
+    function QueryList() {
+      this._results = [];
+      this._callbacks = [];
+      this._dirty = false;
+    }
+    QueryList.prototype.reset = function(newList) {
+      this._results = newList;
+      this._dirty = true;
+    };
+    QueryList.prototype.add = function(obj) {
+      this._results.push(obj);
+      this._dirty = true;
+    };
+    QueryList.prototype.fireCallbacks = function() {
+      if (this._dirty) {
+        collection_1.ListWrapper.forEach(this._callbacks, function(c) {
+          return c();
+        });
+        this._dirty = false;
+      }
+    };
+    QueryList.prototype.onChange = function(callback) {
+      this._callbacks.push(callback);
+    };
+    QueryList.prototype.removeCallback = function(callback) {
+      collection_1.ListWrapper.remove(this._callbacks, callback);
+    };
+    QueryList.prototype.toString = function() {
+      return this._results.toString();
+    };
+    Object.defineProperty(QueryList.prototype, "length", {
+      get: function() {
+        return this._results.length;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(QueryList.prototype, "first", {
+      get: function() {
+        return collection_1.ListWrapper.first(this._results);
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(QueryList.prototype, "last", {
+      get: function() {
+        return collection_1.ListWrapper.last(this._results);
+      },
+      enumerable: true,
+      configurable: true
+    });
+    QueryList.prototype.map = function(fn) {
+      return this._results.map(fn);
+    };
+    QueryList.prototype[Symbol.iterator] = function() {
+      return this._results[Symbol.iterator]();
+    };
+    return QueryList;
+  })();
+  exports.QueryList = QueryList;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manager_utils", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_pool", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_listener", "npm:angular2@2.0.0-alpha.36/src/profile/profile"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -14071,78 +13973,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manag
     return AppViewManager;
   })();
   exports.AppViewManager = AppViewManager;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/query_list", ["npm:angular2@2.0.0-alpha.36/src/facade/collection"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var QueryList = (function() {
-    function QueryList() {
-      this._results = [];
-      this._callbacks = [];
-      this._dirty = false;
-    }
-    QueryList.prototype.reset = function(newList) {
-      this._results = newList;
-      this._dirty = true;
-    };
-    QueryList.prototype.add = function(obj) {
-      this._results.push(obj);
-      this._dirty = true;
-    };
-    QueryList.prototype.fireCallbacks = function() {
-      if (this._dirty) {
-        collection_1.ListWrapper.forEach(this._callbacks, function(c) {
-          return c();
-        });
-        this._dirty = false;
-      }
-    };
-    QueryList.prototype.onChange = function(callback) {
-      this._callbacks.push(callback);
-    };
-    QueryList.prototype.removeCallback = function(callback) {
-      collection_1.ListWrapper.remove(this._callbacks, callback);
-    };
-    QueryList.prototype.toString = function() {
-      return this._results.toString();
-    };
-    Object.defineProperty(QueryList.prototype, "length", {
-      get: function() {
-        return this._results.length;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(QueryList.prototype, "first", {
-      get: function() {
-        return collection_1.ListWrapper.first(this._results);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(QueryList.prototype, "last", {
-      get: function() {
-        return collection_1.ListWrapper.last(this._results);
-      },
-      enumerable: true,
-      configurable: true
-    });
-    QueryList.prototype.map = function(fn) {
-      return this._results.map(fn);
-    };
-    QueryList.prototype[Symbol.iterator] = function() {
-      return this._results[Symbol.iterator]();
-    };
-    return QueryList;
-  })();
-  exports.QueryList = QueryList;
   global.define = __define;
   return module.exports;
 });
@@ -14399,6 +14229,56 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/template_r
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  function internalView(viewRef) {
+    return viewRef._view;
+  }
+  exports.internalView = internalView;
+  function internalProtoView(protoViewRef) {
+    return lang_1.isPresent(protoViewRef) ? protoViewRef._protoView : null;
+  }
+  exports.internalProtoView = internalProtoView;
+  var ViewRef = (function() {
+    function ViewRef(_view) {
+      this._view = _view;
+    }
+    Object.defineProperty(ViewRef.prototype, "render", {
+      get: function() {
+        return this._view.render;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    Object.defineProperty(ViewRef.prototype, "renderFragment", {
+      get: function() {
+        return this._view.renderFragment;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    ViewRef.prototype.setLocal = function(contextName, value) {
+      this._view.setLocal(contextName, value);
+    };
+    return ViewRef;
+  })();
+  exports.ViewRef = ViewRef;
+  var ProtoViewRef = (function() {
+    function ProtoViewRef(_protoView) {
+      this._protoView = _protoView;
+    }
+    return ProtoViewRef;
+  })();
+  exports.ProtoViewRef = ProtoViewRef;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_container_ref", ["npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -14484,56 +14364,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_conta
     return ViewContainerRef;
   })();
   exports.ViewContainerRef = ViewContainerRef;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_ref", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  function internalView(viewRef) {
-    return viewRef._view;
-  }
-  exports.internalView = internalView;
-  function internalProtoView(protoViewRef) {
-    return lang_1.isPresent(protoViewRef) ? protoViewRef._protoView : null;
-  }
-  exports.internalProtoView = internalProtoView;
-  var ViewRef = (function() {
-    function ViewRef(_view) {
-      this._view = _view;
-    }
-    Object.defineProperty(ViewRef.prototype, "render", {
-      get: function() {
-        return this._view.render;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    Object.defineProperty(ViewRef.prototype, "renderFragment", {
-      get: function() {
-        return this._view.renderFragment;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    ViewRef.prototype.setLocal = function(contextName, value) {
-      this._view.setLocal(contextName, value);
-    };
-    return ViewRef;
-  })();
-  exports.ViewRef = ViewRef;
-  var ProtoViewRef = (function() {
-    function ProtoViewRef(_protoView) {
-      this._protoView = _protoView;
-    }
-    return ProtoViewRef;
-  })();
-  exports.ProtoViewRef = ProtoViewRef;
   global.define = __define;
   return module.exports;
 });
@@ -16530,6 +16360,188 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_if", ["npm
   return module.exports;
 });
 
+System.registerDynamic("npm:zone.js@0.5.4/lib/utils", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function bindArguments(args) {
+    for (var i = args.length - 1; i >= 0; i--) {
+      if (typeof args[i] === 'function') {
+        args[i] = global.zone.bind(args[i]);
+      }
+    }
+    return args;
+  }
+  ;
+  function bindArgumentsOnce(args) {
+    for (var i = args.length - 1; i >= 0; i--) {
+      if (typeof args[i] === 'function') {
+        args[i] = global.zone.bindOnce(args[i]);
+      }
+    }
+    return args;
+  }
+  ;
+  function patchPrototype(obj, fnNames) {
+    fnNames.forEach(function(name) {
+      var delegate = obj[name];
+      if (delegate) {
+        obj[name] = function() {
+          return delegate.apply(this, bindArguments(arguments));
+        };
+      }
+    });
+  }
+  ;
+  function isWebWorker() {
+    return (typeof document === "undefined");
+  }
+  function patchProperty(obj, prop) {
+    var desc = Object.getOwnPropertyDescriptor(obj, prop) || {
+      enumerable: true,
+      configurable: true
+    };
+    delete desc.writable;
+    delete desc.value;
+    var eventName = prop.substr(2);
+    var _prop = '_' + prop;
+    desc.set = function(fn) {
+      if (this[_prop]) {
+        this.removeEventListener(eventName, this[_prop]);
+      }
+      if (typeof fn === 'function') {
+        this[_prop] = fn;
+        this.addEventListener(eventName, fn, false);
+      } else {
+        this[_prop] = null;
+      }
+    };
+    desc.get = function() {
+      return this[_prop];
+    };
+    Object.defineProperty(obj, prop, desc);
+  }
+  ;
+  function patchProperties(obj, properties) {
+    (properties || (function() {
+      var props = [];
+      for (var prop in obj) {
+        props.push(prop);
+      }
+      return props;
+    }()).filter(function(propertyName) {
+      return propertyName.substr(0, 2) === 'on';
+    })).forEach(function(eventName) {
+      patchProperty(obj, eventName);
+    });
+  }
+  ;
+  function patchEventTargetMethods(obj) {
+    var addDelegate = obj.addEventListener;
+    obj.addEventListener = function(eventName, handler) {
+      var fn;
+      if (handler.toString() !== "[object FunctionWrapper]") {
+        if (handler.handleEvent) {
+          fn = (function(handler) {
+            return function() {
+              handler.handleEvent.apply(handler, arguments);
+            };
+          })(handler);
+        } else {
+          fn = handler;
+        }
+        handler._fn = fn;
+        handler._bound = handler._bound || {};
+        arguments[1] = handler._bound[eventName] = zone.bind(fn);
+      }
+      return addDelegate.apply(this, arguments);
+    };
+    var removeDelegate = obj.removeEventListener;
+    obj.removeEventListener = function(eventName, handler) {
+      if (handler._bound && handler._bound[eventName]) {
+        var _bound = handler._bound;
+        arguments[1] = _bound[eventName];
+        delete _bound[eventName];
+      }
+      var result = removeDelegate.apply(this, arguments);
+      global.zone.dequeueTask(handler._fn);
+      return result;
+    };
+  }
+  ;
+  function patchClass(className) {
+    var OriginalClass = global[className];
+    if (!OriginalClass)
+      return;
+    global[className] = function() {
+      var a = bindArguments(arguments);
+      switch (a.length) {
+        case 0:
+          this._o = new OriginalClass();
+          break;
+        case 1:
+          this._o = new OriginalClass(a[0]);
+          break;
+        case 2:
+          this._o = new OriginalClass(a[0], a[1]);
+          break;
+        case 3:
+          this._o = new OriginalClass(a[0], a[1], a[2]);
+          break;
+        case 4:
+          this._o = new OriginalClass(a[0], a[1], a[2], a[3]);
+          break;
+        default:
+          throw new Error('what are you even doing?');
+      }
+    };
+    var instance = new OriginalClass();
+    var prop;
+    for (prop in instance) {
+      (function(prop) {
+        if (typeof instance[prop] === 'function') {
+          global[className].prototype[prop] = function() {
+            return this._o[prop].apply(this._o, arguments);
+          };
+        } else {
+          Object.defineProperty(global[className].prototype, prop, {
+            set: function(fn) {
+              if (typeof fn === 'function') {
+                this._o[prop] = global.zone.bind(fn);
+              } else {
+                this._o[prop] = fn;
+              }
+            },
+            get: function() {
+              return this._o[prop];
+            }
+          });
+        }
+      }(prop));
+    }
+    for (prop in OriginalClass) {
+      if (prop !== 'prototype' && OriginalClass.hasOwnProperty(prop)) {
+        global[className][prop] = OriginalClass[prop];
+      }
+    }
+  }
+  ;
+  module.exports = {
+    bindArguments: bindArguments,
+    bindArgumentsOnce: bindArgumentsOnce,
+    patchPrototype: patchPrototype,
+    patchProperty: patchProperty,
+    patchProperties: patchProperties,
+    patchEventTargetMethods: patchEventTargetMethods,
+    patchClass: patchClass,
+    isWebWorker: isWebWorker
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindable", ["npm:angular2@2.0.0-alpha.36/metadata"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -16568,6 +16580,90 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_non_bindab
     return NgNonBindable;
   })();
   exports.NgNonBindable = NgNonBindable;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_style", ["npm:angular2@2.0.0-alpha.36/metadata", "npm:angular2@2.0.0-alpha.36/core", "npm:angular2@2.0.0-alpha.36/change_detection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/api"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/metadata");
+  var core_1 = require("npm:angular2@2.0.0-alpha.36/core");
+  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/change_detection");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  var NgStyle = (function() {
+    function NgStyle(_differs, _ngEl, _renderer) {
+      this._differs = _differs;
+      this._ngEl = _ngEl;
+      this._renderer = _renderer;
+    }
+    Object.defineProperty(NgStyle.prototype, "rawStyle", {
+      set: function(v) {
+        this._rawStyle = v;
+        if (lang_1.isBlank(this._differ) && lang_1.isPresent(v)) {
+          this._differ = this._differs.find(this._rawStyle).create(null);
+        }
+      },
+      enumerable: true,
+      configurable: true
+    });
+    NgStyle.prototype.onCheck = function() {
+      if (lang_1.isPresent(this._differ)) {
+        var changes = this._differ.diff(this._rawStyle);
+        if (lang_1.isPresent(changes)) {
+          this._applyChanges(changes);
+        }
+      }
+    };
+    NgStyle.prototype._applyChanges = function(changes) {
+      var _this = this;
+      changes.forEachAddedItem(function(record) {
+        _this._setStyle(record.key, record.currentValue);
+      });
+      changes.forEachChangedItem(function(record) {
+        _this._setStyle(record.key, record.currentValue);
+      });
+      changes.forEachRemovedItem(function(record) {
+        _this._setStyle(record.key, null);
+      });
+    };
+    NgStyle.prototype._setStyle = function(name, val) {
+      this._renderer.setElementStyle(this._ngEl, name, val);
+    };
+    NgStyle = __decorate([metadata_1.Directive({
+      selector: '[ng-style]',
+      lifecycle: [metadata_1.LifecycleEvent.onCheck],
+      properties: ['rawStyle: ng-style']
+    }), __metadata('design:paramtypes', [change_detection_1.KeyValueDiffers, core_1.ElementRef, api_1.Renderer])], NgStyle);
+    return NgStyle;
+  })();
+  exports.NgStyle = NgStyle;
   global.define = __define;
   return module.exports;
 });
@@ -16734,90 +16830,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_switch", [
     return NgSwitchDefault;
   })();
   exports.NgSwitchDefault = NgSwitchDefault;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/directives/ng_style", ["npm:angular2@2.0.0-alpha.36/metadata", "npm:angular2@2.0.0-alpha.36/core", "npm:angular2@2.0.0-alpha.36/change_detection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/api"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/metadata");
-  var core_1 = require("npm:angular2@2.0.0-alpha.36/core");
-  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/change_detection");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  var NgStyle = (function() {
-    function NgStyle(_differs, _ngEl, _renderer) {
-      this._differs = _differs;
-      this._ngEl = _ngEl;
-      this._renderer = _renderer;
-    }
-    Object.defineProperty(NgStyle.prototype, "rawStyle", {
-      set: function(v) {
-        this._rawStyle = v;
-        if (lang_1.isBlank(this._differ) && lang_1.isPresent(v)) {
-          this._differ = this._differs.find(this._rawStyle).create(null);
-        }
-      },
-      enumerable: true,
-      configurable: true
-    });
-    NgStyle.prototype.onCheck = function() {
-      if (lang_1.isPresent(this._differ)) {
-        var changes = this._differ.diff(this._rawStyle);
-        if (lang_1.isPresent(changes)) {
-          this._applyChanges(changes);
-        }
-      }
-    };
-    NgStyle.prototype._applyChanges = function(changes) {
-      var _this = this;
-      changes.forEachAddedItem(function(record) {
-        _this._setStyle(record.key, record.currentValue);
-      });
-      changes.forEachChangedItem(function(record) {
-        _this._setStyle(record.key, record.currentValue);
-      });
-      changes.forEachRemovedItem(function(record) {
-        _this._setStyle(record.key, null);
-      });
-    };
-    NgStyle.prototype._setStyle = function(name, val) {
-      this._renderer.setElementStyle(this._ngEl, name, val);
-    };
-    NgStyle = __decorate([metadata_1.Directive({
-      selector: '[ng-style]',
-      lifecycle: [metadata_1.LifecycleEvent.onCheck],
-      properties: ['rawStyle: ng-style']
-    }), __metadata('design:paramtypes', [change_detection_1.KeyValueDiffers, core_1.ElementRef, api_1.Renderer])], NgStyle);
-    return NgStyle;
-  })();
-  exports.NgStyle = NgStyle;
   global.define = __define;
   return module.exports;
 });
@@ -18481,65 +18493,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/directives", ["npm
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/validators", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var Validators = (function() {
-    function Validators() {}
-    Validators.required = function(c) {
-      return lang_1.isBlank(c.value) || c.value == "" ? {"required": true} : null;
-    };
-    Validators.nullValidator = function(c) {
-      return null;
-    };
-    Validators.compose = function(validators) {
-      return function(c) {
-        var res = collection_1.ListWrapper.reduce(validators, function(res, validator) {
-          var errors = validator(c);
-          return lang_1.isPresent(errors) ? collection_1.StringMapWrapper.merge(res, errors) : res;
-        }, {});
-        return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
-      };
-    };
-    Validators.group = function(c) {
-      var res = {};
-      collection_1.StringMapWrapper.forEach(c.controls, function(control, name) {
-        if (c.contains(name) && lang_1.isPresent(control.errors)) {
-          Validators._mergeErrors(control, res);
-        }
-      });
-      return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
-    };
-    Validators.array = function(c) {
-      var res = {};
-      collection_1.ListWrapper.forEach(c.controls, function(control) {
-        if (lang_1.isPresent(control.errors)) {
-          Validators._mergeErrors(control, res);
-        }
-      });
-      return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
-    };
-    Validators._mergeErrors = function(control, res) {
-      collection_1.StringMapWrapper.forEach(control.errors, function(value, error) {
-        if (!collection_1.StringMapWrapper.contains(res, error)) {
-          res[error] = [];
-        }
-        var current = res[error];
-        current.push(control);
-      });
-    };
-    return Validators;
-  })();
-  exports.Validators = Validators;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/directives/validators", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/metadata", "npm:angular2@2.0.0-alpha.36/src/forms/validators"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -18616,6 +18569,65 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/directives/validat
     return NgRequiredValidator;
   })(NgValidator);
   exports.NgRequiredValidator = NgRequiredValidator;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/validators", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var Validators = (function() {
+    function Validators() {}
+    Validators.required = function(c) {
+      return lang_1.isBlank(c.value) || c.value == "" ? {"required": true} : null;
+    };
+    Validators.nullValidator = function(c) {
+      return null;
+    };
+    Validators.compose = function(validators) {
+      return function(c) {
+        var res = collection_1.ListWrapper.reduce(validators, function(res, validator) {
+          var errors = validator(c);
+          return lang_1.isPresent(errors) ? collection_1.StringMapWrapper.merge(res, errors) : res;
+        }, {});
+        return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
+      };
+    };
+    Validators.group = function(c) {
+      var res = {};
+      collection_1.StringMapWrapper.forEach(c.controls, function(control, name) {
+        if (c.contains(name) && lang_1.isPresent(control.errors)) {
+          Validators._mergeErrors(control, res);
+        }
+      });
+      return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
+    };
+    Validators.array = function(c) {
+      var res = {};
+      collection_1.ListWrapper.forEach(c.controls, function(control) {
+        if (lang_1.isPresent(control.errors)) {
+          Validators._mergeErrors(control, res);
+        }
+      });
+      return collection_1.StringMapWrapper.isEmpty(res) ? null : res;
+    };
+    Validators._mergeErrors = function(control, res) {
+      collection_1.StringMapWrapper.forEach(control.errors, function(value, error) {
+        if (!collection_1.StringMapWrapper.contains(res, error)) {
+          res[error] = [];
+        }
+        var current = res[error];
+        current.push(control);
+      });
+    };
+    return Validators;
+  })();
+  exports.Validators = Validators;
   global.define = __define;
   return module.exports;
 });
@@ -18830,6 +18842,27 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.enum-keys", ["npm:co
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol/index", ["npm:core-js@1.1.3/library/modules/es6.symbol", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  require("npm:core-js@1.1.3/library/modules/es6.symbol");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Symbol;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:process@0.11.2", ["npm:process@0.11.2/browser"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:process@0.11.2/browser");
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/modules/$.defined", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -18839,6 +18872,20 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.defined", [], true, function
     if (it == undefined)
       throw TypeError("Can't call method on  " + it);
     return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.wks", ["npm:core-js@1.1.3/library/modules/$.shared", "npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.uid"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var store = require("npm:core-js@1.1.3/library/modules/$.shared")('wks'),
+      Symbol = require("npm:core-js@1.1.3/library/modules/$.global").Symbol;
+  module.exports = function(name) {
+    return store[name] || (store[name] = Symbol && Symbol[name] || (Symbol || require("npm:core-js@1.1.3/library/modules/$.uid"))('Symbol.' + name));
   };
   global.define = __define;
   return module.exports;
@@ -18864,23 +18911,13 @@ System.registerDynamic("npm:core-js@1.1.3/modules/$.path", ["npm:core-js@1.1.3/m
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/fn/symbol/index", ["npm:core-js@1.1.3/library/modules/es6.symbol", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.set-proto"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  require("npm:core-js@1.1.3/library/modules/es6.symbol");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").Symbol;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:process@0.11.2", ["npm:process@0.11.2/browser"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = require("npm:process@0.11.2/browser");
+  var $def = require("npm:core-js@1.1.3/library/modules/$.def");
+  $def($def.S, 'Object', {setPrototypeOf: require("npm:core-js@1.1.3/library/modules/$.set-proto").set});
   global.define = __define;
   return module.exports;
 });
@@ -18904,20 +18941,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.string-at", ["npm:co
       a = s.charCodeAt(i);
       return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff ? TO_STRING ? s.charAt(i) : a : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
     };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.wks", ["npm:core-js@1.1.3/library/modules/$.shared", "npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.uid"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var store = require("npm:core-js@1.1.3/library/modules/$.shared")('wks'),
-      Symbol = require("npm:core-js@1.1.3/library/modules/$.global").Symbol;
-  module.exports = function(name) {
-    return store[name] || (store[name] = Symbol && Symbol[name] || (Symbol || require("npm:core-js@1.1.3/library/modules/$.uid"))('Symbol.' + name));
   };
   global.define = __define;
   return module.exports;
@@ -18990,52 +19013,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-define", ["npm:
         $def($def.P + $def.F * require("npm:core-js@1.1.3/library/modules/$.iter-buggy"), NAME, methods);
     }
   };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.array.iterator", ["npm:core-js@1.1.3/library/modules/$.unscope", "npm:core-js@1.1.3/library/modules/$.iter-step", "npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$.iter-define"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var setUnscope = require("npm:core-js@1.1.3/library/modules/$.unscope"),
-      step = require("npm:core-js@1.1.3/library/modules/$.iter-step"),
-      Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators"),
-      toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject");
-  require("npm:core-js@1.1.3/library/modules/$.iter-define")(Array, 'Array', function(iterated, kind) {
-    this._t = toIObject(iterated);
-    this._i = 0;
-    this._k = kind;
-  }, function() {
-    var O = this._t,
-        kind = this._k,
-        index = this._i++;
-    if (!O || index >= O.length) {
-      this._t = undefined;
-      return step(1);
-    }
-    if (kind == 'keys')
-      return step(0, index);
-    if (kind == 'values')
-      return step(0, O[index]);
-    return step(0, [index, O[index]]);
-  }, 'values');
-  Iterators.Arguments = Iterators.Array;
-  setUnscope('keys');
-  setUnscope('values');
-  setUnscope('entries');
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iterators", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = {};
   global.define = __define;
   return module.exports;
 });
@@ -19253,475 +19230,38 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.collection", ["npm:c
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.collection-to-json", ["npm:core-js@1.1.3/library/modules/$.for-of", "npm:core-js@1.1.3/library/modules/$.classof"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var forOf = require("npm:core-js@1.1.3/library/modules/$.for-of"),
-      classof = require("npm:core-js@1.1.3/library/modules/$.classof");
-  module.exports = function(NAME) {
-    return function toJSON() {
-      if (classof(this) != NAME)
-        throw TypeError(NAME + "#toJSON isn't generic");
-      var arr = [];
-      forOf(this, false, arr.push, arr);
-      return arr;
-    };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.object-sap", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.core", "npm:core-js@1.1.3/library/modules/$.fails"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(KEY, exec) {
-    var $def = require("npm:core-js@1.1.3/library/modules/$.def"),
-        fn = (require("npm:core-js@1.1.3/library/modules/$.core").Object || {})[KEY] || Object[KEY],
-        exp = {};
-    exp[KEY] = exec(fn);
-    $def($def.S + $def.F * require("npm:core-js@1.1.3/library/modules/$.fails")(function() {
-      fn(1);
-    }), 'Object', exp);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor", ["npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$.object-sap"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject");
-  require("npm:core-js@1.1.3/library/modules/$.object-sap")('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor) {
-    return function getOwnPropertyDescriptor(it, key) {
-      return $getOwnPropertyDescriptor(toIObject(it), key);
-    };
-  });
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.set-prototype-of", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.set-proto"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $def = require("npm:core-js@1.1.3/library/modules/$.def");
-  $def($def.S, 'Object', {setPrototypeOf: require("npm:core-js@1.1.3/library/modules/$.set-proto").set});
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.get-names", ["npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toString = {}.toString,
-      toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject"),
-      getNames = require("npm:core-js@1.1.3/library/modules/$").getNames;
-  var windowNames = typeof window == 'object' && Object.getOwnPropertyNames ? Object.getOwnPropertyNames(window) : [];
-  var getWindowNames = function(it) {
-    try {
-      return getNames(it);
-    } catch (e) {
-      return windowNames.slice();
-    }
-  };
-  module.exports.get = function getOwnPropertyNames(it) {
-    if (windowNames && toString.call(it) == '[object Window]')
-      return getWindowNames(it);
-    return getNames(toIObject(it));
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.library", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = true;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.ctx", ["npm:core-js@1.1.3/library/modules/$.a-function"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var aFunction = require("npm:core-js@1.1.3/library/modules/$.a-function");
-  module.exports = function(fn, that, length) {
-    aFunction(fn);
-    if (that === undefined)
-      return fn;
-    switch (length) {
-      case 1:
-        return function(a) {
-          return fn.call(that, a);
-        };
-      case 2:
-        return function(a, b) {
-          return fn.call(that, a, b);
-        };
-      case 3:
-        return function(a, b, c) {
-          return fn.call(that, a, b, c);
-        };
-    }
-    return function() {
-      return fn.apply(that, arguments);
-    };
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.classof", ["npm:core-js@1.1.3/library/modules/$.cof", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var cof = require("npm:core-js@1.1.3/library/modules/$.cof"),
-      TAG = require("npm:core-js@1.1.3/library/modules/$.wks")('toStringTag'),
-      ARG = cof(function() {
-        return arguments;
-      }()) == 'Arguments';
-  module.exports = function(it) {
-    var O,
-        T,
-        B;
-    return it === undefined ? 'Undefined' : it === null ? 'Null' : typeof(T = (O = Object(it))[TAG]) == 'string' ? T : ARG ? cof(O) : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.is-object", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(it) {
-    return it !== null && (typeof it == 'object' || typeof it == 'function');
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.an-object", ["npm:core-js@1.1.3/library/modules/$.is-object"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var isObject = require("npm:core-js@1.1.3/library/modules/$.is-object");
-  module.exports = function(it) {
-    if (!isObject(it))
-      throw TypeError(it + ' is not an object!');
-    return it;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.a-function", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(it) {
-    if (typeof it != 'function')
-      throw TypeError(it + ' is not a function!');
-    return it;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.strict-new", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(it, Constructor, name) {
-    if (!(it instanceof Constructor))
-      throw TypeError(name + ": use the 'new' operator!");
-    return it;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.for-of", ["npm:core-js@1.1.3/library/modules/$.ctx", "npm:core-js@1.1.3/library/modules/$.iter-call", "npm:core-js@1.1.3/library/modules/$.is-array-iter", "npm:core-js@1.1.3/library/modules/$.an-object", "npm:core-js@1.1.3/library/modules/$.to-length", "npm:core-js@1.1.3/library/modules/core.get-iterator-method"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var ctx = require("npm:core-js@1.1.3/library/modules/$.ctx"),
-      call = require("npm:core-js@1.1.3/library/modules/$.iter-call"),
-      isArrayIter = require("npm:core-js@1.1.3/library/modules/$.is-array-iter"),
-      anObject = require("npm:core-js@1.1.3/library/modules/$.an-object"),
-      toLength = require("npm:core-js@1.1.3/library/modules/$.to-length"),
-      getIterFn = require("npm:core-js@1.1.3/library/modules/core.get-iterator-method");
-  module.exports = function(iterable, entries, fn, that) {
-    var iterFn = getIterFn(iterable),
-        f = ctx(fn, that, entries ? 2 : 1),
-        index = 0,
-        length,
-        step,
-        iterator;
-    if (typeof iterFn != 'function')
-      throw TypeError(iterable + ' is not iterable!');
-    if (isArrayIter(iterFn))
-      for (length = toLength(iterable.length); length > index; index++) {
-        entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
-      }
-    else
-      for (iterator = iterFn.call(iterable); !(step = iterator.next()).done; ) {
-        call(iterator, f, step.value, entries);
-      }
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.set-proto", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/$.is-object", "npm:core-js@1.1.3/library/modules/$.an-object", "npm:core-js@1.1.3/library/modules/$.ctx"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var getDesc = require("npm:core-js@1.1.3/library/modules/$").getDesc,
-      isObject = require("npm:core-js@1.1.3/library/modules/$.is-object"),
-      anObject = require("npm:core-js@1.1.3/library/modules/$.an-object");
-  var check = function(O, proto) {
-    anObject(O);
-    if (!isObject(proto) && proto !== null)
-      throw TypeError(proto + ": can't set as prototype!");
-  };
-  module.exports = {
-    set: Object.setPrototypeOf || ('__proto__' in {} ? function(buggy, set) {
-      try {
-        set = require("npm:core-js@1.1.3/library/modules/$.ctx")(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
-        set({}, []);
-      } catch (e) {
-        buggy = true;
-      }
-      return function setPrototypeOf(O, proto) {
-        check(O, proto);
-        if (buggy)
-          O.__proto__ = proto;
-        else
-          set(O, proto);
-        return O;
-      };
-    }() : undefined),
-    check: check
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.same", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = Object.is || function is(x, y) {
-    return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.species", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/$.wks", "npm:core-js@1.1.3/library/modules/$.support-desc"], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.array.iterator", ["npm:core-js@1.1.3/library/modules/$.unscope", "npm:core-js@1.1.3/library/modules/$.iter-step", "npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$.iter-define"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   'use strict';
-  var $ = require("npm:core-js@1.1.3/library/modules/$"),
-      SPECIES = require("npm:core-js@1.1.3/library/modules/$.wks")('species');
-  module.exports = function(C) {
-    if (require("npm:core-js@1.1.3/library/modules/$.support-desc") && !(SPECIES in C))
-      $.setDesc(C, SPECIES, {
-        configurable: true,
-        get: function() {
-          return this;
-        }
-      });
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.uid", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var id = 0,
-      px = Math.random();
-  module.exports = function(key) {
-    return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.microtask", ["npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.task", "npm:core-js@1.1.3/library/modules/$.cof", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  (function(process) {
-    var global = require("npm:core-js@1.1.3/library/modules/$.global"),
-        macrotask = require("npm:core-js@1.1.3/library/modules/$.task").set,
-        Observer = global.MutationObserver || global.WebKitMutationObserver,
-        process = global.process,
-        isNode = require("npm:core-js@1.1.3/library/modules/$.cof")(process) == 'process',
-        head,
-        last,
-        notify;
-    var flush = function() {
-      var parent,
-          domain;
-      if (isNode && (parent = process.domain)) {
-        process.domain = null;
-        parent.exit();
-      }
-      while (head) {
-        domain = head.domain;
-        if (domain)
-          domain.enter();
-        head.fn.call();
-        if (domain)
-          domain.exit();
-        head = head.next;
-      }
-      last = undefined;
-      if (parent)
-        parent.enter();
-    };
-    if (isNode) {
-      notify = function() {
-        process.nextTick(flush);
-      };
-    } else if (Observer) {
-      var toggle = 1,
-          node = document.createTextNode('');
-      new Observer(flush).observe(node, {characterData: true});
-      notify = function() {
-        node.data = toggle = -toggle;
-      };
-    } else {
-      notify = function() {
-        macrotask.call(global, flush);
-      };
+  var setUnscope = require("npm:core-js@1.1.3/library/modules/$.unscope"),
+      step = require("npm:core-js@1.1.3/library/modules/$.iter-step"),
+      Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators"),
+      toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject");
+  require("npm:core-js@1.1.3/library/modules/$.iter-define")(Array, 'Array', function(iterated, kind) {
+    this._t = toIObject(iterated);
+    this._i = 0;
+    this._k = kind;
+  }, function() {
+    var O = this._t,
+        kind = this._k,
+        index = this._i++;
+    if (!O || index >= O.length) {
+      this._t = undefined;
+      return step(1);
     }
-    module.exports = function asap(fn) {
-      var task = {
-        fn: fn,
-        next: undefined,
-        domain: isNode && process.domain
-      };
-      if (last)
-        last.next = task;
-      if (!head) {
-        head = task;
-        notify();
-      }
-      last = task;
-    };
-  })(require("github:jspm/nodelibs-process@0.1.2"));
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.support-desc", ["npm:core-js@1.1.3/library/modules/$.fails"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = !require("npm:core-js@1.1.3/library/modules/$.fails")(function() {
-    return Object.defineProperty({}, 'a', {get: function() {
-        return 7;
-      }}).a != 7;
-  });
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.mix", ["npm:core-js@1.1.3/library/modules/$.redef"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var $redef = require("npm:core-js@1.1.3/library/modules/$.redef");
-  module.exports = function(target, src) {
-    for (var key in src)
-      $redef(target, key, src[key]);
-    return target;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.tag", ["npm:core-js@1.1.3/library/modules/$.has", "npm:core-js@1.1.3/library/modules/$.hide", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var has = require("npm:core-js@1.1.3/library/modules/$.has"),
-      hide = require("npm:core-js@1.1.3/library/modules/$.hide"),
-      TAG = require("npm:core-js@1.1.3/library/modules/$.wks")('toStringTag');
-  module.exports = function(it, tag, stat) {
-    if (it && !has(it = stat ? it : it.prototype, TAG))
-      hide(it, TAG, tag);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-detect", ["npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var SYMBOL_ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator'),
-      SAFE_CLOSING = false;
-  try {
-    var riter = [7][SYMBOL_ITERATOR]();
-    riter['return'] = function() {
-      SAFE_CLOSING = true;
-    };
-    Array.from(riter, function() {
-      throw 2;
-    });
-  } catch (e) {}
-  module.exports = function(exec) {
-    if (!SAFE_CLOSING)
-      return false;
-    var safe = false;
-    try {
-      var arr = [7],
-          iter = arr[SYMBOL_ITERATOR]();
-      iter.next = function() {
-        safe = true;
-      };
-      arr[SYMBOL_ITERATOR] = function() {
-        return iter;
-      };
-      exec(arr);
-    } catch (e) {}
-    return safe;
-  };
+    if (kind == 'keys')
+      return step(0, index);
+    if (kind == 'values')
+      return step(0, O[index]);
+    return step(0, [index, O[index]]);
+  }, 'values');
+  Iterators.Arguments = Iterators.Array;
+  setUnscope('keys');
+  setUnscope('values');
+  setUnscope('entries');
   global.define = __define;
   return module.exports;
 });
@@ -20130,52 +19670,6 @@ System.registerDynamic("rule-engine/conditionlets/users-landing-page-url-conditi
   return module.exports;
 });
 
-System.registerDynamic("rule-engine/conditionlets/users-language-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var UsersLanguageConditionlet = (function() {
-    function UsersLanguageConditionlet(id) {}
-    UsersLanguageConditionlet = __decorate([angular2_1.Component({selector: 'conditionlet users-language-conditionlet'}), angular2_1.View({
-      directives: [angular2_1.NgFor],
-      template: "\n    <div class=\"col-sm-5\">\n      <select class=\"form-control clause-selector\" [value]=\"conditionletDir.condition.comparison\" (change)=\"setComparison($event)\">\n        <option value=\"{{x.id}}\" *ng-for=\"var x of conditionletDir.conditionlet.comparisons\">{{x.label}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <h4 class=\"separator\"></h4>\n    </div>\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionletDir.value\" (input)=\"setValue($event)\"/>\n    </div>\n  "
-    }), __param(0, angular2_1.Attribute('id')), __metadata('design:paramtypes', [String])], UsersLanguageConditionlet);
-    return UsersLanguageConditionlet;
-  })();
-  exports.UsersLanguageConditionlet = UsersLanguageConditionlet;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("rule-engine/conditionlets/users-platform-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -20218,6 +19712,52 @@ System.registerDynamic("rule-engine/conditionlets/users-platform-conditionlet", 
     return UsersPlatformConditionlet;
   })();
   exports.UsersPlatformConditionlet = UsersPlatformConditionlet;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("rule-engine/conditionlets/users-language-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var UsersLanguageConditionlet = (function() {
+    function UsersLanguageConditionlet(id) {}
+    UsersLanguageConditionlet = __decorate([angular2_1.Component({selector: 'conditionlet users-language-conditionlet'}), angular2_1.View({
+      directives: [angular2_1.NgFor],
+      template: "\n    <div class=\"col-sm-5\">\n      <select class=\"form-control clause-selector\" [value]=\"conditionletDir.condition.comparison\" (change)=\"setComparison($event)\">\n        <option value=\"{{x.id}}\" *ng-for=\"var x of conditionletDir.conditionlet.comparisons\">{{x.label}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <h4 class=\"separator\"></h4>\n    </div>\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionletDir.value\" (input)=\"setValue($event)\"/>\n    </div>\n  "
+    }), __param(0, angular2_1.Attribute('id')), __metadata('design:paramtypes', [String])], UsersLanguageConditionlet);
+    return UsersLanguageConditionlet;
+  })();
+  exports.UsersLanguageConditionlet = UsersLanguageConditionlet;
   global.define = __define;
   return module.exports;
 });
@@ -20715,52 +20255,6 @@ System.registerDynamic("rule-engine/conditionlets/users-date-time-conditionlet",
   return module.exports;
 });
 
-System.registerDynamic("rule-engine/conditionlets/users-log-in-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
-  var UsersLogInConditionlet = (function() {
-    function UsersLogInConditionlet(id) {}
-    UsersLogInConditionlet = __decorate([angular2_1.Component({selector: 'conditionlet users-log-in-conditionlet'}), angular2_1.View({
-      directives: [angular2_1.NgFor],
-      template: "\n    <div class=\"col-sm-5\">\n      <select class=\"form-control clause-selector\" [value]=\"conditionletDir.condition.comparison\" (change)=\"setComparison($event)\">\n        <option value=\"{{x.id}}\" *ng-for=\"var x of conditionletDir.conditionlet.comparisons\">{{x.label}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <h4 class=\"separator\"></h4>\n    </div>\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionletDir.value\" (input)=\"setValue($event)\"/>\n    </div>\n  "
-    }), __param(0, angular2_1.Attribute('id')), __metadata('design:paramtypes', [String])], UsersLogInConditionlet);
-    return UsersLogInConditionlet;
-  })();
-  exports.UsersLogInConditionlet = UsersLogInConditionlet;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("rule-engine/conditionlets/users-operating-system-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -20807,6 +20301,62 @@ System.registerDynamic("rule-engine/conditionlets/users-operating-system-conditi
   return module.exports;
 });
 
+System.registerDynamic("rule-engine/conditionlets/users-log-in-conditionlet", ["npm:angular2@2.0.0-alpha.36/angular2"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var angular2_1 = require("npm:angular2@2.0.0-alpha.36/angular2");
+  var UsersLogInConditionlet = (function() {
+    function UsersLogInConditionlet(id) {}
+    UsersLogInConditionlet = __decorate([angular2_1.Component({selector: 'conditionlet users-log-in-conditionlet'}), angular2_1.View({
+      directives: [angular2_1.NgFor],
+      template: "\n    <div class=\"col-sm-5\">\n      <select class=\"form-control clause-selector\" [value]=\"conditionletDir.condition.comparison\" (change)=\"setComparison($event)\">\n        <option value=\"{{x.id}}\" *ng-for=\"var x of conditionletDir.conditionlet.comparisons\">{{x.label}}</option>\n      </select>\n    </div>\n    <div class=\"col-sm-2\">\n      <h4 class=\"separator\"></h4>\n    </div>\n    <div class=\"col-sm-5\">\n      <input type=\"text\" class=\"form-control condition-value\" [value]=\"conditionletDir.value\" (input)=\"setValue($event)\"/>\n    </div>\n  "
+    }), __param(0, angular2_1.Attribute('id')), __metadata('design:paramtypes', [String])], UsersLogInConditionlet);
+    return UsersLogInConditionlet;
+  })();
+  exports.UsersLogInConditionlet = UsersLogInConditionlet;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iterators", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = {};
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("rule-engine/templates/rule-engine.tpl.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -20822,7 +20372,7 @@ System.registerDynamic("rule-engine/templates/rule-component.tpl.html!github:sys
   var global = this,
       __define = global.define;
   global.define = undefined;
-  module.exports = "<div class=\"panel panel-default rule\">\n  <div class=\"panel-heading\">\n    <div class=\"container\">\n      <div class=\"row\" (click)=\"collapsed = !collapsed\">\n        <div class=\"col-xs-5\">\n          <input type=\"text\" class=\"form-control  rule-title\"\n                 placeholder=\"Describe the rule\"\n                 [value]=\"rule.name\"\n                 (change)=\"setRuleName($event.target.value)\"\n                 (focus)=\"collapsed = false\">\n        </div>\n\n        <div class=\"col-xs-3 col-xs-offset-1\">\n          <div class=\"operations rule-operations\">\n            <label>Fire on:</label>\n\n            <div class=\"btn-group\">\n              <button type=\"button\" class=\"btn btn-default\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                {{rule.fireOn}}\n              </button>\n              <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\"\n                      (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                <span class=\"caret\"></span>\n                <span class=\"sr-only\">Toggle Drop Down</span>\n              </button>\n              <ul class=\"dropdown-menu collapse\" role=\"menu\" [class.in]=\"fireOnDropDownExpanded\">\n                <li (click)=\"setFireOn('EVERY_PAGE')\"><a href=\"#\" (click)=\"setFireOn('EVERY_PAGE')\">Every page</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISIT')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISIT')\">Once per\n                  visit</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISITOR')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISITOR')\">Once per\n                  visitor</a></li>\n                <li (click)=\"setFireOn('EVERY_REQUEST')\"><a href=\"#\" (click)=\"setFireOn('EVERY_REQUEST')\">Every\n                  request</a></li>\n              </ul>\n            </div>\n          </div>\n          </div>\n          <div class=\"col-xs-3\">\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Group\" (click)=\"addGroup()\">\n              <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\" (click)=\"addGroup()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Action\" (click)=\"addRuleAction()\">\n              <span class=\"glyphicon glyphicon-flash\" aria-hidden=\"true\" (click)=\"addRuleAction()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\"\n                    (click)=\"removeRule()\">\n              <span class=\"glyphicon glyphicon-trash\" (click)=\"removeRule()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" [class.btn-danger]=\"rule.enabled\" aria-label=\"Enable/Disable Rule\"\n                    (click)=\"toggleEnabled()\">\n              <span class=\"glyphicon glyphicon-off\" (click)=\"toggleEnabled()\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"panel-body collapse\" [class.in]=\"!collapsed\">\n      <div class=\"section-separator\">\n        <h2>When</h2>\n        <hr/>\n      </div>\n      <condition-group *ng-for=\"var groupSnap of ruleGroups; var i=index\"\n                       [rule]=\"rule\"\n                       [group-snap]=\"groupSnap\"\n                       [group-index]=\"i\"></condition-group>\n\n      <div class=\"section-separator\">\n        <h2>Then</h2>\n        <hr/>\n      </div>\n      <rule-action *ng-for=\"var actionMeta of ruleActions; var i=index\" [action-meta]=\"actionMeta\"></rule-action>\n\n    </div>\n  </div>\n";
+  module.exports = "<div class=\"panel panel-default rule\">\n  <div class=\"panel-heading\">\n    <div class=\"container\">\n      <div class=\"row\" (click)=\"collapsed = !collapsed\">\n        <div class=\"col-xs-5\">\n          <input type=\"text\" class=\"form-control  rule-title\"\n                 placeholder=\"Describe the rule\"\n                 [value]=\"rule.name\"\n                 (change)=\"setRuleName($event.target.value)\"\n                 (focus)=\"collapsed = false\">\n        </div>\n\n        <div class=\"col-xs-3 col-xs-offset-1\">\n          <div class=\"operations rule-operations\">\n            <label>Fire on:</label>\n\n            <div class=\"btn-group\">\n              <button type=\"button\" class=\"btn btn-default\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">{{fireOnLabel(rule.fireOn)}}</button>\n              <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">\n                <span class=\"caret\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\"></span>\n                <span class=\"sr-only\" (click)=\"fireOnDropDownExpanded = !fireOnDropDownExpanded\">Toggle Drop Down</span>\n              </button>\n              <ul class=\"dropdown-menu collapse\" role=\"menu\" [class.in]=\"fireOnDropDownExpanded\">\n                <li (click)=\"setFireOn('EVERY_PAGE')\"><a href=\"#\" (click)=\"setFireOn('EVERY_PAGE')\">{{fireOnLabel('EVERY_PAGE')}}</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISIT')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISIT')\">{{fireOnLabel('ONCE_PER_VISIT')}}</a></li>\n                <li (click)=\"setFireOn('ONCE_PER_VISITOR')\"><a href=\"#\" (click)=\"setFireOn('ONCE_PER_VISITOR')\">{{fireOnLabel('ONCE_PER_VISITOR')}}</a></li>\n                <li (click)=\"setFireOn('EVERY_REQUEST')\"><a href=\"#\" (click)=\"setFireOn('EVERY_REQUEST')\">{{fireOnLabel('EVERY_REQUEST')}}</a></li>\n              </ul>\n            </div>\n          </div>\n          </div>\n          <div class=\"col-xs-3\">\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Group\" (click)=\"addGroup()\">\n              <span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\" (click)=\"addGroup()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" arial-label=\"Add Action\" (click)=\"addRuleAction()\">\n              <span class=\"glyphicon glyphicon-flash\" aria-hidden=\"true\" (click)=\"addRuleAction()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Rule\"\n                    (click)=\"removeRule()\">\n              <span class=\"glyphicon glyphicon-trash\" (click)=\"removeRule()\"></span>\n            </button>\n            <button type=\"button\" class=\"btn btn-default btn-md\" [class.btn-danger]=\"rule.enabled\" aria-label=\"Enable/Disable Rule\"\n                    (click)=\"toggleEnabled()\">\n              <span class=\"glyphicon glyphicon-off\" (click)=\"toggleEnabled()\"></span>\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"panel-body collapse\" [class.in]=\"!collapsed\">\n      <div class=\"section-separator\">\n        <h2>When</h2>\n        <hr/>\n      </div>\n      <condition-group *ng-for=\"var groupSnap of ruleGroups; var i=index\"\n                       [rule]=\"rule\"\n                       [group-snap]=\"groupSnap\"\n                       [group-index]=\"i\"></condition-group>\n\n      <div class=\"section-separator\">\n        <h2>Then</h2>\n        <hr/>\n      </div>\n      <rule-action *ng-for=\"var actionMeta of ruleActions; var i=index\" [action-meta]=\"actionMeta\"></rule-action>\n\n    </div>\n  </div>\n";
   global.define = __define;
   return module.exports;
 });
@@ -20837,6 +20387,24 @@ System.registerDynamic("rule-engine/templates/rule-action-component.tpl.html!git
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.object-sap", ["npm:core-js@1.1.3/library/modules/$.def", "npm:core-js@1.1.3/library/modules/$.core", "npm:core-js@1.1.3/library/modules/$.fails"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(KEY, exec) {
+    var $def = require("npm:core-js@1.1.3/library/modules/$.def"),
+        fn = (require("npm:core-js@1.1.3/library/modules/$.core").Object || {})[KEY] || Object[KEY],
+        exp = {};
+    exp[KEY] = exec(fn);
+    $def($def.S + $def.F * require("npm:core-js@1.1.3/library/modules/$.fails")(function() {
+      fn(1);
+    }), 'Object', exp);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("rule-engine/templates/rule-condition-group-component.tpl.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -20847,12 +20415,456 @@ System.registerDynamic("rule-engine/templates/rule-condition-group-component.tpl
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.collection-to-json", ["npm:core-js@1.1.3/library/modules/$.for-of", "npm:core-js@1.1.3/library/modules/$.classof"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var forOf = require("npm:core-js@1.1.3/library/modules/$.for-of"),
+      classof = require("npm:core-js@1.1.3/library/modules/$.classof");
+  module.exports = function(NAME) {
+    return function toJSON() {
+      if (classof(this) != NAME)
+        throw TypeError(NAME + "#toJSON isn't generic");
+      var arr = [];
+      forOf(this, false, arr.push, arr);
+      return arr;
+    };
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("rule-engine/templates/rule-condition-component.tpl.html!github:systemjs/plugin-text@0.0.2", [], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = "<div class=\"panel panel-default clause\">\n  <div class=\"panel-body\">\n    <div class=\"row\">\n      <div class=\"col-sm-1\">\n        <button *ng-if=\"index !== 0\" type=\"button\" class=\"btn btn-default\" (click)=\"toggleOperator()\">\n          {{condition.operator}}\n        </button>\n      </div>\n      <div class=\"col-sm-11\">\n        <div class=\"row\">\n          <div class=\"col-sm-3\">\n            <select class=\"form-control clause-selector\" [value]=\"conditionType?.id\" (change)=\"setConditionlet($event.target.value)\">\n              <option value=\"{{conditionType.id}}\" *ng-for=\"var conditionType of conditionTypes; var i=index\">\n                {{conditionType.name}}\n              </option>\n            </select>\n          </div>\n          <div class=\"col-sm-1\">\n            <h4 class=\"separator\"></h4>\n          </div>\n          <cw-request-header-conditionlet\n              *ng-if=\"conditionType?.id == 'UsersBrowserHeaderConditionlet'\"\n              [comparator-value]=\"condition?.comparison\"\n              [comparison-values]=\"conditionValue\"\n              (change)=\"conditionChanged($event)\"\n          >\n          </cw-request-header-conditionlet>\n          <cw-browser-conditionlet *ng-if=\"conditionType?.id == 'UsersBrowserConditionlet'\"></cw-browser-conditionlet>\n          <cw-country-condition *ng-if=\"conditionType?.id == 'UsersCountryConditionlet'\"\n                                [comparator-value]=\"condition?.comparison\"\n                                [comparison-values]=\"conditionValue\"\n                                (change)=\"conditionChanged($event)\"\n          ></cw-country-condition>\n\n          <div class=\"col-sm-1\">\n            <div class=\"operations\">\n              <button type=\"button\" class=\"btn btn-default btn-md btn-danger\" aria-label=\"Delete Clause\"\n                      (click)=\"removeCondition()\">\n                <span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" (click)=\"removeCondition()\"></span>\n              </button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>";
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.get-names", ["npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toString = {}.toString,
+      toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject"),
+      getNames = require("npm:core-js@1.1.3/library/modules/$").getNames;
+  var windowNames = typeof window == 'object' && Object.getOwnPropertyNames ? Object.getOwnPropertyNames(window) : [];
+  var getWindowNames = function(it) {
+    try {
+      return getNames(it);
+    } catch (e) {
+      return windowNames.slice();
+    }
+  };
+  module.exports.get = function getOwnPropertyNames(it) {
+    if (windowNames && toString.call(it) == '[object Window]')
+      return getWindowNames(it);
+    return getNames(toIObject(it));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/es6.object.get-own-property-descriptor", ["npm:core-js@1.1.3/library/modules/$.to-iobject", "npm:core-js@1.1.3/library/modules/$.object-sap"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toIObject = require("npm:core-js@1.1.3/library/modules/$.to-iobject");
+  require("npm:core-js@1.1.3/library/modules/$.object-sap")('getOwnPropertyDescriptor', function($getOwnPropertyDescriptor) {
+    return function getOwnPropertyDescriptor(it, key) {
+      return $getOwnPropertyDescriptor(toIObject(it), key);
+    };
+  });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.library", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = true;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.ctx", ["npm:core-js@1.1.3/library/modules/$.a-function"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var aFunction = require("npm:core-js@1.1.3/library/modules/$.a-function");
+  module.exports = function(fn, that, length) {
+    aFunction(fn);
+    if (that === undefined)
+      return fn;
+    switch (length) {
+      case 1:
+        return function(a) {
+          return fn.call(that, a);
+        };
+      case 2:
+        return function(a, b) {
+          return fn.call(that, a, b);
+        };
+      case 3:
+        return function(a, b, c) {
+          return fn.call(that, a, b, c);
+        };
+    }
+    return function() {
+      return fn.apply(that, arguments);
+    };
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.classof", ["npm:core-js@1.1.3/library/modules/$.cof", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var cof = require("npm:core-js@1.1.3/library/modules/$.cof"),
+      TAG = require("npm:core-js@1.1.3/library/modules/$.wks")('toStringTag'),
+      ARG = cof(function() {
+        return arguments;
+      }()) == 'Arguments';
+  module.exports = function(it) {
+    var O,
+        T,
+        B;
+    return it === undefined ? 'Undefined' : it === null ? 'Null' : typeof(T = (O = Object(it))[TAG]) == 'string' ? T : ARG ? cof(O) : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.is-object", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(it) {
+    return it !== null && (typeof it == 'object' || typeof it == 'function');
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.strict-new", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(it, Constructor, name) {
+    if (!(it instanceof Constructor))
+      throw TypeError(name + ": use the 'new' operator!");
+    return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.a-function", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(it) {
+    if (typeof it != 'function')
+      throw TypeError(it + ' is not a function!');
+    return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.an-object", ["npm:core-js@1.1.3/library/modules/$.is-object"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var isObject = require("npm:core-js@1.1.3/library/modules/$.is-object");
+  module.exports = function(it) {
+    if (!isObject(it))
+      throw TypeError(it + ' is not an object!');
+    return it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.for-of", ["npm:core-js@1.1.3/library/modules/$.ctx", "npm:core-js@1.1.3/library/modules/$.iter-call", "npm:core-js@1.1.3/library/modules/$.is-array-iter", "npm:core-js@1.1.3/library/modules/$.an-object", "npm:core-js@1.1.3/library/modules/$.to-length", "npm:core-js@1.1.3/library/modules/core.get-iterator-method"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var ctx = require("npm:core-js@1.1.3/library/modules/$.ctx"),
+      call = require("npm:core-js@1.1.3/library/modules/$.iter-call"),
+      isArrayIter = require("npm:core-js@1.1.3/library/modules/$.is-array-iter"),
+      anObject = require("npm:core-js@1.1.3/library/modules/$.an-object"),
+      toLength = require("npm:core-js@1.1.3/library/modules/$.to-length"),
+      getIterFn = require("npm:core-js@1.1.3/library/modules/core.get-iterator-method");
+  module.exports = function(iterable, entries, fn, that) {
+    var iterFn = getIterFn(iterable),
+        f = ctx(fn, that, entries ? 2 : 1),
+        index = 0,
+        length,
+        step,
+        iterator;
+    if (typeof iterFn != 'function')
+      throw TypeError(iterable + ' is not iterable!');
+    if (isArrayIter(iterFn))
+      for (length = toLength(iterable.length); length > index; index++) {
+        entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
+      }
+    else
+      for (iterator = iterFn.call(iterable); !(step = iterator.next()).done; ) {
+        call(iterator, f, step.value, entries);
+      }
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.set-proto", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/$.is-object", "npm:core-js@1.1.3/library/modules/$.an-object", "npm:core-js@1.1.3/library/modules/$.ctx"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var getDesc = require("npm:core-js@1.1.3/library/modules/$").getDesc,
+      isObject = require("npm:core-js@1.1.3/library/modules/$.is-object"),
+      anObject = require("npm:core-js@1.1.3/library/modules/$.an-object");
+  var check = function(O, proto) {
+    anObject(O);
+    if (!isObject(proto) && proto !== null)
+      throw TypeError(proto + ": can't set as prototype!");
+  };
+  module.exports = {
+    set: Object.setPrototypeOf || ('__proto__' in {} ? function(buggy, set) {
+      try {
+        set = require("npm:core-js@1.1.3/library/modules/$.ctx")(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+        set({}, []);
+      } catch (e) {
+        buggy = true;
+      }
+      return function setPrototypeOf(O, proto) {
+        check(O, proto);
+        if (buggy)
+          O.__proto__ = proto;
+        else
+          set(O, proto);
+        return O;
+      };
+    }() : undefined),
+    check: check
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.same", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = Object.is || function is(x, y) {
+    return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.species", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/$.wks", "npm:core-js@1.1.3/library/modules/$.support-desc"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var $ = require("npm:core-js@1.1.3/library/modules/$"),
+      SPECIES = require("npm:core-js@1.1.3/library/modules/$.wks")('species');
+  module.exports = function(C) {
+    if (require("npm:core-js@1.1.3/library/modules/$.support-desc") && !(SPECIES in C))
+      $.setDesc(C, SPECIES, {
+        configurable: true,
+        get: function() {
+          return this;
+        }
+      });
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.uid", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var id = 0,
+      px = Math.random();
+  module.exports = function(key) {
+    return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.microtask", ["npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.task", "npm:core-js@1.1.3/library/modules/$.cof", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  (function(process) {
+    var global = require("npm:core-js@1.1.3/library/modules/$.global"),
+        macrotask = require("npm:core-js@1.1.3/library/modules/$.task").set,
+        Observer = global.MutationObserver || global.WebKitMutationObserver,
+        process = global.process,
+        isNode = require("npm:core-js@1.1.3/library/modules/$.cof")(process) == 'process',
+        head,
+        last,
+        notify;
+    var flush = function() {
+      var parent,
+          domain;
+      if (isNode && (parent = process.domain)) {
+        process.domain = null;
+        parent.exit();
+      }
+      while (head) {
+        domain = head.domain;
+        if (domain)
+          domain.enter();
+        head.fn.call();
+        if (domain)
+          domain.exit();
+        head = head.next;
+      }
+      last = undefined;
+      if (parent)
+        parent.enter();
+    };
+    if (isNode) {
+      notify = function() {
+        process.nextTick(flush);
+      };
+    } else if (Observer) {
+      var toggle = 1,
+          node = document.createTextNode('');
+      new Observer(flush).observe(node, {characterData: true});
+      notify = function() {
+        node.data = toggle = -toggle;
+      };
+    } else {
+      notify = function() {
+        macrotask.call(global, flush);
+      };
+    }
+    module.exports = function asap(fn) {
+      var task = {
+        fn: fn,
+        next: undefined,
+        domain: isNode && process.domain
+      };
+      if (last)
+        last.next = task;
+      if (!head) {
+        head = task;
+        notify();
+      }
+      last = task;
+    };
+  })(require("github:jspm/nodelibs-process@0.1.2"));
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.support-desc", ["npm:core-js@1.1.3/library/modules/$.fails"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = !require("npm:core-js@1.1.3/library/modules/$.fails")(function() {
+    return Object.defineProperty({}, 'a', {get: function() {
+        return 7;
+      }}).a != 7;
+  });
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.mix", ["npm:core-js@1.1.3/library/modules/$.redef"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var $redef = require("npm:core-js@1.1.3/library/modules/$.redef");
+  module.exports = function(target, src) {
+    for (var key in src)
+      $redef(target, key, src[key]);
+    return target;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.tag", ["npm:core-js@1.1.3/library/modules/$.has", "npm:core-js@1.1.3/library/modules/$.hide", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var has = require("npm:core-js@1.1.3/library/modules/$.has"),
+      hide = require("npm:core-js@1.1.3/library/modules/$.hide"),
+      TAG = require("npm:core-js@1.1.3/library/modules/$.wks")('toStringTag');
+  module.exports = function(it, tag, stat) {
+    if (it && !has(it = stat ? it : it.prototype, TAG))
+      hide(it, TAG, tag);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-detect", ["npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var SYMBOL_ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator'),
+      SAFE_CLOSING = false;
+  try {
+    var riter = [7][SYMBOL_ITERATOR]();
+    riter['return'] = function() {
+      SAFE_CLOSING = true;
+    };
+    Array.from(riter, function() {
+      throw 2;
+    });
+  } catch (e) {}
+  module.exports = function(exec) {
+    if (!SAFE_CLOSING)
+      return false;
+    var safe = false;
+    try {
+      var arr = [7],
+          iter = arr[SYMBOL_ITERATOR]();
+      iter.next = function() {
+        safe = true;
+      };
+      arr[SYMBOL_ITERATOR] = function() {
+        return iter;
+      };
+      exec(arr);
+    } catch (e) {}
+    return safe;
+  };
   global.define = __define;
   return module.exports;
 });
@@ -21164,6 +21176,28 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/metadata/view", ["n
     return ViewMetadata;
   })();
   exports.ViewMetadata = ViewMetadata;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/pregen_proto_change_detector", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var PregenProtoChangeDetector = (function() {
+    function PregenProtoChangeDetector() {}
+    PregenProtoChangeDetector.isSupported = function() {
+      return false;
+    };
+    PregenProtoChangeDetector.prototype.instantiate = function(dispatcher) {
+      throw new lang_1.BaseException('Pregen change detection not supported in Js');
+    };
+    return PregenProtoChangeDetector;
+  })();
+  exports.PregenProtoChangeDetector = PregenProtoChangeDetector;
   global.define = __define;
   return module.exports;
 });
@@ -21589,28 +21623,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/proto_c
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/pregen_proto_change_detector", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var PregenProtoChangeDetector = (function() {
-    function PregenProtoChangeDetector() {}
-    PregenProtoChangeDetector.isSupported = function() {
-      return false;
-    };
-    PregenProtoChangeDetector.prototype.instantiate = function(dispatcher) {
-      throw new lang_1.BaseException('Pregen change detection not supported in Js');
-    };
-    return PregenProtoChangeDetector;
-  })();
-  exports.PregenProtoChangeDetector = PregenProtoChangeDetector;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/differs/iterable_differs", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -21680,6 +21692,79 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/differs
     return IterableDiffers;
   })();
   exports.IterableDiffers = IterableDiffers;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/differs/keyvalue_differs", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var KeyValueDiffers = (function() {
+    function KeyValueDiffers(factories) {
+      this.factories = factories;
+    }
+    KeyValueDiffers.create = function(factories, parent) {
+      if (lang_1.isPresent(parent)) {
+        var copied = collection_1.ListWrapper.clone(parent.factories);
+        factories = factories.concat(copied);
+        return new KeyValueDiffers(factories);
+      } else {
+        return new KeyValueDiffers(factories);
+      }
+    };
+    KeyValueDiffers.extend = function(factories) {
+      return new di_1.Binding(KeyValueDiffers, {
+        toFactory: function(parent) {
+          if (lang_1.isBlank(parent)) {
+            throw new lang_1.BaseException('Cannot extend KeyValueDiffers without a parent injector');
+          }
+          return KeyValueDiffers.create(factories, parent);
+        },
+        deps: [[KeyValueDiffers, new di_1.SkipSelfMetadata(), new di_1.OptionalMetadata()]]
+      });
+    };
+    KeyValueDiffers.prototype.find = function(kv) {
+      var factory = collection_1.ListWrapper.find(this.factories, function(f) {
+        return f.supports(kv);
+      });
+      if (lang_1.isPresent(factory)) {
+        return factory;
+      } else {
+        throw new lang_1.BaseException("Cannot find a differ supporting object '" + kv + "'");
+      }
+    };
+    KeyValueDiffers = __decorate([di_1.Injectable(), lang_1.CONST(), __metadata('design:paramtypes', [Array])], KeyValueDiffers);
+    return KeyValueDiffers;
+  })();
+  exports.KeyValueDiffers = KeyValueDiffers;
   global.define = __define;
   return module.exports;
 });
@@ -22156,79 +22241,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/differs
     };
     return _DuplicateMap;
   })();
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/differs/keyvalue_differs", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var KeyValueDiffers = (function() {
-    function KeyValueDiffers(factories) {
-      this.factories = factories;
-    }
-    KeyValueDiffers.create = function(factories, parent) {
-      if (lang_1.isPresent(parent)) {
-        var copied = collection_1.ListWrapper.clone(parent.factories);
-        factories = factories.concat(copied);
-        return new KeyValueDiffers(factories);
-      } else {
-        return new KeyValueDiffers(factories);
-      }
-    };
-    KeyValueDiffers.extend = function(factories) {
-      return new di_1.Binding(KeyValueDiffers, {
-        toFactory: function(parent) {
-          if (lang_1.isBlank(parent)) {
-            throw new lang_1.BaseException('Cannot extend KeyValueDiffers without a parent injector');
-          }
-          return KeyValueDiffers.create(factories, parent);
-        },
-        deps: [[KeyValueDiffers, new di_1.SkipSelfMetadata(), new di_1.OptionalMetadata()]]
-      });
-    };
-    KeyValueDiffers.prototype.find = function(kv) {
-      var factory = collection_1.ListWrapper.find(this.factories, function(f) {
-        return f.supports(kv);
-      });
-      if (lang_1.isPresent(factory)) {
-        return factory;
-      } else {
-        throw new lang_1.BaseException("Cannot find a differ supporting object '" + kv + "'");
-      }
-    };
-    KeyValueDiffers = __decorate([di_1.Injectable(), lang_1.CONST(), __metadata('design:paramtypes', [Array])], KeyValueDiffers);
-    return KeyValueDiffers;
-  })();
-  exports.KeyValueDiffers = KeyValueDiffers;
   global.define = __define;
   return module.exports;
 });
@@ -23975,6 +23987,52 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/parser/
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/exceptions", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var ExpressionChangedAfterItHasBeenCheckedException = (function(_super) {
+    __extends(ExpressionChangedAfterItHasBeenCheckedException, _super);
+    function ExpressionChangedAfterItHasBeenCheckedException(exp, oldValue, currValue, context) {
+      _super.call(this, ("Expression '" + exp + "' has changed after it was checked. ") + ("Previous value: '" + oldValue + "'. Current value: '" + currValue + "'"));
+    }
+    return ExpressionChangedAfterItHasBeenCheckedException;
+  })(lang_1.BaseException);
+  exports.ExpressionChangedAfterItHasBeenCheckedException = ExpressionChangedAfterItHasBeenCheckedException;
+  var ChangeDetectionError = (function(_super) {
+    __extends(ChangeDetectionError, _super);
+    function ChangeDetectionError(exp, originalException, originalStack, context) {
+      _super.call(this, originalException + " in [" + exp + "]", originalException, originalStack, context);
+      this.location = exp;
+    }
+    return ChangeDetectionError;
+  })(lang_1.BaseException);
+  exports.ChangeDetectionError = ChangeDetectionError;
+  var DehydratedException = (function(_super) {
+    __extends(DehydratedException, _super);
+    function DehydratedException() {
+      _super.call(this, 'Attempt to detect changes on a dehydrated detector.');
+    }
+    return DehydratedException;
+  })(lang_1.BaseException);
+  exports.DehydratedException = DehydratedException;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/parser/parser", ["npm:angular2@2.0.0-alpha.36/src/di/decorators", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/change_detection/parser/lexer", "npm:angular2@2.0.0-alpha.36/src/reflection/reflection", "npm:angular2@2.0.0-alpha.36/src/change_detection/parser/ast"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -24672,52 +24730,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/parser/
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/exceptions", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var ExpressionChangedAfterItHasBeenCheckedException = (function(_super) {
-    __extends(ExpressionChangedAfterItHasBeenCheckedException, _super);
-    function ExpressionChangedAfterItHasBeenCheckedException(exp, oldValue, currValue, context) {
-      _super.call(this, ("Expression '" + exp + "' has changed after it was checked. ") + ("Previous value: '" + oldValue + "'. Current value: '" + currValue + "'"));
-    }
-    return ExpressionChangedAfterItHasBeenCheckedException;
-  })(lang_1.BaseException);
-  exports.ExpressionChangedAfterItHasBeenCheckedException = ExpressionChangedAfterItHasBeenCheckedException;
-  var ChangeDetectionError = (function(_super) {
-    __extends(ChangeDetectionError, _super);
-    function ChangeDetectionError(exp, originalException, originalStack, context) {
-      _super.call(this, originalException + " in [" + exp + "]", originalException, originalStack, context);
-      this.location = exp;
-    }
-    return ChangeDetectionError;
-  })(lang_1.BaseException);
-  exports.ChangeDetectionError = ChangeDetectionError;
-  var DehydratedException = (function(_super) {
-    __extends(DehydratedException, _super);
-    function DehydratedException() {
-      _super.call(this, 'Attempt to detect changes on a dehydrated detector.');
-    }
-    return DehydratedException;
-  })(lang_1.BaseException);
-  exports.DehydratedException = DehydratedException;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/constants", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -24916,6 +24928,34 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/directi
     return DirectiveRecord;
   })();
   exports.DirectiveRecord = DirectiveRecord;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detector_ref", ["npm:angular2@2.0.0-alpha.36/src/change_detection/constants"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var constants_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/constants");
+  var ChangeDetectorRef = (function() {
+    function ChangeDetectorRef(_cd) {
+      this._cd = _cd;
+    }
+    ChangeDetectorRef.prototype.requestCheck = function() {
+      this._cd.markPathToRootAsCheckOnce();
+    };
+    ChangeDetectorRef.prototype.detach = function() {
+      this._cd.mode = constants_1.DETACHED;
+    };
+    ChangeDetectorRef.prototype.reattach = function() {
+      this._cd.mode = constants_1.CHECK_ALWAYS;
+      this.requestCheck();
+    };
+    return ChangeDetectorRef;
+  })();
+  exports.ChangeDetectorRef = ChangeDetectorRef;
   global.define = __define;
   return module.exports;
 });
@@ -25289,34 +25329,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/dynamic
       return true;
     return false;
   }
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detector_ref", ["npm:angular2@2.0.0-alpha.36/src/change_detection/constants"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var constants_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/constants");
-  var ChangeDetectorRef = (function() {
-    function ChangeDetectorRef(_cd) {
-      this._cd = _cd;
-    }
-    ChangeDetectorRef.prototype.requestCheck = function() {
-      this._cd.markPathToRootAsCheckOnce();
-    };
-    ChangeDetectorRef.prototype.detach = function() {
-      this._cd.mode = constants_1.DETACHED;
-    };
-    ChangeDetectorRef.prototype.reattach = function() {
-      this._cd.mode = constants_1.CHECK_ALWAYS;
-      this.requestCheck();
-    };
-    return ChangeDetectorRef;
-  })();
-  exports.ChangeDetectorRef = ChangeDetectorRef;
   global.define = __define;
   return module.exports;
 });
@@ -27271,6 +27283,60 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/event_
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_gestures", ["npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_common", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var hammer_common_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_common");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var HammerGesturesPlugin = (function(_super) {
+    __extends(HammerGesturesPlugin, _super);
+    function HammerGesturesPlugin() {
+      _super.call(this);
+    }
+    HammerGesturesPlugin.prototype.supports = function(eventName) {
+      if (!_super.prototype.supports.call(this, eventName))
+        return false;
+      if (!lang_1.isPresent(window['Hammer'])) {
+        throw new lang_1.BaseException("Hammer.js is not loaded, can not bind " + eventName + " event");
+      }
+      return true;
+    };
+    HammerGesturesPlugin.prototype.addEventListener = function(element, eventName, handler, shouldSupportBubble) {
+      if (shouldSupportBubble)
+        throw new lang_1.BaseException('Hammer.js plugin does not support bubbling gestures.');
+      var zone = this.manager.getZone();
+      eventName = eventName.toLowerCase();
+      zone.runOutsideAngular(function() {
+        var mc = new Hammer(element);
+        mc.get('pinch').set({enable: true});
+        mc.get('rotate').set({enable: true});
+        mc.on(eventName, function(eventObj) {
+          zone.run(function() {
+            handler(eventObj);
+          });
+        });
+      });
+    };
+    return HammerGesturesPlugin;
+  })(hammer_common_1.HammerGesturesPluginCommon);
+  exports.HammerGesturesPlugin = HammerGesturesPlugin;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/key_events", ["npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/render/dom/events/event_manager", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -27387,60 +27453,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/key_ev
     })(event_manager_1.EventManagerPlugin);
     exports.KeyEventsPlugin = KeyEventsPlugin;
   })(require("github:jspm/nodelibs-process@0.1.2"));
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_gestures", ["npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_common", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var hammer_common_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer_common");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var HammerGesturesPlugin = (function(_super) {
-    __extends(HammerGesturesPlugin, _super);
-    function HammerGesturesPlugin() {
-      _super.call(this);
-    }
-    HammerGesturesPlugin.prototype.supports = function(eventName) {
-      if (!_super.prototype.supports.call(this, eventName))
-        return false;
-      if (!lang_1.isPresent(window['Hammer'])) {
-        throw new lang_1.BaseException("Hammer.js is not loaded, can not bind " + eventName + " event");
-      }
-      return true;
-    };
-    HammerGesturesPlugin.prototype.addEventListener = function(element, eventName, handler, shouldSupportBubble) {
-      if (shouldSupportBubble)
-        throw new lang_1.BaseException('Hammer.js plugin does not support bubbling gestures.');
-      var zone = this.manager.getZone();
-      eventName = eventName.toLowerCase();
-      zone.runOutsideAngular(function() {
-        var mc = new Hammer(element);
-        mc.get('pinch').set({enable: true});
-        mc.get('rotate').set({enable: true});
-        mc.on(eventName, function(eventObj) {
-          zone.run(function() {
-            handler(eventObj);
-          });
-        });
-      });
-    };
-    return HammerGesturesPlugin;
-  })(hammer_common_1.HammerGesturesPluginCommon);
-  exports.HammerGesturesPlugin = HammerGesturesPlugin;
   global.define = __define;
   return module.exports;
 });
@@ -27956,6 +27968,47 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_manag
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_listener", ["npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var AppViewListener = (function() {
+    function AppViewListener() {}
+    AppViewListener.prototype.viewCreated = function(view) {};
+    AppViewListener.prototype.viewDestroyed = function(view) {};
+    AppViewListener = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], AppViewListener);
+    return AppViewListener;
+  })();
+  exports.AppViewListener = AppViewListener;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/proto_view_factory", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/reflection/reflection", "npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection", "npm:angular2@2.0.0-alpha.36/src/core/pipes/pipes", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/core/compiler/view", "npm:angular2@2.0.0-alpha.36/src/core/compiler/element_injector"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -28369,47 +28422,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/proto_view
     }
     return ParentProtoElementInjectorWithDistance;
   })();
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view_listener", ["npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var AppViewListener = (function() {
-    function AppViewListener() {}
-    AppViewListener.prototype.viewCreated = function(view) {};
-    AppViewListener.prototype.viewDestroyed = function(view) {};
-    AppViewListener = __decorate([di_1.Injectable(), __metadata('design:paramtypes', [])], AppViewListener);
-    return AppViewListener;
-  })();
-  exports.AppViewListener = AppViewListener;
   global.define = __define;
   return module.exports;
 });
@@ -29182,6 +29194,41 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/view", ["n
     return AppProtoView;
   })();
   exports.AppProtoView = AppProtoView;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/pipes/pipe_binding", ["npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var PipeBinding = (function(_super) {
+    __extends(PipeBinding, _super);
+    function PipeBinding(name, key, factory, dependencies) {
+      _super.call(this, key, factory, dependencies);
+      this.name = name;
+    }
+    PipeBinding.createFromType = function(type, metadata) {
+      var binding = new di_1.Binding(type, {toClass: type});
+      var rb = binding.resolve();
+      return new PipeBinding(metadata.name, rb.key, rb.factory, rb.dependencies);
+    };
+    return PipeBinding;
+  })(di_1.ResolvedBinding);
+  exports.PipeBinding = PipeBinding;
   global.define = __define;
   return module.exports;
 });
@@ -30274,41 +30321,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/element_in
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/pipes/pipe_binding", ["npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var PipeBinding = (function(_super) {
-    __extends(PipeBinding, _super);
-    function PipeBinding(name, key, factory, dependencies) {
-      _super.call(this, key, factory, dependencies);
-      this.name = name;
-    }
-    PipeBinding.createFromType = function(type, metadata) {
-      var binding = new di_1.Binding(type, {toClass: type});
-      var rb = binding.resolve();
-      return new PipeBinding(metadata.name, rb.key, rb.factory, rb.dependencies);
-    };
-    return PipeBinding;
-  })(di_1.ResolvedBinding);
-  exports.PipeBinding = PipeBinding;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:rx@2.5.1", ["npm:rx@2.5.1/index"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -30401,159 +30413,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/forms/directives/shared"
     return !lang_1.looseIdentical(viewModel, change.currentValue);
   }
   exports.isPropertyUpdated = isPropertyUpdated;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compiler", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/async", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_pipeline", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_loader", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_step_factory", "npm:angular2@2.0.0-alpha.36/src/render/dom/schema/element_schema_registry", "npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view_merger", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/selector", "npm:angular2@2.0.0-alpha.36/src/render/dom/dom_tokens", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/shared_styles_host", "npm:angular2@2.0.0-alpha.36/src/render/dom/util", "npm:angular2@2.0.0-alpha.36/src/render/dom/template_cloner"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var __param = (this && this.__param) || function(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  };
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var async_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/async");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  var compile_pipeline_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_pipeline");
-  var view_loader_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_loader");
-  var compile_step_factory_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_step_factory");
-  var element_schema_registry_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/schema/element_schema_registry");
-  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection");
-  var pvm = require("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view_merger");
-  var selector_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/selector");
-  var dom_tokens_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/dom_tokens");
-  var di_2 = require("npm:angular2@2.0.0-alpha.36/di");
-  var shared_styles_host_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/view/shared_styles_host");
-  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
-  var template_cloner_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/template_cloner");
-  var DomCompiler = (function(_super) {
-    __extends(DomCompiler, _super);
-    function DomCompiler(_schemaRegistry, _templateCloner, _stepFactory, _viewLoader, _sharedStylesHost) {
-      _super.call(this);
-      this._schemaRegistry = _schemaRegistry;
-      this._templateCloner = _templateCloner;
-      this._stepFactory = _stepFactory;
-      this._viewLoader = _viewLoader;
-      this._sharedStylesHost = _sharedStylesHost;
-    }
-    DomCompiler.prototype.compile = function(view) {
-      var _this = this;
-      var tplPromise = this._viewLoader.load(view);
-      return async_1.PromiseWrapper.then(tplPromise, function(tplAndStyles) {
-        return _this._compileView(view, tplAndStyles, api_1.ViewType.COMPONENT);
-      }, function(e) {
-        throw new lang_1.BaseException("Failed to load the template for \"" + view.componentId + "\" : " + e);
-        return null;
-      });
-    };
-    DomCompiler.prototype.compileHost = function(directiveMetadata) {
-      var hostViewDef = new api_1.ViewDefinition({
-        componentId: directiveMetadata.id,
-        templateAbsUrl: null,
-        template: null,
-        styles: null,
-        styleAbsUrls: null,
-        directives: [directiveMetadata],
-        encapsulation: api_1.ViewEncapsulation.NONE
-      });
-      var selector = selector_1.CssSelector.parse(directiveMetadata.selector)[0];
-      var hostTemplate = selector.getMatchingElementTemplate();
-      var templateAndStyles = new view_loader_1.TemplateAndStyles(hostTemplate, []);
-      return this._compileView(hostViewDef, templateAndStyles, api_1.ViewType.HOST);
-    };
-    DomCompiler.prototype.mergeProtoViewsRecursively = function(protoViewRefs) {
-      return async_1.PromiseWrapper.resolve(pvm.mergeProtoViewsRecursively(this._templateCloner, protoViewRefs));
-    };
-    DomCompiler.prototype._compileView = function(viewDef, templateAndStyles, protoViewType) {
-      if (viewDef.encapsulation === api_1.ViewEncapsulation.EMULATED && templateAndStyles.styles.length === 0) {
-        viewDef = this._normalizeViewEncapsulationIfThereAreNoStyles(viewDef);
-      }
-      var pipeline = new compile_pipeline_1.CompilePipeline(this._stepFactory.createSteps(viewDef));
-      var compiledStyles = pipeline.processStyles(templateAndStyles.styles);
-      var compileElements = pipeline.processElements(this._createTemplateElm(templateAndStyles.template), protoViewType, viewDef);
-      if (viewDef.encapsulation === api_1.ViewEncapsulation.NATIVE) {
-        util_1.prependAll(dom_adapter_1.DOM.content(compileElements[0].element), compiledStyles.map(function(style) {
-          return dom_adapter_1.DOM.createStyleElement(style);
-        }));
-      } else {
-        this._sharedStylesHost.addStyles(compiledStyles);
-      }
-      return async_1.PromiseWrapper.resolve(compileElements[0].inheritedProtoView.build(this._schemaRegistry, this._templateCloner));
-    };
-    DomCompiler.prototype._createTemplateElm = function(template) {
-      var templateElm = dom_adapter_1.DOM.createTemplate(template);
-      var scriptTags = dom_adapter_1.DOM.querySelectorAll(dom_adapter_1.DOM.templateAwareRoot(templateElm), 'script');
-      for (var i = 0; i < scriptTags.length; i++) {
-        dom_adapter_1.DOM.remove(scriptTags[i]);
-      }
-      return templateElm;
-    };
-    DomCompiler.prototype._normalizeViewEncapsulationIfThereAreNoStyles = function(viewDef) {
-      if (viewDef.encapsulation === api_1.ViewEncapsulation.EMULATED) {
-        return new api_1.ViewDefinition({
-          componentId: viewDef.componentId,
-          templateAbsUrl: viewDef.templateAbsUrl,
-          template: viewDef.template,
-          styleAbsUrls: viewDef.styleAbsUrls,
-          styles: viewDef.styles,
-          directives: viewDef.directives,
-          encapsulation: api_1.ViewEncapsulation.NONE
-        });
-      } else {
-        return viewDef;
-      }
-    };
-    return DomCompiler;
-  })(api_1.RenderCompiler);
-  exports.DomCompiler = DomCompiler;
-  var DefaultDomCompiler = (function(_super) {
-    __extends(DefaultDomCompiler, _super);
-    function DefaultDomCompiler(schemaRegistry, templateCloner, parser, viewLoader, sharedStylesHost, appId) {
-      _super.call(this, schemaRegistry, templateCloner, new compile_step_factory_1.DefaultStepFactory(parser, appId), viewLoader, sharedStylesHost);
-    }
-    DefaultDomCompiler = __decorate([di_1.Injectable(), __param(5, di_2.Inject(dom_tokens_1.APP_ID)), __metadata('design:paramtypes', [element_schema_registry_1.ElementSchemaRegistry, template_cloner_1.TemplateCloner, change_detection_1.Parser, view_loader_1.ViewLoader, shared_styles_host_1.SharedStylesHost, Object])], DefaultDomCompiler);
-    return DefaultDomCompiler;
-  })(DomCompiler);
-  exports.DefaultDomCompiler = DefaultDomCompiler;
   global.define = __define;
   return module.exports;
 });
@@ -30830,6 +30689,159 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/dom_renderer"
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compiler", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/async", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_pipeline", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_loader", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_step_factory", "npm:angular2@2.0.0-alpha.36/src/render/dom/schema/element_schema_registry", "npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view_merger", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/selector", "npm:angular2@2.0.0-alpha.36/src/render/dom/dom_tokens", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/shared_styles_host", "npm:angular2@2.0.0-alpha.36/src/render/dom/util", "npm:angular2@2.0.0-alpha.36/src/render/dom/template_cloner"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var __param = (this && this.__param) || function(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  };
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var async_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/async");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  var compile_pipeline_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_pipeline");
+  var view_loader_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_loader");
+  var compile_step_factory_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_step_factory");
+  var element_schema_registry_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/schema/element_schema_registry");
+  var change_detection_1 = require("npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection");
+  var pvm = require("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view_merger");
+  var selector_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/selector");
+  var dom_tokens_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/dom_tokens");
+  var di_2 = require("npm:angular2@2.0.0-alpha.36/di");
+  var shared_styles_host_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/view/shared_styles_host");
+  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
+  var template_cloner_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/template_cloner");
+  var DomCompiler = (function(_super) {
+    __extends(DomCompiler, _super);
+    function DomCompiler(_schemaRegistry, _templateCloner, _stepFactory, _viewLoader, _sharedStylesHost) {
+      _super.call(this);
+      this._schemaRegistry = _schemaRegistry;
+      this._templateCloner = _templateCloner;
+      this._stepFactory = _stepFactory;
+      this._viewLoader = _viewLoader;
+      this._sharedStylesHost = _sharedStylesHost;
+    }
+    DomCompiler.prototype.compile = function(view) {
+      var _this = this;
+      var tplPromise = this._viewLoader.load(view);
+      return async_1.PromiseWrapper.then(tplPromise, function(tplAndStyles) {
+        return _this._compileView(view, tplAndStyles, api_1.ViewType.COMPONENT);
+      }, function(e) {
+        throw new lang_1.BaseException("Failed to load the template for \"" + view.componentId + "\" : " + e);
+        return null;
+      });
+    };
+    DomCompiler.prototype.compileHost = function(directiveMetadata) {
+      var hostViewDef = new api_1.ViewDefinition({
+        componentId: directiveMetadata.id,
+        templateAbsUrl: null,
+        template: null,
+        styles: null,
+        styleAbsUrls: null,
+        directives: [directiveMetadata],
+        encapsulation: api_1.ViewEncapsulation.NONE
+      });
+      var selector = selector_1.CssSelector.parse(directiveMetadata.selector)[0];
+      var hostTemplate = selector.getMatchingElementTemplate();
+      var templateAndStyles = new view_loader_1.TemplateAndStyles(hostTemplate, []);
+      return this._compileView(hostViewDef, templateAndStyles, api_1.ViewType.HOST);
+    };
+    DomCompiler.prototype.mergeProtoViewsRecursively = function(protoViewRefs) {
+      return async_1.PromiseWrapper.resolve(pvm.mergeProtoViewsRecursively(this._templateCloner, protoViewRefs));
+    };
+    DomCompiler.prototype._compileView = function(viewDef, templateAndStyles, protoViewType) {
+      if (viewDef.encapsulation === api_1.ViewEncapsulation.EMULATED && templateAndStyles.styles.length === 0) {
+        viewDef = this._normalizeViewEncapsulationIfThereAreNoStyles(viewDef);
+      }
+      var pipeline = new compile_pipeline_1.CompilePipeline(this._stepFactory.createSteps(viewDef));
+      var compiledStyles = pipeline.processStyles(templateAndStyles.styles);
+      var compileElements = pipeline.processElements(this._createTemplateElm(templateAndStyles.template), protoViewType, viewDef);
+      if (viewDef.encapsulation === api_1.ViewEncapsulation.NATIVE) {
+        util_1.prependAll(dom_adapter_1.DOM.content(compileElements[0].element), compiledStyles.map(function(style) {
+          return dom_adapter_1.DOM.createStyleElement(style);
+        }));
+      } else {
+        this._sharedStylesHost.addStyles(compiledStyles);
+      }
+      return async_1.PromiseWrapper.resolve(compileElements[0].inheritedProtoView.build(this._schemaRegistry, this._templateCloner));
+    };
+    DomCompiler.prototype._createTemplateElm = function(template) {
+      var templateElm = dom_adapter_1.DOM.createTemplate(template);
+      var scriptTags = dom_adapter_1.DOM.querySelectorAll(dom_adapter_1.DOM.templateAwareRoot(templateElm), 'script');
+      for (var i = 0; i < scriptTags.length; i++) {
+        dom_adapter_1.DOM.remove(scriptTags[i]);
+      }
+      return templateElm;
+    };
+    DomCompiler.prototype._normalizeViewEncapsulationIfThereAreNoStyles = function(viewDef) {
+      if (viewDef.encapsulation === api_1.ViewEncapsulation.EMULATED) {
+        return new api_1.ViewDefinition({
+          componentId: viewDef.componentId,
+          templateAbsUrl: viewDef.templateAbsUrl,
+          template: viewDef.template,
+          styleAbsUrls: viewDef.styleAbsUrls,
+          styles: viewDef.styles,
+          directives: viewDef.directives,
+          encapsulation: api_1.ViewEncapsulation.NONE
+        });
+      } else {
+        return viewDef;
+      }
+    };
+    return DomCompiler;
+  })(api_1.RenderCompiler);
+  exports.DomCompiler = DomCompiler;
+  var DefaultDomCompiler = (function(_super) {
+    __extends(DefaultDomCompiler, _super);
+    function DefaultDomCompiler(schemaRegistry, templateCloner, parser, viewLoader, sharedStylesHost, appId) {
+      _super.call(this, schemaRegistry, templateCloner, new compile_step_factory_1.DefaultStepFactory(parser, appId), viewLoader, sharedStylesHost);
+    }
+    DefaultDomCompiler = __decorate([di_1.Injectable(), __param(5, di_2.Inject(dom_tokens_1.APP_ID)), __metadata('design:paramtypes', [element_schema_registry_1.ElementSchemaRegistry, template_cloner_1.TemplateCloner, change_detection_1.Parser, view_loader_1.ViewLoader, shared_styles_host_1.SharedStylesHost, Object])], DefaultDomCompiler);
+    return DefaultDomCompiler;
+  })(DomCompiler);
+  exports.DefaultDomCompiler = DefaultDomCompiler;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/dom_tokens", ["npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -30974,6 +30986,19 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/profile/wtf_impl", ["npm
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.cof", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toString = {}.toString;
+  module.exports = function(it) {
+    return toString.call(it).slice(8, -1);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.defined", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -30983,19 +31008,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.defined", [], true, 
     if (it == undefined)
       throw TypeError("Can't call method on  " + it);
     return it;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.cof", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toString = {}.toString;
-  module.exports = function(it) {
-    return toString.call(it).slice(8, -1);
   };
   global.define = __define;
   return module.exports;
@@ -31274,20 +31286,6 @@ System.registerDynamic("npm:process@0.11.2/browser", [], true, function(require,
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-integer", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var ceil = Math.ceil,
-      floor = Math.floor;
-  module.exports = function(it) {
-    return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.shared", ["npm:core-js@1.1.3/library/modules/$.global"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -31299,16 +31297,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.shared", ["npm:core-
   module.exports = function(key) {
     return store[key] || (store[key] = {});
   };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.redef", ["npm:core-js@1.1.3/library/modules/$.hide"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.hide");
   global.define = __define;
   return module.exports;
 });
@@ -31330,6 +31318,16 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.hide", ["npm:core-js
   return module.exports;
 });
 
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.redef", ["npm:core-js@1.1.3/library/modules/$.hide"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.hide");
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.has", [], true, function(require, exports, module) {
   ;
   var global = this,
@@ -31338,6 +31336,20 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.has", [], true, func
   var hasOwnProperty = {}.hasOwnProperty;
   module.exports = function(it, key) {
     return hasOwnProperty.call(it, key);
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-integer", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var ceil = Math.ceil,
+      floor = Math.floor;
+  module.exports = function(it) {
+    return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
   };
   global.define = __define;
   return module.exports;
@@ -31362,22 +31374,22 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-create", ["npm:
   return module.exports;
 });
 
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-buggy", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = 'keys' in [] && !('next' in [].keys());
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.unscope", [], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   module.exports = function() {};
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-buggy", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = 'keys' in [] && !('next' in [].keys());
   global.define = __define;
   return module.exports;
 });
@@ -31393,184 +31405,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-step", [], true
       done: !!done
     };
   };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-iobject", ["npm:core-js@1.1.3/library/modules/$.iobject", "npm:core-js@1.1.3/library/modules/$.defined"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var IObject = require("npm:core-js@1.1.3/library/modules/$.iobject"),
-      defined = require("npm:core-js@1.1.3/library/modules/$.defined");
-  module.exports = function(it) {
-    return IObject(defined(it));
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-call", ["npm:core-js@1.1.3/library/modules/$.an-object"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var anObject = require("npm:core-js@1.1.3/library/modules/$.an-object");
-  module.exports = function(iterator, fn, value, entries) {
-    try {
-      return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-    } catch (e) {
-      var ret = iterator['return'];
-      if (ret !== undefined)
-        anObject(ret.call(iterator));
-      throw e;
-    }
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.fails", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(exec) {
-    try {
-      return !!exec();
-    } catch (e) {
-      return true;
-    }
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.is-array-iter", ["npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators"),
-      ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator');
-  module.exports = function(it) {
-    return (Iterators.Array || Array.prototype[ITERATOR]) === it;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-length", ["npm:core-js@1.1.3/library/modules/$.to-integer"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var toInteger = require("npm:core-js@1.1.3/library/modules/$.to-integer"),
-      min = Math.min;
-  module.exports = function(it) {
-    return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0;
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/core.get-iterator-method", ["npm:core-js@1.1.3/library/modules/$.classof", "npm:core-js@1.1.3/library/modules/$.wks", "npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  var classof = require("npm:core-js@1.1.3/library/modules/$.classof"),
-      ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator'),
-      Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators");
-  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").getIteratorMethod = function(it) {
-    if (it != undefined)
-      return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.task", ["npm:core-js@1.1.3/library/modules/$.ctx", "npm:core-js@1.1.3/library/modules/$.invoke", "npm:core-js@1.1.3/library/modules/$.html", "npm:core-js@1.1.3/library/modules/$.dom-create", "npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.cof", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  (function(process) {
-    'use strict';
-    var ctx = require("npm:core-js@1.1.3/library/modules/$.ctx"),
-        invoke = require("npm:core-js@1.1.3/library/modules/$.invoke"),
-        html = require("npm:core-js@1.1.3/library/modules/$.html"),
-        cel = require("npm:core-js@1.1.3/library/modules/$.dom-create"),
-        global = require("npm:core-js@1.1.3/library/modules/$.global"),
-        process = global.process,
-        setTask = global.setImmediate,
-        clearTask = global.clearImmediate,
-        MessageChannel = global.MessageChannel,
-        counter = 0,
-        queue = {},
-        ONREADYSTATECHANGE = 'onreadystatechange',
-        defer,
-        channel,
-        port;
-    var run = function() {
-      var id = +this;
-      if (queue.hasOwnProperty(id)) {
-        var fn = queue[id];
-        delete queue[id];
-        fn();
-      }
-    };
-    var listner = function(event) {
-      run.call(event.data);
-    };
-    if (!setTask || !clearTask) {
-      setTask = function setImmediate(fn) {
-        var args = [],
-            i = 1;
-        while (arguments.length > i)
-          args.push(arguments[i++]);
-        queue[++counter] = function() {
-          invoke(typeof fn == 'function' ? fn : Function(fn), args);
-        };
-        defer(counter);
-        return counter;
-      };
-      clearTask = function clearImmediate(id) {
-        delete queue[id];
-      };
-      if (require("npm:core-js@1.1.3/library/modules/$.cof")(process) == 'process') {
-        defer = function(id) {
-          process.nextTick(ctx(run, id, 1));
-        };
-      } else if (MessageChannel) {
-        channel = new MessageChannel;
-        port = channel.port2;
-        channel.port1.onmessage = listner;
-        defer = ctx(port.postMessage, port, 1);
-      } else if (global.addEventListener && typeof postMessage == 'function' && !global.importScript) {
-        defer = function(id) {
-          global.postMessage(id + '', '*');
-        };
-        global.addEventListener('message', listner, false);
-      } else if (ONREADYSTATECHANGE in cel('script')) {
-        defer = function(id) {
-          html.appendChild(cel('script'))[ONREADYSTATECHANGE] = function() {
-            html.removeChild(this);
-            run.call(id);
-          };
-        };
-      } else {
-        defer = function(id) {
-          setTimeout(ctx(run, id, 1), 0);
-        };
-      }
-    }
-    module.exports = {
-      set: setTask,
-      clear: clearTask
-    };
-  })(require("github:jspm/nodelibs-process@0.1.2"));
   global.define = __define;
   return module.exports;
 });
@@ -31713,22 +31547,180 @@ System.registerDynamic("src/view/components/input/ip-address/ip-address", ["npm:
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/event_binding", [], true, function(require, exports, module) {
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-iobject", ["npm:core-js@1.1.3/library/modules/$.iobject", "npm:core-js@1.1.3/library/modules/$.defined"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
-  'use strict';
-  var EventBinding = (function() {
-    function EventBinding(eventName, elIndex, dirIndex, records) {
-      this.eventName = eventName;
-      this.elIndex = elIndex;
-      this.dirIndex = dirIndex;
-      this.records = records;
+  var IObject = require("npm:core-js@1.1.3/library/modules/$.iobject"),
+      defined = require("npm:core-js@1.1.3/library/modules/$.defined");
+  module.exports = function(it) {
+    return IObject(defined(it));
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.fails", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(exec) {
+    try {
+      return !!exec();
+    } catch (e) {
+      return true;
     }
-    return EventBinding;
-  })();
-  exports.EventBinding = EventBinding;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.iter-call", ["npm:core-js@1.1.3/library/modules/$.an-object"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var anObject = require("npm:core-js@1.1.3/library/modules/$.an-object");
+  module.exports = function(iterator, fn, value, entries) {
+    try {
+      return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+    } catch (e) {
+      var ret = iterator['return'];
+      if (ret !== undefined)
+        anObject(ret.call(iterator));
+      throw e;
+    }
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.is-array-iter", ["npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.wks"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators"),
+      ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator');
+  module.exports = function(it) {
+    return (Iterators.Array || Array.prototype[ITERATOR]) === it;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.task", ["npm:core-js@1.1.3/library/modules/$.ctx", "npm:core-js@1.1.3/library/modules/$.invoke", "npm:core-js@1.1.3/library/modules/$.html", "npm:core-js@1.1.3/library/modules/$.dom-create", "npm:core-js@1.1.3/library/modules/$.global", "npm:core-js@1.1.3/library/modules/$.cof", "github:jspm/nodelibs-process@0.1.2"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  (function(process) {
+    'use strict';
+    var ctx = require("npm:core-js@1.1.3/library/modules/$.ctx"),
+        invoke = require("npm:core-js@1.1.3/library/modules/$.invoke"),
+        html = require("npm:core-js@1.1.3/library/modules/$.html"),
+        cel = require("npm:core-js@1.1.3/library/modules/$.dom-create"),
+        global = require("npm:core-js@1.1.3/library/modules/$.global"),
+        process = global.process,
+        setTask = global.setImmediate,
+        clearTask = global.clearImmediate,
+        MessageChannel = global.MessageChannel,
+        counter = 0,
+        queue = {},
+        ONREADYSTATECHANGE = 'onreadystatechange',
+        defer,
+        channel,
+        port;
+    var run = function() {
+      var id = +this;
+      if (queue.hasOwnProperty(id)) {
+        var fn = queue[id];
+        delete queue[id];
+        fn();
+      }
+    };
+    var listner = function(event) {
+      run.call(event.data);
+    };
+    if (!setTask || !clearTask) {
+      setTask = function setImmediate(fn) {
+        var args = [],
+            i = 1;
+        while (arguments.length > i)
+          args.push(arguments[i++]);
+        queue[++counter] = function() {
+          invoke(typeof fn == 'function' ? fn : Function(fn), args);
+        };
+        defer(counter);
+        return counter;
+      };
+      clearTask = function clearImmediate(id) {
+        delete queue[id];
+      };
+      if (require("npm:core-js@1.1.3/library/modules/$.cof")(process) == 'process') {
+        defer = function(id) {
+          process.nextTick(ctx(run, id, 1));
+        };
+      } else if (MessageChannel) {
+        channel = new MessageChannel;
+        port = channel.port2;
+        channel.port1.onmessage = listner;
+        defer = ctx(port.postMessage, port, 1);
+      } else if (global.addEventListener && typeof postMessage == 'function' && !global.importScript) {
+        defer = function(id) {
+          global.postMessage(id + '', '*');
+        };
+        global.addEventListener('message', listner, false);
+      } else if (ONREADYSTATECHANGE in cel('script')) {
+        defer = function(id) {
+          html.appendChild(cel('script'))[ONREADYSTATECHANGE] = function() {
+            html.removeChild(this);
+            run.call(id);
+          };
+        };
+      } else {
+        defer = function(id) {
+          setTimeout(ctx(run, id, 1), 0);
+        };
+      }
+    }
+    module.exports = {
+      set: setTask,
+      clear: clearTask
+    };
+  })(require("github:jspm/nodelibs-process@0.1.2"));
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.to-length", ["npm:core-js@1.1.3/library/modules/$.to-integer"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var toInteger = require("npm:core-js@1.1.3/library/modules/$.to-integer"),
+      min = Math.min;
+  module.exports = function(it) {
+    return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/core.get-iterator-method", ["npm:core-js@1.1.3/library/modules/$.classof", "npm:core-js@1.1.3/library/modules/$.wks", "npm:core-js@1.1.3/library/modules/$.iterators", "npm:core-js@1.1.3/library/modules/$.core"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  var classof = require("npm:core-js@1.1.3/library/modules/$.classof"),
+      ITERATOR = require("npm:core-js@1.1.3/library/modules/$.wks")('iterator'),
+      Iterators = require("npm:core-js@1.1.3/library/modules/$.iterators");
+  module.exports = require("npm:core-js@1.1.3/library/modules/$.core").getIteratorMethod = function(it) {
+    if (it != undefined)
+      return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
+  };
   global.define = __define;
   return module.exports;
 });
@@ -31980,6 +31972,71 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/change_
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/proto_record", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  (function(RecordType) {
+    RecordType[RecordType["SELF"] = 0] = "SELF";
+    RecordType[RecordType["CONST"] = 1] = "CONST";
+    RecordType[RecordType["PRIMITIVE_OP"] = 2] = "PRIMITIVE_OP";
+    RecordType[RecordType["PROPERTY_READ"] = 3] = "PROPERTY_READ";
+    RecordType[RecordType["PROPERTY_WRITE"] = 4] = "PROPERTY_WRITE";
+    RecordType[RecordType["LOCAL"] = 5] = "LOCAL";
+    RecordType[RecordType["INVOKE_METHOD"] = 6] = "INVOKE_METHOD";
+    RecordType[RecordType["INVOKE_CLOSURE"] = 7] = "INVOKE_CLOSURE";
+    RecordType[RecordType["KEYED_READ"] = 8] = "KEYED_READ";
+    RecordType[RecordType["KEYED_WRITE"] = 9] = "KEYED_WRITE";
+    RecordType[RecordType["PIPE"] = 10] = "PIPE";
+    RecordType[RecordType["INTERPOLATE"] = 11] = "INTERPOLATE";
+    RecordType[RecordType["SAFE_PROPERTY"] = 12] = "SAFE_PROPERTY";
+    RecordType[RecordType["COLLECTION_LITERAL"] = 13] = "COLLECTION_LITERAL";
+    RecordType[RecordType["SAFE_INVOKE_METHOD"] = 14] = "SAFE_INVOKE_METHOD";
+    RecordType[RecordType["DIRECTIVE_LIFECYCLE"] = 15] = "DIRECTIVE_LIFECYCLE";
+    RecordType[RecordType["CHAIN"] = 16] = "CHAIN";
+  })(exports.RecordType || (exports.RecordType = {}));
+  var RecordType = exports.RecordType;
+  var ProtoRecord = (function() {
+    function ProtoRecord(mode, name, funcOrValue, args, fixedArgs, contextIndex, directiveIndex, selfIndex, bindingRecord, lastInBinding, lastInDirective, argumentToPureFunction, referencedBySelf, propertyBindingIndex) {
+      this.mode = mode;
+      this.name = name;
+      this.funcOrValue = funcOrValue;
+      this.args = args;
+      this.fixedArgs = fixedArgs;
+      this.contextIndex = contextIndex;
+      this.directiveIndex = directiveIndex;
+      this.selfIndex = selfIndex;
+      this.bindingRecord = bindingRecord;
+      this.lastInBinding = lastInBinding;
+      this.lastInDirective = lastInDirective;
+      this.argumentToPureFunction = argumentToPureFunction;
+      this.referencedBySelf = referencedBySelf;
+      this.propertyBindingIndex = propertyBindingIndex;
+    }
+    ProtoRecord.prototype.isPureFunction = function() {
+      return this.mode === RecordType.INTERPOLATE || this.mode === RecordType.COLLECTION_LITERAL;
+    };
+    ProtoRecord.prototype.isUsedByOtherRecord = function() {
+      return !this.lastInBinding || this.referencedBySelf;
+    };
+    ProtoRecord.prototype.shouldBeChecked = function() {
+      return this.argumentToPureFunction || this.lastInBinding || this.isPureFunction();
+    };
+    ProtoRecord.prototype.isPipeRecord = function() {
+      return this.mode === RecordType.PIPE;
+    };
+    ProtoRecord.prototype.isLifeCycleRecord = function() {
+      return this.mode === RecordType.DIRECTIVE_LIFECYCLE;
+    };
+    return ProtoRecord;
+  })();
+  exports.ProtoRecord = ProtoRecord;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/coalesce", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/change_detection/proto_record"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -32043,67 +32100,22 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/coalesc
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/proto_record", [], true, function(require, exports, module) {
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/event_binding", [], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   'use strict';
-  (function(RecordType) {
-    RecordType[RecordType["SELF"] = 0] = "SELF";
-    RecordType[RecordType["CONST"] = 1] = "CONST";
-    RecordType[RecordType["PRIMITIVE_OP"] = 2] = "PRIMITIVE_OP";
-    RecordType[RecordType["PROPERTY_READ"] = 3] = "PROPERTY_READ";
-    RecordType[RecordType["PROPERTY_WRITE"] = 4] = "PROPERTY_WRITE";
-    RecordType[RecordType["LOCAL"] = 5] = "LOCAL";
-    RecordType[RecordType["INVOKE_METHOD"] = 6] = "INVOKE_METHOD";
-    RecordType[RecordType["INVOKE_CLOSURE"] = 7] = "INVOKE_CLOSURE";
-    RecordType[RecordType["KEYED_READ"] = 8] = "KEYED_READ";
-    RecordType[RecordType["KEYED_WRITE"] = 9] = "KEYED_WRITE";
-    RecordType[RecordType["PIPE"] = 10] = "PIPE";
-    RecordType[RecordType["INTERPOLATE"] = 11] = "INTERPOLATE";
-    RecordType[RecordType["SAFE_PROPERTY"] = 12] = "SAFE_PROPERTY";
-    RecordType[RecordType["COLLECTION_LITERAL"] = 13] = "COLLECTION_LITERAL";
-    RecordType[RecordType["SAFE_INVOKE_METHOD"] = 14] = "SAFE_INVOKE_METHOD";
-    RecordType[RecordType["DIRECTIVE_LIFECYCLE"] = 15] = "DIRECTIVE_LIFECYCLE";
-    RecordType[RecordType["CHAIN"] = 16] = "CHAIN";
-  })(exports.RecordType || (exports.RecordType = {}));
-  var RecordType = exports.RecordType;
-  var ProtoRecord = (function() {
-    function ProtoRecord(mode, name, funcOrValue, args, fixedArgs, contextIndex, directiveIndex, selfIndex, bindingRecord, lastInBinding, lastInDirective, argumentToPureFunction, referencedBySelf, propertyBindingIndex) {
-      this.mode = mode;
-      this.name = name;
-      this.funcOrValue = funcOrValue;
-      this.args = args;
-      this.fixedArgs = fixedArgs;
-      this.contextIndex = contextIndex;
-      this.directiveIndex = directiveIndex;
-      this.selfIndex = selfIndex;
-      this.bindingRecord = bindingRecord;
-      this.lastInBinding = lastInBinding;
-      this.lastInDirective = lastInDirective;
-      this.argumentToPureFunction = argumentToPureFunction;
-      this.referencedBySelf = referencedBySelf;
-      this.propertyBindingIndex = propertyBindingIndex;
+  var EventBinding = (function() {
+    function EventBinding(eventName, elIndex, dirIndex, records) {
+      this.eventName = eventName;
+      this.elIndex = elIndex;
+      this.dirIndex = dirIndex;
+      this.records = records;
     }
-    ProtoRecord.prototype.isPureFunction = function() {
-      return this.mode === RecordType.INTERPOLATE || this.mode === RecordType.COLLECTION_LITERAL;
-    };
-    ProtoRecord.prototype.isUsedByOtherRecord = function() {
-      return !this.lastInBinding || this.referencedBySelf;
-    };
-    ProtoRecord.prototype.shouldBeChecked = function() {
-      return this.argumentToPureFunction || this.lastInBinding || this.isPureFunction();
-    };
-    ProtoRecord.prototype.isPipeRecord = function() {
-      return this.mode === RecordType.PIPE;
-    };
-    ProtoRecord.prototype.isLifeCycleRecord = function() {
-      return this.mode === RecordType.DIRECTIVE_LIFECYCLE;
-    };
-    return ProtoRecord;
+    return EventBinding;
   })();
-  exports.ProtoRecord = ProtoRecord;
+  exports.EventBinding = EventBinding;
   global.define = __define;
   return module.exports;
 });
@@ -32357,79 +32369,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/abstrac
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/pipe_lifecycle_reflector", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  function implementsOnDestroy(pipe) {
-    return pipe.constructor.prototype.onDestroy;
-  }
-  exports.implementsOnDestroy = implementsOnDestroy;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/dom/generic_browser_adapter", ["npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  var GenericBrowserDomAdapter = (function(_super) {
-    __extends(GenericBrowserDomAdapter, _super);
-    function GenericBrowserDomAdapter() {
-      _super.apply(this, arguments);
-    }
-    GenericBrowserDomAdapter.prototype.getDistributedNodes = function(el) {
-      return el.getDistributedNodes();
-    };
-    GenericBrowserDomAdapter.prototype.resolveAndSetHref = function(el, baseUrl, href) {
-      el.href = href == null ? baseUrl : baseUrl + '/../' + href;
-    };
-    GenericBrowserDomAdapter.prototype.cssToRules = function(css) {
-      var style = this.createStyleElement(css);
-      this.appendChild(this.defaultDoc().head, style);
-      var rules = [];
-      if (lang_1.isPresent(style.sheet)) {
-        try {
-          var rawRules = style.sheet.cssRules;
-          rules = collection_1.ListWrapper.createFixedSize(rawRules.length);
-          for (var i = 0; i < rawRules.length; i++) {
-            rules[i] = rawRules[i];
-          }
-        } catch (e) {}
-      } else {}
-      this.remove(style);
-      return rules;
-    };
-    GenericBrowserDomAdapter.prototype.supportsDOMEvents = function() {
-      return true;
-    };
-    GenericBrowserDomAdapter.prototype.supportsNativeShadowDOM = function() {
-      return lang_1.isFunction(this.defaultDoc().body.createShadowRoot);
-    };
-    return GenericBrowserDomAdapter;
-  })(dom_adapter_1.DomAdapter);
-  exports.GenericBrowserDomAdapter = GenericBrowserDomAdapter;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/reflection/reflector", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -32558,6 +32497,20 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/reflection/reflector", [
       return target.set(k, v);
     });
   }
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/pipe_lifecycle_reflector", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function implementsOnDestroy(pipe) {
+    return pipe.constructor.prototype.onDestroy;
+  }
+  exports.implementsOnDestroy = implementsOnDestroy;
   global.define = __define;
   return module.exports;
 });
@@ -32736,6 +32689,112 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/reflection/reflection_ca
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/dom/generic_browser_adapter", ["npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  var GenericBrowserDomAdapter = (function(_super) {
+    __extends(GenericBrowserDomAdapter, _super);
+    function GenericBrowserDomAdapter() {
+      _super.apply(this, arguments);
+    }
+    GenericBrowserDomAdapter.prototype.getDistributedNodes = function(el) {
+      return el.getDistributedNodes();
+    };
+    GenericBrowserDomAdapter.prototype.resolveAndSetHref = function(el, baseUrl, href) {
+      el.href = href == null ? baseUrl : baseUrl + '/../' + href;
+    };
+    GenericBrowserDomAdapter.prototype.cssToRules = function(css) {
+      var style = this.createStyleElement(css);
+      this.appendChild(this.defaultDoc().head, style);
+      var rules = [];
+      if (lang_1.isPresent(style.sheet)) {
+        try {
+          var rawRules = style.sheet.cssRules;
+          rules = collection_1.ListWrapper.createFixedSize(rawRules.length);
+          for (var i = 0; i < rawRules.length; i++) {
+            rules[i] = rawRules[i];
+          }
+        } catch (e) {}
+      } else {}
+      this.remove(style);
+      return rules;
+    };
+    GenericBrowserDomAdapter.prototype.supportsDOMEvents = function() {
+      return true;
+    };
+    GenericBrowserDomAdapter.prototype.supportsNativeShadowDOM = function() {
+      return lang_1.isFunction(this.defaultDoc().body.createShadowRoot);
+    };
+    return GenericBrowserDomAdapter;
+  })(dom_adapter_1.DomAdapter);
+  exports.GenericBrowserDomAdapter = GenericBrowserDomAdapter;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/json_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
+  var JsonPipe = (function() {
+    function JsonPipe() {}
+    JsonPipe.prototype.transform = function(value, args) {
+      if (args === void 0) {
+        args = null;
+      }
+      return lang_1.Json.stringify(value);
+    };
+    JsonPipe = __decorate([lang_1.CONST(), metadata_1.Pipe({name: 'json'}), di_1.Injectable(), __metadata('design:paramtypes', [])], JsonPipe);
+    return JsonPipe;
+  })();
+  exports.JsonPipe = JsonPipe;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/uppercase_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -32785,6 +32844,59 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/uppercase_pipe", [
     return UpperCasePipe;
   })();
   exports.UpperCasePipe = UpperCasePipe;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/lowercase_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var invalid_pipe_argument_exception_1 = require("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception");
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
+  var LowerCasePipe = (function() {
+    function LowerCasePipe() {}
+    LowerCasePipe.prototype.transform = function(value, args) {
+      if (args === void 0) {
+        args = null;
+      }
+      if (lang_1.isBlank(value))
+        return value;
+      if (!lang_1.isString(value)) {
+        throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(LowerCasePipe, value);
+      }
+      return lang_1.StringWrapper.toLowerCase(value);
+    };
+    LowerCasePipe = __decorate([lang_1.CONST(), metadata_1.Pipe({name: 'lowercase'}), di_1.Injectable(), __metadata('design:paramtypes', [])], LowerCasePipe);
+    return LowerCasePipe;
+  })();
+  exports.LowerCasePipe = LowerCasePipe;
   global.define = __define;
   return module.exports;
 });
@@ -32920,106 +33032,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/async_pipe", ["npm
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/lowercase_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var invalid_pipe_argument_exception_1 = require("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception");
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
-  var LowerCasePipe = (function() {
-    function LowerCasePipe() {}
-    LowerCasePipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
-      if (lang_1.isBlank(value))
-        return value;
-      if (!lang_1.isString(value)) {
-        throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(LowerCasePipe, value);
-      }
-      return lang_1.StringWrapper.toLowerCase(value);
-    };
-    LowerCasePipe = __decorate([lang_1.CONST(), metadata_1.Pipe({name: 'lowercase'}), di_1.Injectable(), __metadata('design:paramtypes', [])], LowerCasePipe);
-    return LowerCasePipe;
-  })();
-  exports.LowerCasePipe = LowerCasePipe;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/json_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
-  var JsonPipe = (function() {
-    function JsonPipe() {}
-    JsonPipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
-      return lang_1.Json.stringify(value);
-    };
-    JsonPipe = __decorate([lang_1.CONST(), metadata_1.Pipe({name: 'json'}), di_1.Injectable(), __metadata('design:paramtypes', [])], JsonPipe);
-    return JsonPipe;
-  })();
-  exports.JsonPipe = JsonPipe;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/date_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/intl", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -33089,6 +33101,77 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/date_pipe", ["npm:
     return DatePipe;
   })();
   exports.DatePipe = DatePipe;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/limit_to_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/math", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+      case 2:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(o)) || o;
+        }, target);
+      case 3:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key)), void 0;
+        }, void 0);
+      case 4:
+        return decorators.reduceRight(function(o, d) {
+          return (d && d(target, key, o)) || o;
+        }, desc);
+    }
+  };
+  var __metadata = (this && this.__metadata) || function(k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(k, v);
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var math_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/math");
+  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
+  var invalid_pipe_argument_exception_1 = require("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception");
+  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
+  var LimitToPipe = (function() {
+    function LimitToPipe() {}
+    LimitToPipe.prototype.supports = function(obj) {
+      return lang_1.isString(obj) || lang_1.isArray(obj);
+    };
+    LimitToPipe.prototype.transform = function(value, args) {
+      if (args === void 0) {
+        args = null;
+      }
+      if (lang_1.isBlank(args) || args.length == 0) {
+        throw new lang_1.BaseException('limitTo pipe requires one argument');
+      }
+      if (!this.supports(value)) {
+        throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(LimitToPipe, value);
+      }
+      if (lang_1.isBlank(value))
+        return value;
+      var limit = args[0];
+      var left = 0,
+          right = math_1.Math.min(limit, value.length);
+      if (limit < 0) {
+        left = math_1.Math.max(0, value.length + limit);
+        right = value.length;
+      }
+      if (lang_1.isString(value)) {
+        return lang_1.StringWrapper.substring(value, left, right);
+      }
+      return collection_1.ListWrapper.slice(value, left, right);
+    };
+    LimitToPipe = __decorate([metadata_1.Pipe({name: 'limitTo'}), di_1.Injectable(), __metadata('design:paramtypes', [])], LimitToPipe);
+    return LimitToPipe;
+  })();
+  exports.LimitToPipe = LimitToPipe;
   global.define = __define;
   return module.exports;
 });
@@ -33228,77 +33311,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/number_pipe", ["np
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/limit_to_pipe", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/math", "npm:angular2@2.0.0-alpha.36/di", "npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", "npm:angular2@2.0.0-alpha.36/src/core/metadata"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __decorate = (this && this.__decorate) || function(decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-      case 2:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(o)) || o;
-        }, target);
-      case 3:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key)), void 0;
-        }, void 0);
-      case 4:
-        return decorators.reduceRight(function(o, d) {
-          return (d && d(target, key, o)) || o;
-        }, desc);
-    }
-  };
-  var __metadata = (this && this.__metadata) || function(k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(k, v);
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var math_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/math");
-  var di_1 = require("npm:angular2@2.0.0-alpha.36/di");
-  var invalid_pipe_argument_exception_1 = require("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception");
-  var metadata_1 = require("npm:angular2@2.0.0-alpha.36/src/core/metadata");
-  var LimitToPipe = (function() {
-    function LimitToPipe() {}
-    LimitToPipe.prototype.supports = function(obj) {
-      return lang_1.isString(obj) || lang_1.isArray(obj);
-    };
-    LimitToPipe.prototype.transform = function(value, args) {
-      if (args === void 0) {
-        args = null;
-      }
-      if (lang_1.isBlank(args) || args.length == 0) {
-        throw new lang_1.BaseException('limitTo pipe requires one argument');
-      }
-      if (!this.supports(value)) {
-        throw new invalid_pipe_argument_exception_1.InvalidPipeArgumentException(LimitToPipe, value);
-      }
-      if (lang_1.isBlank(value))
-        return value;
-      var limit = args[0];
-      var left = 0,
-          right = math_1.Math.min(limit, value.length);
-      if (limit < 0) {
-        left = math_1.Math.max(0, value.length + limit);
-        right = value.length;
-      }
-      if (lang_1.isString(value)) {
-        return lang_1.StringWrapper.substring(value, left, right);
-      }
-      return collection_1.ListWrapper.slice(value, left, right);
-    };
-    LimitToPipe = __decorate([metadata_1.Pipe({name: 'limitTo'}), di_1.Injectable(), __metadata('design:paramtypes', [])], LimitToPipe);
-    return LimitToPipe;
-  })();
-  exports.LimitToPipe = LimitToPipe;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/default_pipes", ["npm:angular2@2.0.0-alpha.36/src/pipes/async_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/uppercase_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/lowercase_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/json_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/limit_to_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/date_pipe", "npm:angular2@2.0.0-alpha.36/src/pipes/number_pipe", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/di"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -33386,6 +33398,38 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/events/hammer
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/element_binder", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var ElementBinder = (function() {
+    function ElementBinder(index, parent, distanceToParent, protoElementInjector, componentDirective) {
+      this.index = index;
+      this.parent = parent;
+      this.distanceToParent = distanceToParent;
+      this.protoElementInjector = protoElementInjector;
+      this.componentDirective = componentDirective;
+      this.nestedProtoView = null;
+      if (lang_1.isBlank(index)) {
+        throw new lang_1.BaseException('null index not allowed.');
+      }
+    }
+    ElementBinder.prototype.hasStaticComponent = function() {
+      return lang_1.isPresent(this.componentDirective) && lang_1.isPresent(this.nestedProtoView);
+    };
+    ElementBinder.prototype.hasEmbeddedProtoView = function() {
+      return !lang_1.isPresent(this.componentDirective) && lang_1.isPresent(this.nestedProtoView);
+    };
+    return ElementBinder;
+  })();
+  exports.ElementBinder = ElementBinder;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/testability/get_testability", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -33468,38 +33512,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/pipes/pipes", ["npm
     return Pipes;
   })();
   exports.Pipes = Pipes;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/core/compiler/element_binder", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var ElementBinder = (function() {
-    function ElementBinder(index, parent, distanceToParent, protoElementInjector, componentDirective) {
-      this.index = index;
-      this.parent = parent;
-      this.distanceToParent = distanceToParent;
-      this.protoElementInjector = protoElementInjector;
-      this.componentDirective = componentDirective;
-      this.nestedProtoView = null;
-      if (lang_1.isBlank(index)) {
-        throw new lang_1.BaseException('null index not allowed.');
-      }
-    }
-    ElementBinder.prototype.hasStaticComponent = function() {
-      return lang_1.isPresent(this.componentDirective) && lang_1.isPresent(this.nestedProtoView);
-    };
-    ElementBinder.prototype.hasEmbeddedProtoView = function() {
-      return !lang_1.isPresent(this.componentDirective) && lang_1.isPresent(this.nestedProtoView);
-    };
-    return ElementBinder;
-  })();
-  exports.ElementBinder = ElementBinder;
   global.define = __define;
   return module.exports;
 });
@@ -33789,6 +33801,196 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/comp
     return CompilePipeline;
   })();
   exports.CompilePipeline = CompilePipeline;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/fragment", ["npm:angular2@2.0.0-alpha.36/src/render/api"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  function resolveInternalDomFragment(fragmentRef) {
+    return fragmentRef._nodes;
+  }
+  exports.resolveInternalDomFragment = resolveInternalDomFragment;
+  var DomFragmentRef = (function(_super) {
+    __extends(DomFragmentRef, _super);
+    function DomFragmentRef(_nodes) {
+      _super.call(this);
+      this._nodes = _nodes;
+    }
+    return DomFragmentRef;
+  })(api_1.RenderFragmentRef);
+  exports.DomFragmentRef = DomFragmentRef;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view", ["npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  function resolveInternalDomProtoView(protoViewRef) {
+    return protoViewRef._protoView;
+  }
+  exports.resolveInternalDomProtoView = resolveInternalDomProtoView;
+  var DomProtoViewRef = (function(_super) {
+    __extends(DomProtoViewRef, _super);
+    function DomProtoViewRef(_protoView) {
+      _super.call(this);
+      this._protoView = _protoView;
+    }
+    return DomProtoViewRef;
+  })(api_1.RenderProtoViewRef);
+  exports.DomProtoViewRef = DomProtoViewRef;
+  var DomProtoView = (function() {
+    function DomProtoView(type, cloneableTemplate, encapsulation, elementBinders, hostAttributes, rootTextNodeIndices, boundTextNodeCount, fragmentsRootNodeCount, isSingleElementFragment) {
+      this.type = type;
+      this.cloneableTemplate = cloneableTemplate;
+      this.encapsulation = encapsulation;
+      this.elementBinders = elementBinders;
+      this.hostAttributes = hostAttributes;
+      this.rootTextNodeIndices = rootTextNodeIndices;
+      this.boundTextNodeCount = boundTextNodeCount;
+      this.fragmentsRootNodeCount = fragmentsRootNodeCount;
+      this.isSingleElementFragment = isSingleElementFragment;
+    }
+    DomProtoView.create = function(templateCloner, type, rootElement, viewEncapsulation, fragmentsRootNodeCount, rootTextNodeIndices, elementBinders, hostAttributes) {
+      var boundTextNodeCount = rootTextNodeIndices.length;
+      for (var i = 0; i < elementBinders.length; i++) {
+        boundTextNodeCount += elementBinders[i].textNodeIndices.length;
+      }
+      var isSingleElementFragment = fragmentsRootNodeCount.length === 1 && fragmentsRootNodeCount[0] === 1 && dom_adapter_1.DOM.isElementNode(dom_adapter_1.DOM.firstChild(dom_adapter_1.DOM.content(rootElement)));
+      return new DomProtoView(type, templateCloner.prepareForClone(rootElement), viewEncapsulation, elementBinders, hostAttributes, rootTextNodeIndices, boundTextNodeCount, fragmentsRootNodeCount, isSingleElementFragment);
+    };
+    return DomProtoView;
+  })();
+  exports.DomProtoView = DomProtoView;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/view", ["npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
+  function resolveInternalDomView(viewRef) {
+    return viewRef._view;
+  }
+  exports.resolveInternalDomView = resolveInternalDomView;
+  var DomViewRef = (function(_super) {
+    __extends(DomViewRef, _super);
+    function DomViewRef(_view) {
+      _super.call(this);
+      this._view = _view;
+    }
+    return DomViewRef;
+  })(api_1.RenderViewRef);
+  exports.DomViewRef = DomViewRef;
+  var DomView = (function() {
+    function DomView(proto, boundTextNodes, boundElements) {
+      this.proto = proto;
+      this.boundTextNodes = boundTextNodes;
+      this.boundElements = boundElements;
+      this.hydrated = false;
+      this.eventDispatcher = null;
+      this.eventHandlerRemovers = [];
+    }
+    DomView.prototype.setElementProperty = function(elementIndex, propertyName, value) {
+      dom_adapter_1.DOM.setProperty(this.boundElements[elementIndex], propertyName, value);
+    };
+    DomView.prototype.setElementAttribute = function(elementIndex, attributeName, value) {
+      var element = this.boundElements[elementIndex];
+      var dashCasedAttributeName = util_1.camelCaseToDashCase(attributeName);
+      if (lang_1.isPresent(value)) {
+        dom_adapter_1.DOM.setAttribute(element, dashCasedAttributeName, lang_1.stringify(value));
+      } else {
+        dom_adapter_1.DOM.removeAttribute(element, dashCasedAttributeName);
+      }
+    };
+    DomView.prototype.setElementClass = function(elementIndex, className, isAdd) {
+      var element = this.boundElements[elementIndex];
+      if (isAdd) {
+        dom_adapter_1.DOM.addClass(element, className);
+      } else {
+        dom_adapter_1.DOM.removeClass(element, className);
+      }
+    };
+    DomView.prototype.setElementStyle = function(elementIndex, styleName, value) {
+      var element = this.boundElements[elementIndex];
+      var dashCasedStyleName = util_1.camelCaseToDashCase(styleName);
+      if (lang_1.isPresent(value)) {
+        dom_adapter_1.DOM.setStyle(element, dashCasedStyleName, lang_1.stringify(value));
+      } else {
+        dom_adapter_1.DOM.removeStyle(element, dashCasedStyleName);
+      }
+    };
+    DomView.prototype.invokeElementMethod = function(elementIndex, methodName, args) {
+      var element = this.boundElements[elementIndex];
+      dom_adapter_1.DOM.invoke(element, methodName, args);
+    };
+    DomView.prototype.setText = function(textIndex, value) {
+      dom_adapter_1.DOM.setText(this.boundTextNodes[textIndex], value);
+    };
+    DomView.prototype.dispatchEvent = function(elementIndex, eventName, event) {
+      var allowDefaultBehavior = true;
+      if (lang_1.isPresent(this.eventDispatcher)) {
+        var evalLocals = new collection_1.Map();
+        evalLocals.set('$event', event);
+        allowDefaultBehavior = this.eventDispatcher.dispatchRenderEvent(elementIndex, eventName, evalLocals);
+        if (!allowDefaultBehavior) {
+          dom_adapter_1.DOM.preventDefault(event);
+        }
+      }
+      return allowDefaultBehavior;
+    };
+    return DomView;
+  })();
+  exports.DomView = DomView;
   global.define = __define;
   return module.exports;
 });
@@ -34529,196 +34731,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/sele
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view", ["npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  function resolveInternalDomProtoView(protoViewRef) {
-    return protoViewRef._protoView;
-  }
-  exports.resolveInternalDomProtoView = resolveInternalDomProtoView;
-  var DomProtoViewRef = (function(_super) {
-    __extends(DomProtoViewRef, _super);
-    function DomProtoViewRef(_protoView) {
-      _super.call(this);
-      this._protoView = _protoView;
-    }
-    return DomProtoViewRef;
-  })(api_1.RenderProtoViewRef);
-  exports.DomProtoViewRef = DomProtoViewRef;
-  var DomProtoView = (function() {
-    function DomProtoView(type, cloneableTemplate, encapsulation, elementBinders, hostAttributes, rootTextNodeIndices, boundTextNodeCount, fragmentsRootNodeCount, isSingleElementFragment) {
-      this.type = type;
-      this.cloneableTemplate = cloneableTemplate;
-      this.encapsulation = encapsulation;
-      this.elementBinders = elementBinders;
-      this.hostAttributes = hostAttributes;
-      this.rootTextNodeIndices = rootTextNodeIndices;
-      this.boundTextNodeCount = boundTextNodeCount;
-      this.fragmentsRootNodeCount = fragmentsRootNodeCount;
-      this.isSingleElementFragment = isSingleElementFragment;
-    }
-    DomProtoView.create = function(templateCloner, type, rootElement, viewEncapsulation, fragmentsRootNodeCount, rootTextNodeIndices, elementBinders, hostAttributes) {
-      var boundTextNodeCount = rootTextNodeIndices.length;
-      for (var i = 0; i < elementBinders.length; i++) {
-        boundTextNodeCount += elementBinders[i].textNodeIndices.length;
-      }
-      var isSingleElementFragment = fragmentsRootNodeCount.length === 1 && fragmentsRootNodeCount[0] === 1 && dom_adapter_1.DOM.isElementNode(dom_adapter_1.DOM.firstChild(dom_adapter_1.DOM.content(rootElement)));
-      return new DomProtoView(type, templateCloner.prepareForClone(rootElement), viewEncapsulation, elementBinders, hostAttributes, rootTextNodeIndices, boundTextNodeCount, fragmentsRootNodeCount, isSingleElementFragment);
-    };
-    return DomProtoView;
-  })();
-  exports.DomProtoView = DomProtoView;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/view", ["npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
-  function resolveInternalDomView(viewRef) {
-    return viewRef._view;
-  }
-  exports.resolveInternalDomView = resolveInternalDomView;
-  var DomViewRef = (function(_super) {
-    __extends(DomViewRef, _super);
-    function DomViewRef(_view) {
-      _super.call(this);
-      this._view = _view;
-    }
-    return DomViewRef;
-  })(api_1.RenderViewRef);
-  exports.DomViewRef = DomViewRef;
-  var DomView = (function() {
-    function DomView(proto, boundTextNodes, boundElements) {
-      this.proto = proto;
-      this.boundTextNodes = boundTextNodes;
-      this.boundElements = boundElements;
-      this.hydrated = false;
-      this.eventDispatcher = null;
-      this.eventHandlerRemovers = [];
-    }
-    DomView.prototype.setElementProperty = function(elementIndex, propertyName, value) {
-      dom_adapter_1.DOM.setProperty(this.boundElements[elementIndex], propertyName, value);
-    };
-    DomView.prototype.setElementAttribute = function(elementIndex, attributeName, value) {
-      var element = this.boundElements[elementIndex];
-      var dashCasedAttributeName = util_1.camelCaseToDashCase(attributeName);
-      if (lang_1.isPresent(value)) {
-        dom_adapter_1.DOM.setAttribute(element, dashCasedAttributeName, lang_1.stringify(value));
-      } else {
-        dom_adapter_1.DOM.removeAttribute(element, dashCasedAttributeName);
-      }
-    };
-    DomView.prototype.setElementClass = function(elementIndex, className, isAdd) {
-      var element = this.boundElements[elementIndex];
-      if (isAdd) {
-        dom_adapter_1.DOM.addClass(element, className);
-      } else {
-        dom_adapter_1.DOM.removeClass(element, className);
-      }
-    };
-    DomView.prototype.setElementStyle = function(elementIndex, styleName, value) {
-      var element = this.boundElements[elementIndex];
-      var dashCasedStyleName = util_1.camelCaseToDashCase(styleName);
-      if (lang_1.isPresent(value)) {
-        dom_adapter_1.DOM.setStyle(element, dashCasedStyleName, lang_1.stringify(value));
-      } else {
-        dom_adapter_1.DOM.removeStyle(element, dashCasedStyleName);
-      }
-    };
-    DomView.prototype.invokeElementMethod = function(elementIndex, methodName, args) {
-      var element = this.boundElements[elementIndex];
-      dom_adapter_1.DOM.invoke(element, methodName, args);
-    };
-    DomView.prototype.setText = function(textIndex, value) {
-      dom_adapter_1.DOM.setText(this.boundTextNodes[textIndex], value);
-    };
-    DomView.prototype.dispatchEvent = function(elementIndex, eventName, event) {
-      var allowDefaultBehavior = true;
-      if (lang_1.isPresent(this.eventDispatcher)) {
-        var evalLocals = new collection_1.Map();
-        evalLocals.set('$event', event);
-        allowDefaultBehavior = this.eventDispatcher.dispatchRenderEvent(elementIndex, eventName, evalLocals);
-        if (!allowDefaultBehavior) {
-          dom_adapter_1.DOM.preventDefault(event);
-        }
-      }
-      return allowDefaultBehavior;
-    };
-    return DomView;
-  })();
-  exports.DomView = DomView;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/fragment", ["npm:angular2@2.0.0-alpha.36/src/render/api"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  function resolveInternalDomFragment(fragmentRef) {
-    return fragmentRef._nodes;
-  }
-  exports.resolveInternalDomFragment = resolveInternalDomFragment;
-  var DomFragmentRef = (function(_super) {
-    __extends(DomFragmentRef, _super);
-    function DomFragmentRef(_nodes) {
-      _super.call(this);
-      this._nodes = _nodes;
-    }
-    return DomFragmentRef;
-  })(api_1.RenderFragmentRef);
-  exports.DomFragmentRef = DomFragmentRef;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:core-js@1.1.3/library/modules/$.keyof", ["npm:core-js@1.1.3/library/modules/$", "npm:core-js@1.1.3/library/modules/$.to-iobject"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -34735,6 +34747,23 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.keyof", ["npm:core-j
     while (length > index)
       if (O[key = keys[index++]] === el)
         return key;
+  };
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:core-js@1.1.3/library/modules/$.property-desc", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  module.exports = function(bitmap, value) {
+    return {
+      enumerable: !(bitmap & 1),
+      configurable: !(bitmap & 2),
+      writable: !(bitmap & 4),
+      value: value
+    };
   };
   global.define = __define;
   return module.exports;
@@ -34760,23 +34789,6 @@ System.registerDynamic("npm:core-js@1.1.3/library/modules/$.invoke", [], true, f
         return un ? fn(args[0], args[1], args[2], args[3]) : fn.call(that, args[0], args[1], args[2], args[3]);
     }
     return fn.apply(that, args);
-  };
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:core-js@1.1.3/library/modules/$.property-desc", [], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = function(bitmap, value) {
-    return {
-      enumerable: !(bitmap & 1),
-      configurable: !(bitmap & 2),
-      writable: !(bitmap & 4),
-      value: value
-    };
   };
   global.define = __define;
   return module.exports;
@@ -34989,6 +35001,20 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/codegen
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/observable_facade", [], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  function isObservable(value) {
+    return false;
+  }
+  exports.isObservable = isObservable;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/codegen_logic_util", ["npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/change_detection/codegen_facade", "npm:angular2@2.0.0-alpha.36/src/change_detection/proto_record", "npm:angular2@2.0.0-alpha.36/src/change_detection/constants"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -35164,16 +35190,44 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/codegen
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/change_detection/observable_facade", [], true, function(require, exports, module) {
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   'use strict';
-  function isObservable(value) {
-    return false;
-  }
-  exports.isObservable = isObservable;
+  var __extends = (this && this.__extends) || function(d, b) {
+    for (var p in b)
+      if (b.hasOwnProperty(p))
+        d[p] = b[p];
+    function __() {
+      this.constructor = d;
+    }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+  };
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var InvalidPipeArgumentException = (function(_super) {
+    __extends(InvalidPipeArgumentException, _super);
+    function InvalidPipeArgumentException(type, value) {
+      _super.call(this, "Invalid argument '" + value + "' for pipe '" + type + "'");
+    }
+    return InvalidPipeArgumentException;
+  })(lang_1.BaseException);
+  exports.InvalidPipeArgumentException = InvalidPipeArgumentException;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/facade/math", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  exports.Math = lang_1.global.Math;
+  exports.NaN = typeof exports.NaN;
   global.define = __define;
   return module.exports;
 });
@@ -35295,626 +35349,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/facade/intl", [], true, 
     return DateFormatter;
   })();
   exports.DateFormatter = DateFormatter;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/pipes/invalid_pipe_argument_exception", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var __extends = (this && this.__extends) || function(d, b) {
-    for (var p in b)
-      if (b.hasOwnProperty(p))
-        d[p] = b[p];
-    function __() {
-      this.constructor = d;
-    }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-  };
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var InvalidPipeArgumentException = (function(_super) {
-    __extends(InvalidPipeArgumentException, _super);
-    function InvalidPipeArgumentException(type, value) {
-      _super.call(this, "Invalid argument '" + value + "' for pipe '" + type + "'");
-    }
-    return InvalidPipeArgumentException;
-  })(lang_1.BaseException);
-  exports.InvalidPipeArgumentException = InvalidPipeArgumentException;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/facade/math", ["npm:angular2@2.0.0-alpha.36/src/facade/lang"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  exports.Math = lang_1.global.Math;
-  exports.NaN = typeof exports.NaN;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:rx@2.5.1/dist/rx.aggregates", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  ;
-  (function(factory) {
-    var objectTypes = {
-      'boolean': false,
-      'function': true,
-      'object': true,
-      'number': false,
-      'string': false,
-      'undefined': false
-    };
-    var root = (objectTypes[typeof window] && window) || this,
-        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
-        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
-        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
-        freeGlobal = objectTypes[typeof global] && global;
-    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
-      root = freeGlobal;
-    }
-    if (typeof define === 'function' && define.amd) {
-      define(['rx'], function(Rx, exports) {
-        return factory(root, exports, Rx);
-      });
-    } else if (typeof module === 'object' && module && module.exports === freeExports) {
-      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
-    } else {
-      root.Rx = factory(root, {}, root.Rx);
-    }
-  }.call(this, function(root, exp, Rx, undefined) {
-    var Observable = Rx.Observable,
-        observableProto = Observable.prototype,
-        CompositeDisposable = Rx.CompositeDisposable,
-        AnonymousObservable = Rx.AnonymousObservable,
-        disposableEmpty = Rx.Disposable.empty,
-        isEqual = Rx.internals.isEqual,
-        helpers = Rx.helpers,
-        not = helpers.not,
-        defaultComparer = helpers.defaultComparer,
-        identity = helpers.identity,
-        defaultSubComparer = helpers.defaultSubComparer,
-        isFunction = helpers.isFunction,
-        isPromise = helpers.isPromise,
-        isArrayLike = helpers.isArrayLike,
-        isIterable = helpers.isIterable,
-        observableFromPromise = Observable.fromPromise,
-        observableFrom = Observable.from,
-        bindCallback = Rx.internals.bindCallback,
-        EmptyError = Rx.EmptyError,
-        ArgumentOutOfRangeError = Rx.ArgumentOutOfRangeError;
-    function extremaBy(source, keySelector, comparer) {
-      return new AnonymousObservable(function(o) {
-        var hasValue = false,
-            lastKey = null,
-            list = [];
-        return source.subscribe(function(x) {
-          var comparison,
-              key;
-          try {
-            key = keySelector(x);
-          } catch (ex) {
-            o.onError(ex);
-            return;
-          }
-          comparison = 0;
-          if (!hasValue) {
-            hasValue = true;
-            lastKey = key;
-          } else {
-            try {
-              comparison = comparer(key, lastKey);
-            } catch (ex1) {
-              o.onError(ex1);
-              return;
-            }
-          }
-          if (comparison > 0) {
-            lastKey = key;
-            list = [];
-          }
-          if (comparison >= 0) {
-            list.push(x);
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(list);
-          o.onCompleted();
-        });
-      }, source);
-    }
-    function firstOnly(x) {
-      if (x.length === 0) {
-        throw new EmptyError();
-      }
-      return x[0];
-    }
-    observableProto.aggregate = function() {
-      var hasSeed = false,
-          accumulator,
-          seed,
-          source = this;
-      if (arguments.length === 2) {
-        hasSeed = true;
-        seed = arguments[0];
-        accumulator = arguments[1];
-      } else {
-        accumulator = arguments[0];
-      }
-      return new AnonymousObservable(function(o) {
-        var hasAccumulation,
-            accumulation,
-            hasValue;
-        return source.subscribe(function(x) {
-          !hasValue && (hasValue = true);
-          try {
-            if (hasAccumulation) {
-              accumulation = accumulator(accumulation, x);
-            } else {
-              accumulation = hasSeed ? accumulator(seed, x) : x;
-              hasAccumulation = true;
-            }
-          } catch (e) {
-            return o.onError(e);
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          hasValue && o.onNext(accumulation);
-          !hasValue && hasSeed && o.onNext(seed);
-          !hasValue && !hasSeed && o.onError(new EmptyError());
-          o.onCompleted();
-        });
-      }, source);
-    };
-    observableProto.reduce = function(accumulator) {
-      var hasSeed = false,
-          seed,
-          source = this;
-      if (arguments.length === 2) {
-        hasSeed = true;
-        seed = arguments[1];
-      }
-      return new AnonymousObservable(function(o) {
-        var hasAccumulation,
-            accumulation,
-            hasValue;
-        return source.subscribe(function(x) {
-          !hasValue && (hasValue = true);
-          try {
-            if (hasAccumulation) {
-              accumulation = accumulator(accumulation, x);
-            } else {
-              accumulation = hasSeed ? accumulator(seed, x) : x;
-              hasAccumulation = true;
-            }
-          } catch (e) {
-            return o.onError(e);
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          hasValue && o.onNext(accumulation);
-          !hasValue && hasSeed && o.onNext(seed);
-          !hasValue && !hasSeed && o.onError(new EmptyError());
-          o.onCompleted();
-        });
-      }, source);
-    };
-    observableProto.some = function(predicate, thisArg) {
-      var source = this;
-      return predicate ? source.filter(predicate, thisArg).some() : new AnonymousObservable(function(observer) {
-        return source.subscribe(function() {
-          observer.onNext(true);
-          observer.onCompleted();
-        }, function(e) {
-          observer.onError(e);
-        }, function() {
-          observer.onNext(false);
-          observer.onCompleted();
-        });
-      }, source);
-    };
-    observableProto.any = function() {
-      return this.some.apply(this, arguments);
-    };
-    observableProto.isEmpty = function() {
-      return this.any().map(not);
-    };
-    observableProto.every = function(predicate, thisArg) {
-      return this.filter(function(v) {
-        return !predicate(v);
-      }, thisArg).some().map(not);
-    };
-    observableProto.all = function() {
-      return this.every.apply(this, arguments);
-    };
-    observableProto.includes = function(searchElement, fromIndex) {
-      var source = this;
-      function comparer(a, b) {
-        return (a === 0 && b === 0) || (a === b || (isNaN(a) && isNaN(b)));
-      }
-      return new AnonymousObservable(function(o) {
-        var i = 0,
-            n = +fromIndex || 0;
-        Math.abs(n) === Infinity && (n = 0);
-        if (n < 0) {
-          o.onNext(false);
-          o.onCompleted();
-          return disposableEmpty;
-        }
-        return source.subscribe(function(x) {
-          if (i++ >= n && comparer(x, searchElement)) {
-            o.onNext(true);
-            o.onCompleted();
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(false);
-          o.onCompleted();
-        });
-      }, this);
-    };
-    observableProto.contains = function(searchElement, fromIndex) {
-      observableProto.includes(searchElement, fromIndex);
-    };
-    observableProto.count = function(predicate, thisArg) {
-      return predicate ? this.filter(predicate, thisArg).count() : this.reduce(function(count) {
-        return count + 1;
-      }, 0);
-    };
-    observableProto.indexOf = function(searchElement, fromIndex) {
-      var source = this;
-      return new AnonymousObservable(function(o) {
-        var i = 0,
-            n = +fromIndex || 0;
-        Math.abs(n) === Infinity && (n = 0);
-        if (n < 0) {
-          o.onNext(-1);
-          o.onCompleted();
-          return disposableEmpty;
-        }
-        return source.subscribe(function(x) {
-          if (i >= n && x === searchElement) {
-            o.onNext(i);
-            o.onCompleted();
-          }
-          i++;
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(-1);
-          o.onCompleted();
-        });
-      }, source);
-    };
-    observableProto.sum = function(keySelector, thisArg) {
-      return keySelector && isFunction(keySelector) ? this.map(keySelector, thisArg).sum() : this.reduce(function(prev, curr) {
-        return prev + curr;
-      }, 0);
-    };
-    observableProto.minBy = function(keySelector, comparer) {
-      comparer || (comparer = defaultSubComparer);
-      return extremaBy(this, keySelector, function(x, y) {
-        return comparer(x, y) * -1;
-      });
-    };
-    observableProto.min = function(comparer) {
-      return this.minBy(identity, comparer).map(function(x) {
-        return firstOnly(x);
-      });
-    };
-    observableProto.maxBy = function(keySelector, comparer) {
-      comparer || (comparer = defaultSubComparer);
-      return extremaBy(this, keySelector, comparer);
-    };
-    observableProto.max = function(comparer) {
-      return this.maxBy(identity, comparer).map(function(x) {
-        return firstOnly(x);
-      });
-    };
-    observableProto.average = function(keySelector, thisArg) {
-      return keySelector && isFunction(keySelector) ? this.map(keySelector, thisArg).average() : this.reduce(function(prev, cur) {
-        return {
-          sum: prev.sum + cur,
-          count: prev.count + 1
-        };
-      }, {
-        sum: 0,
-        count: 0
-      }).map(function(s) {
-        if (s.count === 0) {
-          throw new EmptyError();
-        }
-        return s.sum / s.count;
-      });
-    };
-    observableProto.sequenceEqual = function(second, comparer) {
-      var first = this;
-      comparer || (comparer = defaultComparer);
-      return new AnonymousObservable(function(o) {
-        var donel = false,
-            doner = false,
-            ql = [],
-            qr = [];
-        var subscription1 = first.subscribe(function(x) {
-          var equal,
-              v;
-          if (qr.length > 0) {
-            v = qr.shift();
-            try {
-              equal = comparer(v, x);
-            } catch (e) {
-              o.onError(e);
-              return;
-            }
-            if (!equal) {
-              o.onNext(false);
-              o.onCompleted();
-            }
-          } else if (doner) {
-            o.onNext(false);
-            o.onCompleted();
-          } else {
-            ql.push(x);
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          donel = true;
-          if (ql.length === 0) {
-            if (qr.length > 0) {
-              o.onNext(false);
-              o.onCompleted();
-            } else if (doner) {
-              o.onNext(true);
-              o.onCompleted();
-            }
-          }
-        });
-        (isArrayLike(second) || isIterable(second)) && (second = observableFrom(second));
-        isPromise(second) && (second = observableFromPromise(second));
-        var subscription2 = second.subscribe(function(x) {
-          var equal;
-          if (ql.length > 0) {
-            var v = ql.shift();
-            try {
-              equal = comparer(v, x);
-            } catch (exception) {
-              o.onError(exception);
-              return;
-            }
-            if (!equal) {
-              o.onNext(false);
-              o.onCompleted();
-            }
-          } else if (donel) {
-            o.onNext(false);
-            o.onCompleted();
-          } else {
-            qr.push(x);
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          doner = true;
-          if (qr.length === 0) {
-            if (ql.length > 0) {
-              o.onNext(false);
-              o.onCompleted();
-            } else if (donel) {
-              o.onNext(true);
-              o.onCompleted();
-            }
-          }
-        });
-        return new CompositeDisposable(subscription1, subscription2);
-      }, first);
-    };
-    function elementAtOrDefault(source, index, hasDefault, defaultValue) {
-      if (index < 0) {
-        throw new ArgumentOutOfRangeError();
-      }
-      return new AnonymousObservable(function(o) {
-        var i = index;
-        return source.subscribe(function(x) {
-          if (i-- === 0) {
-            o.onNext(x);
-            o.onCompleted();
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          if (!hasDefault) {
-            o.onError(new ArgumentOutOfRangeError());
-          } else {
-            o.onNext(defaultValue);
-            o.onCompleted();
-          }
-        });
-      }, source);
-    }
-    observableProto.elementAt = function(index) {
-      return elementAtOrDefault(this, index, false);
-    };
-    observableProto.elementAtOrDefault = function(index, defaultValue) {
-      return elementAtOrDefault(this, index, true, defaultValue);
-    };
-    function singleOrDefaultAsync(source, hasDefault, defaultValue) {
-      return new AnonymousObservable(function(o) {
-        var value = defaultValue,
-            seenValue = false;
-        return source.subscribe(function(x) {
-          if (seenValue) {
-            o.onError(new Error('Sequence contains more than one element'));
-          } else {
-            value = x;
-            seenValue = true;
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          if (!seenValue && !hasDefault) {
-            o.onError(new EmptyError());
-          } else {
-            o.onNext(value);
-            o.onCompleted();
-          }
-        });
-      }, source);
-    }
-    observableProto.single = function(predicate, thisArg) {
-      return predicate && isFunction(predicate) ? this.where(predicate, thisArg).single() : singleOrDefaultAsync(this, false);
-    };
-    observableProto.singleOrDefault = function(predicate, defaultValue, thisArg) {
-      return predicate && isFunction(predicate) ? this.filter(predicate, thisArg).singleOrDefault(null, defaultValue) : singleOrDefaultAsync(this, true, defaultValue);
-    };
-    function firstOrDefaultAsync(source, hasDefault, defaultValue) {
-      return new AnonymousObservable(function(o) {
-        return source.subscribe(function(x) {
-          o.onNext(x);
-          o.onCompleted();
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          if (!hasDefault) {
-            o.onError(new EmptyError());
-          } else {
-            o.onNext(defaultValue);
-            o.onCompleted();
-          }
-        });
-      }, source);
-    }
-    observableProto.first = function(predicate, thisArg) {
-      return predicate ? this.where(predicate, thisArg).first() : firstOrDefaultAsync(this, false);
-    };
-    observableProto.firstOrDefault = function(predicate, defaultValue, thisArg) {
-      return predicate ? this.where(predicate).firstOrDefault(null, defaultValue) : firstOrDefaultAsync(this, true, defaultValue);
-    };
-    function lastOrDefaultAsync(source, hasDefault, defaultValue) {
-      return new AnonymousObservable(function(o) {
-        var value = defaultValue,
-            seenValue = false;
-        return source.subscribe(function(x) {
-          value = x;
-          seenValue = true;
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          if (!seenValue && !hasDefault) {
-            o.onError(new EmptyError());
-          } else {
-            o.onNext(value);
-            o.onCompleted();
-          }
-        });
-      }, source);
-    }
-    observableProto.last = function(predicate, thisArg) {
-      return predicate ? this.where(predicate, thisArg).last() : lastOrDefaultAsync(this, false);
-    };
-    observableProto.lastOrDefault = function(predicate, defaultValue, thisArg) {
-      return predicate ? this.where(predicate, thisArg).lastOrDefault(null, defaultValue) : lastOrDefaultAsync(this, true, defaultValue);
-    };
-    function findValue(source, predicate, thisArg, yieldIndex) {
-      var callback = bindCallback(predicate, thisArg, 3);
-      return new AnonymousObservable(function(o) {
-        var i = 0;
-        return source.subscribe(function(x) {
-          var shouldRun;
-          try {
-            shouldRun = callback(x, i, source);
-          } catch (e) {
-            o.onError(e);
-            return;
-          }
-          if (shouldRun) {
-            o.onNext(yieldIndex ? i : x);
-            o.onCompleted();
-          } else {
-            i++;
-          }
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(yieldIndex ? -1 : undefined);
-          o.onCompleted();
-        });
-      }, source);
-    }
-    observableProto.find = function(predicate, thisArg) {
-      return findValue(this, predicate, thisArg, false);
-    };
-    observableProto.findIndex = function(predicate, thisArg) {
-      return findValue(this, predicate, thisArg, true);
-    };
-    observableProto.toSet = function() {
-      if (typeof root.Set === 'undefined') {
-        throw new TypeError();
-      }
-      var source = this;
-      return new AnonymousObservable(function(o) {
-        var s = new root.Set();
-        return source.subscribe(function(x) {
-          s.add(x);
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(s);
-          o.onCompleted();
-        });
-      }, source);
-    };
-    observableProto.toMap = function(keySelector, elementSelector) {
-      if (typeof root.Map === 'undefined') {
-        throw new TypeError();
-      }
-      var source = this;
-      return new AnonymousObservable(function(o) {
-        var m = new root.Map();
-        return source.subscribe(function(x) {
-          var key;
-          try {
-            key = keySelector(x);
-          } catch (e) {
-            o.onError(e);
-            return;
-          }
-          var element = x;
-          if (elementSelector) {
-            try {
-              element = elementSelector(x);
-            } catch (e) {
-              o.onError(e);
-              return;
-            }
-          }
-          m.set(key, element);
-        }, function(e) {
-          o.onError(e);
-        }, function() {
-          o.onNext(m);
-          o.onCompleted();
-        });
-      }, source);
-    };
-    return Rx;
-  }));
   global.define = __define;
   return module.exports;
 });
@@ -39986,6 +39420,584 @@ System.registerDynamic("npm:rx@2.5.1/dist/rx", ["github:jspm/nodelibs-process@0.
   return module.exports;
 });
 
+System.registerDynamic("npm:rx@2.5.1/dist/rx.aggregates", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  "format cjs";
+  ;
+  (function(factory) {
+    var objectTypes = {
+      'boolean': false,
+      'function': true,
+      'object': true,
+      'number': false,
+      'string': false,
+      'undefined': false
+    };
+    var root = (objectTypes[typeof window] && window) || this,
+        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
+        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
+        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
+        freeGlobal = objectTypes[typeof global] && global;
+    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
+      root = freeGlobal;
+    }
+    if (typeof define === 'function' && define.amd) {
+      define(['rx'], function(Rx, exports) {
+        return factory(root, exports, Rx);
+      });
+    } else if (typeof module === 'object' && module && module.exports === freeExports) {
+      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
+    } else {
+      root.Rx = factory(root, {}, root.Rx);
+    }
+  }.call(this, function(root, exp, Rx, undefined) {
+    var Observable = Rx.Observable,
+        observableProto = Observable.prototype,
+        CompositeDisposable = Rx.CompositeDisposable,
+        AnonymousObservable = Rx.AnonymousObservable,
+        disposableEmpty = Rx.Disposable.empty,
+        isEqual = Rx.internals.isEqual,
+        helpers = Rx.helpers,
+        not = helpers.not,
+        defaultComparer = helpers.defaultComparer,
+        identity = helpers.identity,
+        defaultSubComparer = helpers.defaultSubComparer,
+        isFunction = helpers.isFunction,
+        isPromise = helpers.isPromise,
+        isArrayLike = helpers.isArrayLike,
+        isIterable = helpers.isIterable,
+        observableFromPromise = Observable.fromPromise,
+        observableFrom = Observable.from,
+        bindCallback = Rx.internals.bindCallback,
+        EmptyError = Rx.EmptyError,
+        ArgumentOutOfRangeError = Rx.ArgumentOutOfRangeError;
+    function extremaBy(source, keySelector, comparer) {
+      return new AnonymousObservable(function(o) {
+        var hasValue = false,
+            lastKey = null,
+            list = [];
+        return source.subscribe(function(x) {
+          var comparison,
+              key;
+          try {
+            key = keySelector(x);
+          } catch (ex) {
+            o.onError(ex);
+            return;
+          }
+          comparison = 0;
+          if (!hasValue) {
+            hasValue = true;
+            lastKey = key;
+          } else {
+            try {
+              comparison = comparer(key, lastKey);
+            } catch (ex1) {
+              o.onError(ex1);
+              return;
+            }
+          }
+          if (comparison > 0) {
+            lastKey = key;
+            list = [];
+          }
+          if (comparison >= 0) {
+            list.push(x);
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(list);
+          o.onCompleted();
+        });
+      }, source);
+    }
+    function firstOnly(x) {
+      if (x.length === 0) {
+        throw new EmptyError();
+      }
+      return x[0];
+    }
+    observableProto.aggregate = function() {
+      var hasSeed = false,
+          accumulator,
+          seed,
+          source = this;
+      if (arguments.length === 2) {
+        hasSeed = true;
+        seed = arguments[0];
+        accumulator = arguments[1];
+      } else {
+        accumulator = arguments[0];
+      }
+      return new AnonymousObservable(function(o) {
+        var hasAccumulation,
+            accumulation,
+            hasValue;
+        return source.subscribe(function(x) {
+          !hasValue && (hasValue = true);
+          try {
+            if (hasAccumulation) {
+              accumulation = accumulator(accumulation, x);
+            } else {
+              accumulation = hasSeed ? accumulator(seed, x) : x;
+              hasAccumulation = true;
+            }
+          } catch (e) {
+            return o.onError(e);
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          hasValue && o.onNext(accumulation);
+          !hasValue && hasSeed && o.onNext(seed);
+          !hasValue && !hasSeed && o.onError(new EmptyError());
+          o.onCompleted();
+        });
+      }, source);
+    };
+    observableProto.reduce = function(accumulator) {
+      var hasSeed = false,
+          seed,
+          source = this;
+      if (arguments.length === 2) {
+        hasSeed = true;
+        seed = arguments[1];
+      }
+      return new AnonymousObservable(function(o) {
+        var hasAccumulation,
+            accumulation,
+            hasValue;
+        return source.subscribe(function(x) {
+          !hasValue && (hasValue = true);
+          try {
+            if (hasAccumulation) {
+              accumulation = accumulator(accumulation, x);
+            } else {
+              accumulation = hasSeed ? accumulator(seed, x) : x;
+              hasAccumulation = true;
+            }
+          } catch (e) {
+            return o.onError(e);
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          hasValue && o.onNext(accumulation);
+          !hasValue && hasSeed && o.onNext(seed);
+          !hasValue && !hasSeed && o.onError(new EmptyError());
+          o.onCompleted();
+        });
+      }, source);
+    };
+    observableProto.some = function(predicate, thisArg) {
+      var source = this;
+      return predicate ? source.filter(predicate, thisArg).some() : new AnonymousObservable(function(observer) {
+        return source.subscribe(function() {
+          observer.onNext(true);
+          observer.onCompleted();
+        }, function(e) {
+          observer.onError(e);
+        }, function() {
+          observer.onNext(false);
+          observer.onCompleted();
+        });
+      }, source);
+    };
+    observableProto.any = function() {
+      return this.some.apply(this, arguments);
+    };
+    observableProto.isEmpty = function() {
+      return this.any().map(not);
+    };
+    observableProto.every = function(predicate, thisArg) {
+      return this.filter(function(v) {
+        return !predicate(v);
+      }, thisArg).some().map(not);
+    };
+    observableProto.all = function() {
+      return this.every.apply(this, arguments);
+    };
+    observableProto.includes = function(searchElement, fromIndex) {
+      var source = this;
+      function comparer(a, b) {
+        return (a === 0 && b === 0) || (a === b || (isNaN(a) && isNaN(b)));
+      }
+      return new AnonymousObservable(function(o) {
+        var i = 0,
+            n = +fromIndex || 0;
+        Math.abs(n) === Infinity && (n = 0);
+        if (n < 0) {
+          o.onNext(false);
+          o.onCompleted();
+          return disposableEmpty;
+        }
+        return source.subscribe(function(x) {
+          if (i++ >= n && comparer(x, searchElement)) {
+            o.onNext(true);
+            o.onCompleted();
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(false);
+          o.onCompleted();
+        });
+      }, this);
+    };
+    observableProto.contains = function(searchElement, fromIndex) {
+      observableProto.includes(searchElement, fromIndex);
+    };
+    observableProto.count = function(predicate, thisArg) {
+      return predicate ? this.filter(predicate, thisArg).count() : this.reduce(function(count) {
+        return count + 1;
+      }, 0);
+    };
+    observableProto.indexOf = function(searchElement, fromIndex) {
+      var source = this;
+      return new AnonymousObservable(function(o) {
+        var i = 0,
+            n = +fromIndex || 0;
+        Math.abs(n) === Infinity && (n = 0);
+        if (n < 0) {
+          o.onNext(-1);
+          o.onCompleted();
+          return disposableEmpty;
+        }
+        return source.subscribe(function(x) {
+          if (i >= n && x === searchElement) {
+            o.onNext(i);
+            o.onCompleted();
+          }
+          i++;
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(-1);
+          o.onCompleted();
+        });
+      }, source);
+    };
+    observableProto.sum = function(keySelector, thisArg) {
+      return keySelector && isFunction(keySelector) ? this.map(keySelector, thisArg).sum() : this.reduce(function(prev, curr) {
+        return prev + curr;
+      }, 0);
+    };
+    observableProto.minBy = function(keySelector, comparer) {
+      comparer || (comparer = defaultSubComparer);
+      return extremaBy(this, keySelector, function(x, y) {
+        return comparer(x, y) * -1;
+      });
+    };
+    observableProto.min = function(comparer) {
+      return this.minBy(identity, comparer).map(function(x) {
+        return firstOnly(x);
+      });
+    };
+    observableProto.maxBy = function(keySelector, comparer) {
+      comparer || (comparer = defaultSubComparer);
+      return extremaBy(this, keySelector, comparer);
+    };
+    observableProto.max = function(comparer) {
+      return this.maxBy(identity, comparer).map(function(x) {
+        return firstOnly(x);
+      });
+    };
+    observableProto.average = function(keySelector, thisArg) {
+      return keySelector && isFunction(keySelector) ? this.map(keySelector, thisArg).average() : this.reduce(function(prev, cur) {
+        return {
+          sum: prev.sum + cur,
+          count: prev.count + 1
+        };
+      }, {
+        sum: 0,
+        count: 0
+      }).map(function(s) {
+        if (s.count === 0) {
+          throw new EmptyError();
+        }
+        return s.sum / s.count;
+      });
+    };
+    observableProto.sequenceEqual = function(second, comparer) {
+      var first = this;
+      comparer || (comparer = defaultComparer);
+      return new AnonymousObservable(function(o) {
+        var donel = false,
+            doner = false,
+            ql = [],
+            qr = [];
+        var subscription1 = first.subscribe(function(x) {
+          var equal,
+              v;
+          if (qr.length > 0) {
+            v = qr.shift();
+            try {
+              equal = comparer(v, x);
+            } catch (e) {
+              o.onError(e);
+              return;
+            }
+            if (!equal) {
+              o.onNext(false);
+              o.onCompleted();
+            }
+          } else if (doner) {
+            o.onNext(false);
+            o.onCompleted();
+          } else {
+            ql.push(x);
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          donel = true;
+          if (ql.length === 0) {
+            if (qr.length > 0) {
+              o.onNext(false);
+              o.onCompleted();
+            } else if (doner) {
+              o.onNext(true);
+              o.onCompleted();
+            }
+          }
+        });
+        (isArrayLike(second) || isIterable(second)) && (second = observableFrom(second));
+        isPromise(second) && (second = observableFromPromise(second));
+        var subscription2 = second.subscribe(function(x) {
+          var equal;
+          if (ql.length > 0) {
+            var v = ql.shift();
+            try {
+              equal = comparer(v, x);
+            } catch (exception) {
+              o.onError(exception);
+              return;
+            }
+            if (!equal) {
+              o.onNext(false);
+              o.onCompleted();
+            }
+          } else if (donel) {
+            o.onNext(false);
+            o.onCompleted();
+          } else {
+            qr.push(x);
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          doner = true;
+          if (qr.length === 0) {
+            if (ql.length > 0) {
+              o.onNext(false);
+              o.onCompleted();
+            } else if (donel) {
+              o.onNext(true);
+              o.onCompleted();
+            }
+          }
+        });
+        return new CompositeDisposable(subscription1, subscription2);
+      }, first);
+    };
+    function elementAtOrDefault(source, index, hasDefault, defaultValue) {
+      if (index < 0) {
+        throw new ArgumentOutOfRangeError();
+      }
+      return new AnonymousObservable(function(o) {
+        var i = index;
+        return source.subscribe(function(x) {
+          if (i-- === 0) {
+            o.onNext(x);
+            o.onCompleted();
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          if (!hasDefault) {
+            o.onError(new ArgumentOutOfRangeError());
+          } else {
+            o.onNext(defaultValue);
+            o.onCompleted();
+          }
+        });
+      }, source);
+    }
+    observableProto.elementAt = function(index) {
+      return elementAtOrDefault(this, index, false);
+    };
+    observableProto.elementAtOrDefault = function(index, defaultValue) {
+      return elementAtOrDefault(this, index, true, defaultValue);
+    };
+    function singleOrDefaultAsync(source, hasDefault, defaultValue) {
+      return new AnonymousObservable(function(o) {
+        var value = defaultValue,
+            seenValue = false;
+        return source.subscribe(function(x) {
+          if (seenValue) {
+            o.onError(new Error('Sequence contains more than one element'));
+          } else {
+            value = x;
+            seenValue = true;
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          if (!seenValue && !hasDefault) {
+            o.onError(new EmptyError());
+          } else {
+            o.onNext(value);
+            o.onCompleted();
+          }
+        });
+      }, source);
+    }
+    observableProto.single = function(predicate, thisArg) {
+      return predicate && isFunction(predicate) ? this.where(predicate, thisArg).single() : singleOrDefaultAsync(this, false);
+    };
+    observableProto.singleOrDefault = function(predicate, defaultValue, thisArg) {
+      return predicate && isFunction(predicate) ? this.filter(predicate, thisArg).singleOrDefault(null, defaultValue) : singleOrDefaultAsync(this, true, defaultValue);
+    };
+    function firstOrDefaultAsync(source, hasDefault, defaultValue) {
+      return new AnonymousObservable(function(o) {
+        return source.subscribe(function(x) {
+          o.onNext(x);
+          o.onCompleted();
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          if (!hasDefault) {
+            o.onError(new EmptyError());
+          } else {
+            o.onNext(defaultValue);
+            o.onCompleted();
+          }
+        });
+      }, source);
+    }
+    observableProto.first = function(predicate, thisArg) {
+      return predicate ? this.where(predicate, thisArg).first() : firstOrDefaultAsync(this, false);
+    };
+    observableProto.firstOrDefault = function(predicate, defaultValue, thisArg) {
+      return predicate ? this.where(predicate).firstOrDefault(null, defaultValue) : firstOrDefaultAsync(this, true, defaultValue);
+    };
+    function lastOrDefaultAsync(source, hasDefault, defaultValue) {
+      return new AnonymousObservable(function(o) {
+        var value = defaultValue,
+            seenValue = false;
+        return source.subscribe(function(x) {
+          value = x;
+          seenValue = true;
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          if (!seenValue && !hasDefault) {
+            o.onError(new EmptyError());
+          } else {
+            o.onNext(value);
+            o.onCompleted();
+          }
+        });
+      }, source);
+    }
+    observableProto.last = function(predicate, thisArg) {
+      return predicate ? this.where(predicate, thisArg).last() : lastOrDefaultAsync(this, false);
+    };
+    observableProto.lastOrDefault = function(predicate, defaultValue, thisArg) {
+      return predicate ? this.where(predicate, thisArg).lastOrDefault(null, defaultValue) : lastOrDefaultAsync(this, true, defaultValue);
+    };
+    function findValue(source, predicate, thisArg, yieldIndex) {
+      var callback = bindCallback(predicate, thisArg, 3);
+      return new AnonymousObservable(function(o) {
+        var i = 0;
+        return source.subscribe(function(x) {
+          var shouldRun;
+          try {
+            shouldRun = callback(x, i, source);
+          } catch (e) {
+            o.onError(e);
+            return;
+          }
+          if (shouldRun) {
+            o.onNext(yieldIndex ? i : x);
+            o.onCompleted();
+          } else {
+            i++;
+          }
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(yieldIndex ? -1 : undefined);
+          o.onCompleted();
+        });
+      }, source);
+    }
+    observableProto.find = function(predicate, thisArg) {
+      return findValue(this, predicate, thisArg, false);
+    };
+    observableProto.findIndex = function(predicate, thisArg) {
+      return findValue(this, predicate, thisArg, true);
+    };
+    observableProto.toSet = function() {
+      if (typeof root.Set === 'undefined') {
+        throw new TypeError();
+      }
+      var source = this;
+      return new AnonymousObservable(function(o) {
+        var s = new root.Set();
+        return source.subscribe(function(x) {
+          s.add(x);
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(s);
+          o.onCompleted();
+        });
+      }, source);
+    };
+    observableProto.toMap = function(keySelector, elementSelector) {
+      if (typeof root.Map === 'undefined') {
+        throw new TypeError();
+      }
+      var source = this;
+      return new AnonymousObservable(function(o) {
+        var m = new root.Map();
+        return source.subscribe(function(x) {
+          var key;
+          try {
+            key = keySelector(x);
+          } catch (e) {
+            o.onError(e);
+            return;
+          }
+          var element = x;
+          if (elementSelector) {
+            try {
+              element = elementSelector(x);
+            } catch (e) {
+              o.onError(e);
+              return;
+            }
+          }
+          m.set(key, element);
+        }, function(e) {
+          o.onError(e);
+        }, function() {
+          o.onNext(m);
+          o.onCompleted();
+        });
+      }, source);
+    };
+    return Rx;
+  }));
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:rx@2.5.1/dist/rx.async", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -41864,6 +41876,274 @@ System.registerDynamic("npm:rx@2.5.1/dist/rx.coincidence", ["npm:rx@2.5.1/dist/r
   return module.exports;
 });
 
+System.registerDynamic("npm:rx@2.5.1/dist/rx.joinpatterns", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  "format cjs";
+  ;
+  (function(factory) {
+    var objectTypes = {
+      'boolean': false,
+      'function': true,
+      'object': true,
+      'number': false,
+      'string': false,
+      'undefined': false
+    };
+    var root = (objectTypes[typeof window] && window) || this,
+        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
+        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
+        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
+        freeGlobal = objectTypes[typeof global] && global;
+    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
+      root = freeGlobal;
+    }
+    if (typeof define === 'function' && define.amd) {
+      define(['rx'], function(Rx, exports) {
+        return factory(root, exports, Rx);
+      });
+    } else if (typeof module === 'object' && module && module.exports === freeExports) {
+      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
+    } else {
+      root.Rx = factory(root, {}, root.Rx);
+    }
+  }.call(this, function(root, exp, Rx, undefined) {
+    var Observable = Rx.Observable,
+        observableProto = Observable.prototype,
+        AnonymousObservable = Rx.AnonymousObservable,
+        observableThrow = Observable.throwError,
+        observerCreate = Rx.Observer.create,
+        SingleAssignmentDisposable = Rx.SingleAssignmentDisposable,
+        CompositeDisposable = Rx.CompositeDisposable,
+        AbstractObserver = Rx.internals.AbstractObserver,
+        noop = Rx.helpers.noop,
+        defaultComparer = Rx.internals.isEqual,
+        inherits = Rx.internals.inherits,
+        Enumerable = Rx.internals.Enumerable,
+        Enumerator = Rx.internals.Enumerator,
+        $iterator$ = Rx.iterator,
+        doneEnumerator = Rx.doneEnumerator;
+    var Map = root.Map || (function() {
+      function Map() {
+        this._keys = [];
+        this._values = [];
+      }
+      Map.prototype.get = function(key) {
+        var i = this._keys.indexOf(key);
+        return i !== -1 ? this._values[i] : undefined;
+      };
+      Map.prototype.set = function(key, value) {
+        var i = this._keys.indexOf(key);
+        i !== -1 && (this._values[i] = value);
+        this._values[this._keys.push(key) - 1] = value;
+      };
+      Map.prototype.forEach = function(callback, thisArg) {
+        for (var i = 0,
+            len = this._keys.length; i < len; i++) {
+          callback.call(thisArg, this._values[i], this._keys[i]);
+        }
+      };
+      return Map;
+    }());
+    function Pattern(patterns) {
+      this.patterns = patterns;
+    }
+    Pattern.prototype.and = function(other) {
+      return new Pattern(this.patterns.concat(other));
+    };
+    Pattern.prototype.thenDo = function(selector) {
+      return new Plan(this, selector);
+    };
+    function Plan(expression, selector) {
+      this.expression = expression;
+      this.selector = selector;
+    }
+    Plan.prototype.activate = function(externalSubscriptions, observer, deactivate) {
+      var self = this;
+      var joinObservers = [];
+      for (var i = 0,
+          len = this.expression.patterns.length; i < len; i++) {
+        joinObservers.push(planCreateObserver(externalSubscriptions, this.expression.patterns[i], observer.onError.bind(observer)));
+      }
+      var activePlan = new ActivePlan(joinObservers, function() {
+        var result;
+        try {
+          result = self.selector.apply(self, arguments);
+        } catch (e) {
+          observer.onError(e);
+          return;
+        }
+        observer.onNext(result);
+      }, function() {
+        for (var j = 0,
+            jlen = joinObservers.length; j < jlen; j++) {
+          joinObservers[j].removeActivePlan(activePlan);
+        }
+        deactivate(activePlan);
+      });
+      for (i = 0, len = joinObservers.length; i < len; i++) {
+        joinObservers[i].addActivePlan(activePlan);
+      }
+      return activePlan;
+    };
+    function planCreateObserver(externalSubscriptions, observable, onError) {
+      var entry = externalSubscriptions.get(observable);
+      if (!entry) {
+        var observer = new JoinObserver(observable, onError);
+        externalSubscriptions.set(observable, observer);
+        return observer;
+      }
+      return entry;
+    }
+    function ActivePlan(joinObserverArray, onNext, onCompleted) {
+      this.joinObserverArray = joinObserverArray;
+      this.onNext = onNext;
+      this.onCompleted = onCompleted;
+      this.joinObservers = new Map();
+      for (var i = 0,
+          len = this.joinObserverArray.length; i < len; i++) {
+        var joinObserver = this.joinObserverArray[i];
+        this.joinObservers.set(joinObserver, joinObserver);
+      }
+    }
+    ActivePlan.prototype.dequeue = function() {
+      this.joinObservers.forEach(function(v) {
+        v.queue.shift();
+      });
+    };
+    ActivePlan.prototype.match = function() {
+      var i,
+          len,
+          hasValues = true;
+      for (i = 0, len = this.joinObserverArray.length; i < len; i++) {
+        if (this.joinObserverArray[i].queue.length === 0) {
+          hasValues = false;
+          break;
+        }
+      }
+      if (hasValues) {
+        var firstValues = [],
+            isCompleted = false;
+        for (i = 0, len = this.joinObserverArray.length; i < len; i++) {
+          firstValues.push(this.joinObserverArray[i].queue[0]);
+          this.joinObserverArray[i].queue[0].kind === 'C' && (isCompleted = true);
+        }
+        if (isCompleted) {
+          this.onCompleted();
+        } else {
+          this.dequeue();
+          var values = [];
+          for (i = 0, len = firstValues.length; i < firstValues.length; i++) {
+            values.push(firstValues[i].value);
+          }
+          this.onNext.apply(this, values);
+        }
+      }
+    };
+    var JoinObserver = (function(__super__) {
+      inherits(JoinObserver, __super__);
+      function JoinObserver(source, onError) {
+        __super__.call(this);
+        this.source = source;
+        this.onError = onError;
+        this.queue = [];
+        this.activePlans = [];
+        this.subscription = new SingleAssignmentDisposable();
+        this.isDisposed = false;
+      }
+      var JoinObserverPrototype = JoinObserver.prototype;
+      JoinObserverPrototype.next = function(notification) {
+        if (!this.isDisposed) {
+          if (notification.kind === 'E') {
+            return this.onError(notification.exception);
+          }
+          this.queue.push(notification);
+          var activePlans = this.activePlans.slice(0);
+          for (var i = 0,
+              len = activePlans.length; i < len; i++) {
+            activePlans[i].match();
+          }
+        }
+      };
+      JoinObserverPrototype.error = noop;
+      JoinObserverPrototype.completed = noop;
+      JoinObserverPrototype.addActivePlan = function(activePlan) {
+        this.activePlans.push(activePlan);
+      };
+      JoinObserverPrototype.subscribe = function() {
+        this.subscription.setDisposable(this.source.materialize().subscribe(this));
+      };
+      JoinObserverPrototype.removeActivePlan = function(activePlan) {
+        this.activePlans.splice(this.activePlans.indexOf(activePlan), 1);
+        this.activePlans.length === 0 && this.dispose();
+      };
+      JoinObserverPrototype.dispose = function() {
+        __super__.prototype.dispose.call(this);
+        if (!this.isDisposed) {
+          this.isDisposed = true;
+          this.subscription.dispose();
+        }
+      };
+      return JoinObserver;
+    }(AbstractObserver));
+    observableProto.and = function(right) {
+      return new Pattern([this, right]);
+    };
+    observableProto.thenDo = function(selector) {
+      return new Pattern([this]).thenDo(selector);
+    };
+    Observable.when = function() {
+      var len = arguments.length,
+          plans;
+      if (Array.isArray(arguments[0])) {
+        plans = arguments[0];
+      } else {
+        plans = new Array(len);
+        for (var i = 0; i < len; i++) {
+          plans[i] = arguments[i];
+        }
+      }
+      return new AnonymousObservable(function(o) {
+        var activePlans = [],
+            externalSubscriptions = new Map();
+        var outObserver = observerCreate(function(x) {
+          o.onNext(x);
+        }, function(err) {
+          externalSubscriptions.forEach(function(v) {
+            v.onError(err);
+          });
+          o.onError(err);
+        }, function(x) {
+          o.onCompleted();
+        });
+        try {
+          for (var i = 0,
+              len = plans.length; i < len; i++) {
+            activePlans.push(plans[i].activate(externalSubscriptions, outObserver, function(activePlan) {
+              var idx = activePlans.indexOf(activePlan);
+              activePlans.splice(idx, 1);
+              activePlans.length === 0 && o.onCompleted();
+            }));
+          }
+        } catch (e) {
+          observableThrow(e).subscribe(o);
+        }
+        var group = new CompositeDisposable();
+        externalSubscriptions.forEach(function(joinObserver) {
+          joinObserver.subscribe();
+          group.add(joinObserver);
+        });
+        return group;
+      });
+    };
+    return Rx;
+  }));
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:rx@2.5.1/dist/rx.experimental", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -42291,334 +42571,6 @@ System.registerDynamic("npm:rx@2.5.1/dist/rx.experimental", ["npm:rx@2.5.1/dist/
   return module.exports;
 });
 
-System.registerDynamic("npm:rx@2.5.1/dist/rx.joinpatterns", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  ;
-  (function(factory) {
-    var objectTypes = {
-      'boolean': false,
-      'function': true,
-      'object': true,
-      'number': false,
-      'string': false,
-      'undefined': false
-    };
-    var root = (objectTypes[typeof window] && window) || this,
-        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
-        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
-        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
-        freeGlobal = objectTypes[typeof global] && global;
-    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
-      root = freeGlobal;
-    }
-    if (typeof define === 'function' && define.amd) {
-      define(['rx'], function(Rx, exports) {
-        return factory(root, exports, Rx);
-      });
-    } else if (typeof module === 'object' && module && module.exports === freeExports) {
-      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
-    } else {
-      root.Rx = factory(root, {}, root.Rx);
-    }
-  }.call(this, function(root, exp, Rx, undefined) {
-    var Observable = Rx.Observable,
-        observableProto = Observable.prototype,
-        AnonymousObservable = Rx.AnonymousObservable,
-        observableThrow = Observable.throwError,
-        observerCreate = Rx.Observer.create,
-        SingleAssignmentDisposable = Rx.SingleAssignmentDisposable,
-        CompositeDisposable = Rx.CompositeDisposable,
-        AbstractObserver = Rx.internals.AbstractObserver,
-        noop = Rx.helpers.noop,
-        defaultComparer = Rx.internals.isEqual,
-        inherits = Rx.internals.inherits,
-        Enumerable = Rx.internals.Enumerable,
-        Enumerator = Rx.internals.Enumerator,
-        $iterator$ = Rx.iterator,
-        doneEnumerator = Rx.doneEnumerator;
-    var Map = root.Map || (function() {
-      function Map() {
-        this._keys = [];
-        this._values = [];
-      }
-      Map.prototype.get = function(key) {
-        var i = this._keys.indexOf(key);
-        return i !== -1 ? this._values[i] : undefined;
-      };
-      Map.prototype.set = function(key, value) {
-        var i = this._keys.indexOf(key);
-        i !== -1 && (this._values[i] = value);
-        this._values[this._keys.push(key) - 1] = value;
-      };
-      Map.prototype.forEach = function(callback, thisArg) {
-        for (var i = 0,
-            len = this._keys.length; i < len; i++) {
-          callback.call(thisArg, this._values[i], this._keys[i]);
-        }
-      };
-      return Map;
-    }());
-    function Pattern(patterns) {
-      this.patterns = patterns;
-    }
-    Pattern.prototype.and = function(other) {
-      return new Pattern(this.patterns.concat(other));
-    };
-    Pattern.prototype.thenDo = function(selector) {
-      return new Plan(this, selector);
-    };
-    function Plan(expression, selector) {
-      this.expression = expression;
-      this.selector = selector;
-    }
-    Plan.prototype.activate = function(externalSubscriptions, observer, deactivate) {
-      var self = this;
-      var joinObservers = [];
-      for (var i = 0,
-          len = this.expression.patterns.length; i < len; i++) {
-        joinObservers.push(planCreateObserver(externalSubscriptions, this.expression.patterns[i], observer.onError.bind(observer)));
-      }
-      var activePlan = new ActivePlan(joinObservers, function() {
-        var result;
-        try {
-          result = self.selector.apply(self, arguments);
-        } catch (e) {
-          observer.onError(e);
-          return;
-        }
-        observer.onNext(result);
-      }, function() {
-        for (var j = 0,
-            jlen = joinObservers.length; j < jlen; j++) {
-          joinObservers[j].removeActivePlan(activePlan);
-        }
-        deactivate(activePlan);
-      });
-      for (i = 0, len = joinObservers.length; i < len; i++) {
-        joinObservers[i].addActivePlan(activePlan);
-      }
-      return activePlan;
-    };
-    function planCreateObserver(externalSubscriptions, observable, onError) {
-      var entry = externalSubscriptions.get(observable);
-      if (!entry) {
-        var observer = new JoinObserver(observable, onError);
-        externalSubscriptions.set(observable, observer);
-        return observer;
-      }
-      return entry;
-    }
-    function ActivePlan(joinObserverArray, onNext, onCompleted) {
-      this.joinObserverArray = joinObserverArray;
-      this.onNext = onNext;
-      this.onCompleted = onCompleted;
-      this.joinObservers = new Map();
-      for (var i = 0,
-          len = this.joinObserverArray.length; i < len; i++) {
-        var joinObserver = this.joinObserverArray[i];
-        this.joinObservers.set(joinObserver, joinObserver);
-      }
-    }
-    ActivePlan.prototype.dequeue = function() {
-      this.joinObservers.forEach(function(v) {
-        v.queue.shift();
-      });
-    };
-    ActivePlan.prototype.match = function() {
-      var i,
-          len,
-          hasValues = true;
-      for (i = 0, len = this.joinObserverArray.length; i < len; i++) {
-        if (this.joinObserverArray[i].queue.length === 0) {
-          hasValues = false;
-          break;
-        }
-      }
-      if (hasValues) {
-        var firstValues = [],
-            isCompleted = false;
-        for (i = 0, len = this.joinObserverArray.length; i < len; i++) {
-          firstValues.push(this.joinObserverArray[i].queue[0]);
-          this.joinObserverArray[i].queue[0].kind === 'C' && (isCompleted = true);
-        }
-        if (isCompleted) {
-          this.onCompleted();
-        } else {
-          this.dequeue();
-          var values = [];
-          for (i = 0, len = firstValues.length; i < firstValues.length; i++) {
-            values.push(firstValues[i].value);
-          }
-          this.onNext.apply(this, values);
-        }
-      }
-    };
-    var JoinObserver = (function(__super__) {
-      inherits(JoinObserver, __super__);
-      function JoinObserver(source, onError) {
-        __super__.call(this);
-        this.source = source;
-        this.onError = onError;
-        this.queue = [];
-        this.activePlans = [];
-        this.subscription = new SingleAssignmentDisposable();
-        this.isDisposed = false;
-      }
-      var JoinObserverPrototype = JoinObserver.prototype;
-      JoinObserverPrototype.next = function(notification) {
-        if (!this.isDisposed) {
-          if (notification.kind === 'E') {
-            return this.onError(notification.exception);
-          }
-          this.queue.push(notification);
-          var activePlans = this.activePlans.slice(0);
-          for (var i = 0,
-              len = activePlans.length; i < len; i++) {
-            activePlans[i].match();
-          }
-        }
-      };
-      JoinObserverPrototype.error = noop;
-      JoinObserverPrototype.completed = noop;
-      JoinObserverPrototype.addActivePlan = function(activePlan) {
-        this.activePlans.push(activePlan);
-      };
-      JoinObserverPrototype.subscribe = function() {
-        this.subscription.setDisposable(this.source.materialize().subscribe(this));
-      };
-      JoinObserverPrototype.removeActivePlan = function(activePlan) {
-        this.activePlans.splice(this.activePlans.indexOf(activePlan), 1);
-        this.activePlans.length === 0 && this.dispose();
-      };
-      JoinObserverPrototype.dispose = function() {
-        __super__.prototype.dispose.call(this);
-        if (!this.isDisposed) {
-          this.isDisposed = true;
-          this.subscription.dispose();
-        }
-      };
-      return JoinObserver;
-    }(AbstractObserver));
-    observableProto.and = function(right) {
-      return new Pattern([this, right]);
-    };
-    observableProto.thenDo = function(selector) {
-      return new Pattern([this]).thenDo(selector);
-    };
-    Observable.when = function() {
-      var len = arguments.length,
-          plans;
-      if (Array.isArray(arguments[0])) {
-        plans = arguments[0];
-      } else {
-        plans = new Array(len);
-        for (var i = 0; i < len; i++) {
-          plans[i] = arguments[i];
-        }
-      }
-      return new AnonymousObservable(function(o) {
-        var activePlans = [],
-            externalSubscriptions = new Map();
-        var outObserver = observerCreate(function(x) {
-          o.onNext(x);
-        }, function(err) {
-          externalSubscriptions.forEach(function(v) {
-            v.onError(err);
-          });
-          o.onError(err);
-        }, function(x) {
-          o.onCompleted();
-        });
-        try {
-          for (var i = 0,
-              len = plans.length; i < len; i++) {
-            activePlans.push(plans[i].activate(externalSubscriptions, outObserver, function(activePlan) {
-              var idx = activePlans.indexOf(activePlan);
-              activePlans.splice(idx, 1);
-              activePlans.length === 0 && o.onCompleted();
-            }));
-          }
-        } catch (e) {
-          observableThrow(e).subscribe(o);
-        }
-        var group = new CompositeDisposable();
-        externalSubscriptions.forEach(function(joinObserver) {
-          joinObserver.subscribe();
-          group.add(joinObserver);
-        });
-        return group;
-      });
-    };
-    return Rx;
-  }));
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:rx@2.5.1/dist/rx.sorting", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  ;
-  (function(factory) {
-    var objectTypes = {
-      'boolean': false,
-      'function': true,
-      'object': true,
-      'number': false,
-      'string': false,
-      'undefined': false
-    };
-    var root = (objectTypes[typeof window] && window) || this,
-        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
-        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
-        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
-        freeGlobal = objectTypes[typeof global] && global;
-    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
-      root = freeGlobal;
-    }
-    if (typeof define === 'function' && define.amd) {
-      define(['rx'], function(Rx, exports) {
-        return factory(root, exports, Rx);
-      });
-    } else if (typeof module === 'object' && module && module.exports === freeExports) {
-      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
-    } else {
-      root.Rx = factory(root, {}, root.Rx);
-    }
-  }.call(this, function(root, exp, Rx, undefined) {
-    var Observable = Rx.Observable,
-        observableProto = Observable.prototype,
-        AnonymousObservable = Rx.AnonymousObservable,
-        observableNever = Observable.never,
-        isEqual = Rx.internals.isEqual,
-        defaultSubComparer = Rx.helpers.defaultSubComparer;
-    observableProto.jortSort = function() {
-      return this.jortSortUntil(observableNever());
-    };
-    observableProto.jortSortUntil = function(other) {
-      var source = this;
-      return new AnonymousObservable(function(observer) {
-        var arr = [];
-        return source.takeUntil(other).subscribe(arr.push.bind(arr), observer.onError.bind(observer), function() {
-          var sorted = arr.slice(0).sort(defaultSubComparer);
-          observer.onNext(isEqual(arr, sorted));
-          observer.onCompleted();
-        });
-      }, source);
-    };
-    return Rx;
-  }));
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:rx@2.5.1/dist/rx.virtualtime", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -42803,6 +42755,66 @@ System.registerDynamic("npm:rx@2.5.1/dist/rx.virtualtime", ["npm:rx@2.5.1/dist/r
       };
       return HistoricalScheduler;
     }(Rx.VirtualTimeScheduler));
+    return Rx;
+  }));
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:rx@2.5.1/dist/rx.sorting", ["npm:rx@2.5.1/dist/rx"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  "format cjs";
+  ;
+  (function(factory) {
+    var objectTypes = {
+      'boolean': false,
+      'function': true,
+      'object': true,
+      'number': false,
+      'string': false,
+      'undefined': false
+    };
+    var root = (objectTypes[typeof window] && window) || this,
+        freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports,
+        freeModule = objectTypes[typeof module] && module && !module.nodeType && module,
+        moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
+        freeGlobal = objectTypes[typeof global] && global;
+    if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
+      root = freeGlobal;
+    }
+    if (typeof define === 'function' && define.amd) {
+      define(['rx'], function(Rx, exports) {
+        return factory(root, exports, Rx);
+      });
+    } else if (typeof module === 'object' && module && module.exports === freeExports) {
+      module.exports = factory(root, module.exports, require("npm:rx@2.5.1/dist/rx"));
+    } else {
+      root.Rx = factory(root, {}, root.Rx);
+    }
+  }.call(this, function(root, exp, Rx, undefined) {
+    var Observable = Rx.Observable,
+        observableProto = Observable.prototype,
+        AnonymousObservable = Rx.AnonymousObservable,
+        observableNever = Observable.never,
+        isEqual = Rx.internals.isEqual,
+        defaultSubComparer = Rx.helpers.defaultSubComparer;
+    observableProto.jortSort = function() {
+      return this.jortSortUntil(observableNever());
+    };
+    observableProto.jortSortUntil = function(other) {
+      var source = this;
+      return new AnonymousObservable(function(observer) {
+        var arr = [];
+        return source.takeUntil(other).subscribe(arr.push.bind(arr), observer.onError.bind(observer), function() {
+          var sorted = arr.slice(0).sort(defaultSubComparer);
+          observer.onNext(isEqual(arr, sorted));
+          observer.onCompleted();
+        });
+      }, source);
+    };
     return Rx;
   }));
   global.define = __define;
@@ -44159,6 +44171,51 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/comp
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/text_interpolation_parser", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  var TextInterpolationParser = (function() {
+    function TextInterpolationParser(_parser) {
+      this._parser = _parser;
+    }
+    TextInterpolationParser.prototype.processStyle = function(style) {
+      return style;
+    };
+    TextInterpolationParser.prototype.processElement = function(parent, current, control) {
+      if (!current.compileChildren) {
+        return;
+      }
+      var element = current.element;
+      var childNodes = dom_adapter_1.DOM.childNodes(dom_adapter_1.DOM.templateAwareRoot(element));
+      for (var i = 0; i < childNodes.length; i++) {
+        var node = childNodes[i];
+        if (dom_adapter_1.DOM.isTextNode(node)) {
+          var textNode = node;
+          var text = dom_adapter_1.DOM.nodeValue(textNode);
+          var expr = this._parser.parseInterpolation(text, current.elementDescription);
+          if (lang_1.isPresent(expr)) {
+            dom_adapter_1.DOM.setText(textNode, ' ');
+            if (current.element === current.inheritedProtoView.rootElement) {
+              current.inheritedProtoView.bindRootText(textNode, expr);
+            } else {
+              current.bindElement().bindText(textNode, expr);
+            }
+          }
+        }
+      }
+    };
+    return TextInterpolationParser;
+  })();
+  exports.TextInterpolationParser = TextInterpolationParser;
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view_builder", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/change_detection/change_detection", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_view", "npm:angular2@2.0.0-alpha.36/src/render/dom/view/element_binder", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -44492,136 +44549,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/view/proto_vi
   return module.exports;
 });
 
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/property_binding_parser", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
-  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
-  var BIND_NAME_REGEXP = /^(?:(?:(?:(bind-)|(var-|#)|(on-)|(onbubble-)|(bindon-))(.+))|\[\(([^\)]+)\)\]|\[([^\]]+)\]|\(([^\)]+)\))$/g;
-  var PropertyBindingParser = (function() {
-    function PropertyBindingParser(_parser) {
-      this._parser = _parser;
-    }
-    PropertyBindingParser.prototype.processStyle = function(style) {
-      return style;
-    };
-    PropertyBindingParser.prototype.processElement = function(parent, current, control) {
-      var _this = this;
-      var attrs = current.attrs();
-      var newAttrs = new Map();
-      collection_1.MapWrapper.forEach(attrs, function(attrValue, attrName) {
-        attrName = _this._normalizeAttributeName(attrName);
-        var bindParts = lang_1.RegExpWrapper.firstMatch(BIND_NAME_REGEXP, attrName);
-        if (lang_1.isPresent(bindParts)) {
-          if (lang_1.isPresent(bindParts[1])) {
-            _this._bindProperty(bindParts[6], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[2])) {
-            var identifier = bindParts[6];
-            var value = attrValue == '' ? '\$implicit' : attrValue;
-            _this._bindVariable(identifier, value, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[3])) {
-            _this._bindEvent(bindParts[6], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[4])) {
-            _this._bindEvent('^' + bindParts[6], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[5])) {
-            _this._bindProperty(bindParts[6], attrValue, current, newAttrs);
-            _this._bindAssignmentEvent(bindParts[6], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[7])) {
-            _this._bindProperty(bindParts[7], attrValue, current, newAttrs);
-            _this._bindAssignmentEvent(bindParts[7], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[8])) {
-            _this._bindProperty(bindParts[8], attrValue, current, newAttrs);
-          } else if (lang_1.isPresent(bindParts[9])) {
-            _this._bindEvent(bindParts[9], attrValue, current, newAttrs);
-          }
-        } else {
-          var expr = _this._parser.parseInterpolation(attrValue, current.elementDescription);
-          if (lang_1.isPresent(expr)) {
-            _this._bindPropertyAst(attrName, expr, current, newAttrs);
-          }
-        }
-      });
-      collection_1.MapWrapper.forEach(newAttrs, function(attrValue, attrName) {
-        attrs.set(attrName, attrValue);
-      });
-    };
-    PropertyBindingParser.prototype._normalizeAttributeName = function(attrName) {
-      return lang_1.StringWrapper.startsWith(attrName, 'data-') ? lang_1.StringWrapper.substring(attrName, 5) : attrName;
-    };
-    PropertyBindingParser.prototype._bindVariable = function(identifier, value, current, newAttrs) {
-      current.bindElement().bindVariable(util_1.dashCaseToCamelCase(identifier), value);
-      newAttrs.set(identifier, value);
-    };
-    PropertyBindingParser.prototype._bindProperty = function(name, expression, current, newAttrs) {
-      this._bindPropertyAst(name, this._parser.parseBinding(expression, current.elementDescription), current, newAttrs);
-    };
-    PropertyBindingParser.prototype._bindPropertyAst = function(name, ast, current, newAttrs) {
-      var binder = current.bindElement();
-      binder.bindProperty(util_1.dashCaseToCamelCase(name), ast);
-      newAttrs.set(name, ast.source);
-    };
-    PropertyBindingParser.prototype._bindAssignmentEvent = function(name, expression, current, newAttrs) {
-      this._bindEvent(name, expression + "=$event", current, newAttrs);
-    };
-    PropertyBindingParser.prototype._bindEvent = function(name, expression, current, newAttrs) {
-      current.bindElement().bindEvent(util_1.dashCaseToCamelCase(name), this._parser.parseAction(expression, current.elementDescription));
-    };
-    return PropertyBindingParser;
-  })();
-  exports.PropertyBindingParser = PropertyBindingParser;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/text_interpolation_parser", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  var TextInterpolationParser = (function() {
-    function TextInterpolationParser(_parser) {
-      this._parser = _parser;
-    }
-    TextInterpolationParser.prototype.processStyle = function(style) {
-      return style;
-    };
-    TextInterpolationParser.prototype.processElement = function(parent, current, control) {
-      if (!current.compileChildren) {
-        return;
-      }
-      var element = current.element;
-      var childNodes = dom_adapter_1.DOM.childNodes(dom_adapter_1.DOM.templateAwareRoot(element));
-      for (var i = 0; i < childNodes.length; i++) {
-        var node = childNodes[i];
-        if (dom_adapter_1.DOM.isTextNode(node)) {
-          var textNode = node;
-          var text = dom_adapter_1.DOM.nodeValue(textNode);
-          var expr = this._parser.parseInterpolation(text, current.elementDescription);
-          if (lang_1.isPresent(expr)) {
-            dom_adapter_1.DOM.setText(textNode, ' ');
-            if (current.element === current.inheritedProtoView.rootElement) {
-              current.inheritedProtoView.bindRootText(textNode, expr);
-            } else {
-              current.bindElement().bindText(textNode, expr);
-            }
-          }
-        }
-      }
-    };
-    return TextInterpolationParser;
-  })();
-  exports.TextInterpolationParser = TextInterpolationParser;
-  global.define = __define;
-  return module.exports;
-});
-
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/directive_parser", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/selector", "npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -44776,6 +44703,164 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/dire
   return module.exports;
 });
 
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/property_binding_parser", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var collection_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/collection");
+  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
+  var BIND_NAME_REGEXP = /^(?:(?:(?:(bind-)|(var-|#)|(on-)|(onbubble-)|(bindon-))(.+))|\[\(([^\)]+)\)\]|\[([^\]]+)\]|\(([^\)]+)\))$/g;
+  var PropertyBindingParser = (function() {
+    function PropertyBindingParser(_parser) {
+      this._parser = _parser;
+    }
+    PropertyBindingParser.prototype.processStyle = function(style) {
+      return style;
+    };
+    PropertyBindingParser.prototype.processElement = function(parent, current, control) {
+      var _this = this;
+      var attrs = current.attrs();
+      var newAttrs = new Map();
+      collection_1.MapWrapper.forEach(attrs, function(attrValue, attrName) {
+        attrName = _this._normalizeAttributeName(attrName);
+        var bindParts = lang_1.RegExpWrapper.firstMatch(BIND_NAME_REGEXP, attrName);
+        if (lang_1.isPresent(bindParts)) {
+          if (lang_1.isPresent(bindParts[1])) {
+            _this._bindProperty(bindParts[6], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[2])) {
+            var identifier = bindParts[6];
+            var value = attrValue == '' ? '\$implicit' : attrValue;
+            _this._bindVariable(identifier, value, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[3])) {
+            _this._bindEvent(bindParts[6], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[4])) {
+            _this._bindEvent('^' + bindParts[6], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[5])) {
+            _this._bindProperty(bindParts[6], attrValue, current, newAttrs);
+            _this._bindAssignmentEvent(bindParts[6], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[7])) {
+            _this._bindProperty(bindParts[7], attrValue, current, newAttrs);
+            _this._bindAssignmentEvent(bindParts[7], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[8])) {
+            _this._bindProperty(bindParts[8], attrValue, current, newAttrs);
+          } else if (lang_1.isPresent(bindParts[9])) {
+            _this._bindEvent(bindParts[9], attrValue, current, newAttrs);
+          }
+        } else {
+          var expr = _this._parser.parseInterpolation(attrValue, current.elementDescription);
+          if (lang_1.isPresent(expr)) {
+            _this._bindPropertyAst(attrName, expr, current, newAttrs);
+          }
+        }
+      });
+      collection_1.MapWrapper.forEach(newAttrs, function(attrValue, attrName) {
+        attrs.set(attrName, attrValue);
+      });
+    };
+    PropertyBindingParser.prototype._normalizeAttributeName = function(attrName) {
+      return lang_1.StringWrapper.startsWith(attrName, 'data-') ? lang_1.StringWrapper.substring(attrName, 5) : attrName;
+    };
+    PropertyBindingParser.prototype._bindVariable = function(identifier, value, current, newAttrs) {
+      current.bindElement().bindVariable(util_1.dashCaseToCamelCase(identifier), value);
+      newAttrs.set(identifier, value);
+    };
+    PropertyBindingParser.prototype._bindProperty = function(name, expression, current, newAttrs) {
+      this._bindPropertyAst(name, this._parser.parseBinding(expression, current.elementDescription), current, newAttrs);
+    };
+    PropertyBindingParser.prototype._bindPropertyAst = function(name, ast, current, newAttrs) {
+      var binder = current.bindElement();
+      binder.bindProperty(util_1.dashCaseToCamelCase(name), ast);
+      newAttrs.set(name, ast.source);
+    };
+    PropertyBindingParser.prototype._bindAssignmentEvent = function(name, expression, current, newAttrs) {
+      this._bindEvent(name, expression + "=$event", current, newAttrs);
+    };
+    PropertyBindingParser.prototype._bindEvent = function(name, expression, current, newAttrs) {
+      current.bindElement().bindEvent(util_1.dashCaseToCamelCase(name), this._parser.parseAction(expression, current.elementDescription));
+    };
+    return PropertyBindingParser;
+  })();
+  exports.PropertyBindingParser = PropertyBindingParser;
+  global.define = __define;
+  return module.exports;
+});
+
+System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/style_encapsulator", ["npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/shadow_css"], true, function(require, exports, module) {
+  ;
+  var global = this,
+      __define = global.define;
+  global.define = undefined;
+  'use strict';
+  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
+  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
+  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
+  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
+  var shadow_css_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/shadow_css");
+  var StyleEncapsulator = (function() {
+    function StyleEncapsulator(_appId, _view, _componentUIDsCache) {
+      this._appId = _appId;
+      this._view = _view;
+      this._componentUIDsCache = _componentUIDsCache;
+    }
+    StyleEncapsulator.prototype.processElement = function(parent, current, control) {
+      if (util_1.isElementWithTag(current.element, util_1.NG_CONTENT_ELEMENT_NAME)) {
+        current.inheritedProtoView.bindNgContent();
+      } else {
+        if (this._view.encapsulation === api_1.ViewEncapsulation.EMULATED) {
+          this._processEmulatedScopedElement(current, parent);
+        }
+      }
+    };
+    StyleEncapsulator.prototype.processStyle = function(style) {
+      var encapsulation = this._view.encapsulation;
+      if (encapsulation === api_1.ViewEncapsulation.EMULATED) {
+        return this._shimCssForComponent(style, this._view.componentId);
+      } else {
+        return style;
+      }
+    };
+    StyleEncapsulator.prototype._processEmulatedScopedElement = function(current, parent) {
+      var element = current.element;
+      var hostComponentId = this._view.componentId;
+      var viewType = current.inheritedProtoView.type;
+      if (viewType !== api_1.ViewType.HOST && lang_1.isPresent(hostComponentId)) {
+        var contentAttribute = getContentAttribute(this._getComponentId(hostComponentId));
+        dom_adapter_1.DOM.setAttribute(element, contentAttribute, '');
+        if (lang_1.isBlank(parent) && viewType == api_1.ViewType.COMPONENT) {
+          var hostAttribute = getHostAttribute(this._getComponentId(hostComponentId));
+          current.inheritedProtoView.setHostAttribute(hostAttribute, '');
+        }
+      }
+    };
+    StyleEncapsulator.prototype._shimCssForComponent = function(cssText, componentId) {
+      var id = this._getComponentId(componentId);
+      var shadowCss = new shadow_css_1.ShadowCss();
+      return shadowCss.shimCssText(cssText, getContentAttribute(id), getHostAttribute(id));
+    };
+    StyleEncapsulator.prototype._getComponentId = function(componentStringId) {
+      var id = this._componentUIDsCache.get(componentStringId);
+      if (lang_1.isBlank(id)) {
+        id = this._appId + "-" + this._componentUIDsCache.size;
+        this._componentUIDsCache.set(componentStringId, id);
+      }
+      return id;
+    };
+    return StyleEncapsulator;
+  })();
+  exports.StyleEncapsulator = StyleEncapsulator;
+  function getHostAttribute(compId) {
+    return "_nghost-" + compId;
+  }
+  function getContentAttribute(compId) {
+    return "_ngcontent-" + compId;
+  }
+  global.define = __define;
+  return module.exports;
+});
+
 System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view_splitter", ["npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/collection", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/compile_element", "npm:angular2@2.0.0-alpha.36/src/render/dom/util"], true, function(require, exports, module) {
   ;
   var global = this,
@@ -44866,79 +44951,6 @@ System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/view
     return ViewSplitter;
   })();
   exports.ViewSplitter = ViewSplitter;
-  global.define = __define;
-  return module.exports;
-});
-
-System.registerDynamic("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/style_encapsulator", ["npm:angular2@2.0.0-alpha.36/src/render/api", "npm:angular2@2.0.0-alpha.36/src/render/dom/util", "npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter", "npm:angular2@2.0.0-alpha.36/src/facade/lang", "npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/shadow_css"], true, function(require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  'use strict';
-  var api_1 = require("npm:angular2@2.0.0-alpha.36/src/render/api");
-  var util_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/util");
-  var dom_adapter_1 = require("npm:angular2@2.0.0-alpha.36/src/dom/dom_adapter");
-  var lang_1 = require("npm:angular2@2.0.0-alpha.36/src/facade/lang");
-  var shadow_css_1 = require("npm:angular2@2.0.0-alpha.36/src/render/dom/compiler/shadow_css");
-  var StyleEncapsulator = (function() {
-    function StyleEncapsulator(_appId, _view, _componentUIDsCache) {
-      this._appId = _appId;
-      this._view = _view;
-      this._componentUIDsCache = _componentUIDsCache;
-    }
-    StyleEncapsulator.prototype.processElement = function(parent, current, control) {
-      if (util_1.isElementWithTag(current.element, util_1.NG_CONTENT_ELEMENT_NAME)) {
-        current.inheritedProtoView.bindNgContent();
-      } else {
-        if (this._view.encapsulation === api_1.ViewEncapsulation.EMULATED) {
-          this._processEmulatedScopedElement(current, parent);
-        }
-      }
-    };
-    StyleEncapsulator.prototype.processStyle = function(style) {
-      var encapsulation = this._view.encapsulation;
-      if (encapsulation === api_1.ViewEncapsulation.EMULATED) {
-        return this._shimCssForComponent(style, this._view.componentId);
-      } else {
-        return style;
-      }
-    };
-    StyleEncapsulator.prototype._processEmulatedScopedElement = function(current, parent) {
-      var element = current.element;
-      var hostComponentId = this._view.componentId;
-      var viewType = current.inheritedProtoView.type;
-      if (viewType !== api_1.ViewType.HOST && lang_1.isPresent(hostComponentId)) {
-        var contentAttribute = getContentAttribute(this._getComponentId(hostComponentId));
-        dom_adapter_1.DOM.setAttribute(element, contentAttribute, '');
-        if (lang_1.isBlank(parent) && viewType == api_1.ViewType.COMPONENT) {
-          var hostAttribute = getHostAttribute(this._getComponentId(hostComponentId));
-          current.inheritedProtoView.setHostAttribute(hostAttribute, '');
-        }
-      }
-    };
-    StyleEncapsulator.prototype._shimCssForComponent = function(cssText, componentId) {
-      var id = this._getComponentId(componentId);
-      var shadowCss = new shadow_css_1.ShadowCss();
-      return shadowCss.shimCssText(cssText, getContentAttribute(id), getHostAttribute(id));
-    };
-    StyleEncapsulator.prototype._getComponentId = function(componentStringId) {
-      var id = this._componentUIDsCache.get(componentStringId);
-      if (lang_1.isBlank(id)) {
-        id = this._appId + "-" + this._componentUIDsCache.size;
-        this._componentUIDsCache.set(componentStringId, id);
-      }
-      return id;
-    };
-    return StyleEncapsulator;
-  })();
-  exports.StyleEncapsulator = StyleEncapsulator;
-  function getHostAttribute(compId) {
-    return "_nghost-" + compId;
-  }
-  function getContentAttribute(compId) {
-    return "_ngcontent-" + compId;
-  }
   global.define = __define;
   return module.exports;
 });
