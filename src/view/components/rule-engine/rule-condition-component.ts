@@ -30,7 +30,8 @@ import {I18nService} from "../../../api/system/locale/I18n";
         class="cw-type-dropdown"
         [value]="condition.type.key"
         placeholder="{{typeDropdown.placeholder | async}}"
-        (change)="onTypeChange($event)">
+        (change)="onTypeChange($event)"
+        (mousedown)="onMouseDown($event)">
          <cw-input-option
             *ngFor="#opt of typeDropdown.options"
             [value]="opt.value"
@@ -127,6 +128,10 @@ export class ConditionComponent {
 
   removeCondition() {
     this.remove.emit(this.condition)
+  }
+
+  onMouseDown(event){
+    event.preventDefault();
   }
 }
 
